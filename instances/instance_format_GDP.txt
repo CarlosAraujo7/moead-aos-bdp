@@ -1,0 +1,27 @@
+Generalized Dispersion Problem Instances format
+------------------------------------------------
+
+There is 1 folder in the Const-GDPlib.zip file:
+* Const-GDPlib - 200 GD instances
+
+The format of the file is:
+
+The first line has:
+*n: Integer indicating the total number of sites 
+
+The following [n*(n-1)/2] lines contain the distance between sites with the format:
+siteA siteB distance
+
+Each of the following n lines has the following fields separated with spaces: 
+
+* i: Integer identifying the site
+* a: Float indicating the cost of site i 
+* b: Float indicating the cost per unit of material stored in site i
+* c: Float indicating the storage capacity of site I
+
+The last line contains the following fields separated with spaces: 
+* K1: the maximum budget
+* K2: extra budget in the variable model
+* B: the minimum capacity 
+
+(March 2021)

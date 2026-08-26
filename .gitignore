@@ -1,0 +1,24 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# Instancias de benchmark (MDPLIB 2.0 + derivados): ~5.1 GB no total,
+# grande demais para versionar em git. Mantem-se apenas instances/catalog.csv
+# (metadados) e instances/MDPLIB_2_0.pdf (documentacao da fonte).
+# TODO (Carlos): documentar no README de onde re-baixar/gerar cada familia.
+instances/*/
+
+# Resultados de experimentos: regeneraveis via run_full.py + export_results.py.
+# Os checkpoints atuais em results/runs/ sao de uma versao ANTERIOR do codigo
+# (pool de 4 operadores; o atual tem 7 + DYTS) e nao devem ser tratados como
+# resultado final -- por isso ficam fora do controle de versao.
+results/
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Sistema
+.DS_Store
+Thumbs.db

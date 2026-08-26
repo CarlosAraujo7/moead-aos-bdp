@@ -1,0 +1,7 @@
+# Dependencias do projeto moead-aos-bdp.
+# Versoes fixadas conforme o ambiente verificado em 2026-08-26.
+# (unicos pacotes externos realmente importados pelo codigo -- confirmado via
+#  grep de import/from em src/*.py e *.py na raiz)
+numpy==2.2.6
+matplotlib==3.10.9
+scipy==1.15.3

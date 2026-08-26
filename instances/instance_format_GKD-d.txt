@@ -1,0 +1,23 @@
+Maximum Diversity Problem Instances format
+--------------------------------------------
+
+There is 1 folder in the MDPlib2.0 with GKD-d set of instances
+* GKD-d - 140 instances
+
+The format of the file is:
+
+The first line has:
+*n: Integer indicating the total number of elements
+*m: Integer indicating the number of elements to be selected 
+
+The following [n*(n-1)/2] lines contain the distance between elements with the format:
+elementA elementB distance
+
+Each of the following n lines has the following fields separated with spaces: 
+
+* i: Integer identifying the element
+* x: Float indicating the x-axis coordinate of element i 
+* y: Float indicating the y-axis coordinate of element i
+
+
+(March 2021)
