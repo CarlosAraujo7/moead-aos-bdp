@@ -18,12 +18,23 @@ contribuicoes teoricas do artigo EJOR. Inclui:
   3. Completude da decomposicao de Tchebycheff
      - Verificacao de que todo ponto Pareto-otimo pode ser encontrado
        por algum vetor de pesos (condicao de completude)
-     - Para BODP: vale para regioes convexas; regioes nao-convexas
-       requerem argumentacao adicional (discutida no artigo)
+     - Resultado classico (Choo & Atkins 1983; Bowman 1976): a
+       escalarizacao de Tchebycheff ponderada e completa
+       INDEPENDENTEMENTE de convexidade -- ao contrario da soma
+       ponderada, que so garante completude em regioes convexas. E a
+       soma ponderada, nao o Tchebycheff, que tem a limitacao de
+       convexidade (ver verify_tchebycheff_completeness()).
 
-  4. Regret bound do UCB sliding-window
-     - Adaptacao do resultado de Auer et al. (2002) para janelas deslizantes
-     - Parametros criticos: tamanho de janela W, exploracao c
+  4. Analise de confusao/regret do UCB com janela deslizante
+     - Derivacao propria via Hoeffding (1963); NAO uma adaptacao de
+       Auer et al. (2002) nem de Garivier & Moulines (2011) -- o
+       UCBSelector real (mab.py) usa janela por-operador, mecanismo que
+       nenhum dos dois artigos descreve (ver ucb_regret_bound())
+     - Calibracao empirica de delta_min a partir de execucoes reais do
+       MOEAD_AOS (reward_signal_gap_analysis()), nao de um valor
+       ilustrativo arbitrario
+     - Parametros criticos: tamanho de janela W, gap minimo delta_min
+       (medido, nao suposto)
 
   5. Complementaridade de operadores
      - Matriz de contribuicao: qual operador melhora qual regiao da frente
@@ -40,6 +51,7 @@ Miettinen, K. (1999). Nonlinear Multiobjective Optimization. Kluwer.
 from __future__ import annotations
 
 import math
+import zlib
 import itertools
 from dataclasses import dataclass
 from pathlib import Path
@@ -61,8 +73,12 @@ class ConflictReport:
     instance_name: str
     n: int
     m: int
-    # Correlacao de Spearman entre MaxSum e MaxMin (amostra de n_sample solucoes)
+    # Correlacao de Spearman entre MaxSum e MaxMin (amostra de n_sample solucoes).
+    # NaN quando degenerate=True (MaxMin ou MaxSum constante na amostra).
     spearman_rho: float
+    # True quando a amostra aleatoria produziu MaxMin (ou MaxSum) constante,
+    # tornando a correlacao indefinida -- ver docstring de analyze_conflict().
+    degenerate: bool
     # Proporcao de pares de solucoes onde uma domina a outra vs. sao incomparaveis
     dominance_rate: float
     # Tamanho estimado da frente de Pareto (amostra)
@@ -70,11 +86,14 @@ class ConflictReport:
     # Amplitude do espaco de objetivos (para normalizacao)
     maxsum_range: tuple[float, float]
     maxmin_range: tuple[float, float]
+    # Fracao da amostra aleatoria com MaxMin exatamente 0 (diagnostico de degenerescencia)
+    frac_maxmin_zero: float
 
 
 def analyze_conflict(inst: MDPInstance, n_sample: int = 500,
                      seed: int = 42) -> ConflictReport:
-    """Analisa o grau de conflito entre MaxSum e MaxMin numa instancia.
+    """Analisa o grau de conflito entre MaxSum e MaxMin numa instancia,
+    amostrando solucoes UNIFORMEMENTE ALEATORIAS do espaco de busca.
 
     Parametros
     ----------
@@ -90,13 +109,41 @@ def analyze_conflict(inst: MDPInstance, n_sample: int = 500,
     ------------------------------
     rho ~ -1 : conflito total (MaxSum alto <=> MaxMin baixo)
     rho ~ 0  : objetivos independentes
-    rho ~ +1 : objetivos alinhados (raro em BODP real)
+    rho ~ +1 : objetivos alinhados
 
-    Proposicao 1 (artigo): Para qualquer instancia do BODP com n suficientemente
-    grande e D com variancia positiva, E[rho] < 0, i.e., existe conflito esperado
-    entre MaxSum e MaxMin. Prova: por construcao de instancia adversaria onde
-    o elemento que maximiza a soma das distancias esta proximo de algum outro
-    elemento (minimizando o minimo). Veja Secao 3.1 do artigo.
+    CORRIGIDO apos auditoria -- a Proposicao 1 original alegava "E[rho] < 0
+    para qualquer instancia com n grande", provada por construcao de UMA
+    instancia adversaria e citando uma "Secao 3.1 do artigo" que nao existe.
+    Isso nao sustentava a alegacao universal (existencia != generalidade) e
+    a citacao era circular.
+
+    Rodei esta funcao (n_sample=300, seed=42) nas 183 instancias do catalogo
+    do projeto (ver catalog_conflict_summary() abaixo; resultados brutos em
+    results/theory/prop1_conflict_catalog.json). Achados reais:
+
+      - Em 119/183 instancias a correlacao e definida; media rho=+0.177
+        (mediana +0.133), com 108/119 (91%) mostrando correlacao POSITIVA --
+        o OPOSTO do que a Proposicao 1 original afirmava. Consistente com um
+        estudo publicado sobre o mesmo par de objetivos MaxSum/MaxMin, que
+        reporta correlacao empirica de +0.64.
+      - Nas 64/183 instancias restantes (MDG-c inteira, MGPO inteira, quase
+        toda SOM-b, mais da metade de SOM-a) MaxMin = 0 em TODAS as amostras
+        aleatorias -- rho fica indefinido (amostra constante), reportado
+        aqui como degenerate=True, nao como conflito nem ausencia dele.
+        Isso NAO significa que MaxMin=0 seja o valor otimo dessas instancias:
+        uma construcao gulosa simples maximizando distancia minima encontra
+        MaxMin > 0 facilmente (ex. MDG-c_1, n=3000 m=300: guloso acha
+        MaxMin=12 contra 0/300 amostras aleatorias). A regiao com MaxMin > 0
+        e uma fracao minuscula do espaco de busca bruto -- amostragem
+        uniforme nunca a encontra, busca dirigida sim. Isso sustenta o
+        argumento do artigo em favor de busca bi-objetivo sofisticada, mas
+        por um motivo diferente do alegado originalmente: nao e "os dois
+        objetivos sempre conflitam", e "a regiao boa em MaxMin e dificil de
+        alcancar sem busca dirigida".
+
+    Conclusao para o artigo: reclassificar como achado empirico (nao
+    "Proposicao" com prova), reportando os dois padroes acima com os
+    numeros reais, nao uma alegacao universal de sinal negativo.
     """
     rng = np.random.default_rng(seed)
     n, m = inst.n, inst.m
@@ -110,9 +157,16 @@ def analyze_conflict(inst: MDPInstance, n_sample: int = 500,
         maxsums[i] = f[0]
         maxmins[i] = f[1]
 
-    # Correlacao de Spearman
-    from scipy.stats import spearmanr
-    rho, _ = spearmanr(maxsums, maxmins)
+    frac_maxmin_zero = float(np.mean(maxmins == 0.0))
+    degenerate = bool(np.std(maxsums) < 1e-12 or np.std(maxmins) < 1e-12)
+
+    # Correlacao de Spearman (indefinida/NaN se uma das series e constante)
+    if degenerate:
+        rho = float("nan")
+    else:
+        from scipy.stats import spearmanr
+        rho, _ = spearmanr(maxsums, maxmins)
+        rho = float(rho)
 
     # Taxa de dominancia
     pts = np.column_stack([maxsums, maxmins])
@@ -135,12 +189,79 @@ def analyze_conflict(inst: MDPInstance, n_sample: int = 500,
     return ConflictReport(
         instance_name=inst.name,
         n=n, m=m,
-        spearman_rho=float(rho),
+        spearman_rho=rho,
+        degenerate=degenerate,
         dominance_rate=dominance_rate,
         estimated_pf_size=estimated_pf_size,
         maxsum_range=(float(maxsums.min()), float(maxsums.max())),
         maxmin_range=(float(maxmins.min()), float(maxmins.max())),
+        frac_maxmin_zero=frac_maxmin_zero,
     )
+
+
+def catalog_conflict_summary(catalog_path: Path, instances_root: Path,
+                              n_sample: int = 300, seed: int = 42,
+                              save_path: Path | None = None) -> dict:
+    """Roda analyze_conflict() em TODAS as instancias do catalogo e agrega
+    os resultados -- a evidencia empirica real por tras da Proposicao 1
+    corrigida (ver docstring de analyze_conflict acima).
+
+    Salva o detalhe por instancia em save_path (default:
+    results/theory/prop1_conflict_catalog.json) para reprodutibilidade, e
+    retorna o resumo agregado (geral e por familia).
+    """
+    import csv, json
+
+    with catalog_path.open() as fh:
+        rows = list(csv.DictReader(fh))
+
+    if save_path is None:
+        save_path = catalog_path.parent.parent / "results" / "theory" / "prop1_conflict_catalog.json"
+
+    detail = []
+    for row in rows:
+        fp = instances_root / row["filepath"]
+        inst = MDPInstance(fp)
+        rep = analyze_conflict(inst, n_sample=n_sample, seed=seed)
+        detail.append({
+            "family": row["family"], "name": row["name"],
+            "n": rep.n, "m": rep.m,
+            "rho": None if math.isnan(rep.spearman_rho) else rep.spearman_rho,
+            "degenerate": rep.degenerate,
+            "frac_maxmin_zero": rep.frac_maxmin_zero,
+        })
+
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    with save_path.open("w") as fh:
+        json.dump(detail, fh, indent=2)
+
+    valid = [d for d in detail if d["rho"] is not None]
+    n_total = len(detail)
+    n_degenerate = sum(1 for d in detail if d["degenerate"])
+    n_pos = sum(1 for d in valid if d["rho"] >= 0)
+    n_neg = sum(1 for d in valid if d["rho"] < 0)
+
+    by_family: dict = {}
+    for fam in sorted({d["family"] for d in detail}):
+        fam_rows = [d for d in detail if d["family"] == fam]
+        fam_valid = [d for d in fam_rows if d["rho"] is not None]
+        by_family[fam] = {
+            "n_instances": len(fam_rows),
+            "n_degenerate": sum(1 for d in fam_rows if d["degenerate"]),
+            "mean_rho": float(np.mean([d["rho"] for d in fam_valid])) if fam_valid else None,
+        }
+
+    return {
+        "n_total": n_total,
+        "n_valid": len(valid),
+        "n_degenerate": n_degenerate,
+        "mean_rho": float(np.mean([d["rho"] for d in valid])) if valid else None,
+        "median_rho": float(np.median([d["rho"] for d in valid])) if valid else None,
+        "n_rho_positive": n_pos,
+        "n_rho_negative": n_neg,
+        "by_family": by_family,
+        "saved_to": str(save_path),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -161,12 +282,20 @@ def characterize_pareto_front(pf_points: np.ndarray,
                                ref_point: np.ndarray | None = None) -> ParetoGeometry:
     """Caracteriza a geometria de uma frente de Pareto aproximada.
 
-    Proposicao 2 (artigo): A frente de Pareto do BODP e monotona decrescente
-    no espaco de objetivos (MaxSum, MaxMin): toda solucao Pareto-otima tem
-    MaxSum >= MaxSum' implies MaxMin <= MaxMin' para qualquer outro Pareto-otimo.
-    Prova: por contradicao — se duas solucoes Pareto-otimas tivessem ambos os
-    objetivos ordenados iguais, uma dominaria a outra, contradizendo Pareto-
-    otimalidade.
+    Observacao (corrigido apos auditoria -- rebaixado de "Proposicao" para
+    observacao preliminar): a propriedade abaixo NAO e especifica do BODP --
+    vale para qualquer frente de Pareto bi-objetivo sob maximizacao, e e
+    consequencia direta da definicao de dominancia em 2D (ver Ehrgott 2005,
+    cap. 2; Miettinen 1999). Util como base para a deteccao de knee points
+    abaixo, mas nao e, por si so, uma contribuicao teorica do BODP -- um
+    revisor de MOO vai reconhece-la como a propria definicao de
+    Pareto-otimalidade, nao como um resultado novo.
+
+    A frente e monotona decrescente no espaco de objetivos (MaxSum, MaxMin):
+    toda solucao Pareto-otima tem MaxSum >= MaxSum' implica MaxMin <= MaxMin'
+    para qualquer outro Pareto-otimo. Prova: por contradicao -- se duas
+    solucoes Pareto-otimas tivessem ambos os objetivos ordenados da mesma
+    forma, uma dominaria a outra, contradizendo Pareto-otimalidade.
     """
     if len(pf_points) == 0:
         return ParetoGeometry(0, True, 1.0, [], 0.0, 1.0)
@@ -253,65 +382,270 @@ def identify_knee_points(pf_points: np.ndarray) -> np.ndarray:
 # ---------------------------------------------------------------------------
 
 def ucb_regret_bound(K: int, T: int, W: int, c: float,
-                     delta_min: float = 0.1) -> dict:
-    """Calcula o regret bound do UCB1 com janela deslizante.
+                     delta_min: float = 0.1, R: float = 1.0) -> dict:
+    """Analisa o comportamento de regret do UCBSelector (mab.py) com janela
+    deslizante -- CORRIGIDO apos auditoria.
 
-    Resultado (Proposicao 3 do artigo):
-    Para K operadores, T rounds, janela de tamanho W e gap minimo delta_min,
-    o regret acumulado esperado satisfaz:
+    A Proposicao 3 original citava Garivier & Moulines (2011) -- a citacao em
+    si esta correta (confirmada por busca: ALT 2011, LNCS 6925, p.174-188),
+    mas o Teorema 2 real desse artigo limita o regret em funcao de Upsilon_T
+    (numero de trocas de regime ate o tempo T), uma quantidade que nao
+    aparecia em lugar nenhum na formula antiga. Pior: o UCBSelector real
+    (mab.py) nao implementa nem o UCB1 estacionario de Auer et al. (2002)
+    nem o SW-UCB de Garivier & Moulines -- cada operador k mantem um deque
+    PROPRIO com as ultimas W recompensas obtidas QUANDO ELE FOI selecionado
+    (janela por-operador), nao as ultimas W RODADAS do processo inteiro
+    (janela por-tempo-global, que e o que ambos os artigos citados
+    analisam). Forcar qualquer um dos dois teoremas nesta implementacao
+    especifica seria tecnicamente incorreto.
 
-        R(T) <= (T/W) * [8 * K * c^2 * ln(W) / delta_min^2 + (pi^2/3 + 1) * K]
+    Analise honesta (derivacao propria via Hoeffding -- NAO adaptada de
+    nenhum artigo citado; recomendo que alguem com mais experiencia em
+    teoria de bandits confira esta derivacao antes de submeter):
 
-    Interpretacao:
-    - O regret cresce linearmente em T/W (numero de 'eras' da janela)
-    - Decresce com delta_min^2 (quanto maior o gap entre o melhor e o segundo
-      melhor operador, mais rapido o UCB aprende)
-    - A janela W cria um trade-off: W grande = mais amostras por era (menos
-      ruido) mas mais lento para reagir a mudancas no ambiente
+    Uma vez que a janela de um operador esteja cheia (n_k = W amostras),
+    Q_k concentra-se em torno da media verdadeira mu_k com parametro
+    sub-Gaussiano R^2/(4W) (Hoeffding, 1963, para recompensas em [0,R]).
+    Para dois operadores i (otimo) e j (subotimo) com gap
+    delta = mu_i - mu_j, a probabilidade de Q_j >= Q_i (escolha errada) e no
+    maximo exp(-W*delta^2/R^2) (soma dos parametros sub-Gaussianos + Hoeffding
+    de novo). Por uniao sobre os K-1 operadores subotimos (usando o pior
+    gap, delta_min, de forma conservadora):
 
-    Parametros otimos recomendados:
-    - W proporcional a sqrt(T): balanceia exploracao e adaptacao
-    - c proporcional a sigma (desvio padrao das recompensas)
+        P(escolha errada numa rodada, regime estacionario)
+            <= (K-1) * exp(-W * delta_min^2 / R^2)
+
+    Diferente do UCB1 classico (regret O(log T), decrescente com T), esta
+    probabilidade NAO decresce com T: a janela tem tamanho FIXO W (nao
+    cresce com o horizonte), entao o algoritmo nunca "trava" de vez no
+    melhor operador -- continua reagindo as ultimas W observacoes para
+    sempre. Isso da um regret assintoticamente LINEAR em T, com inclinacao
+    controlada por W e pelo gap:
+
+        R(T) ~= K*W*R (aquecimento) +
+                (T - K*W) * delta_min * (K-1) * exp(-W*delta_min^2/R^2)
+
+    Isso e uma caracteristica DELIBERADA e desejavel do design, nao um
+    defeito: o MOEA/D-AOS roda por um T fixo e finito (nao assintotico), e
+    qual operador e melhor muda de fato ao longo de uma execucao (ver
+    operator_dominance_switches() abaixo, que mede isso em logs reais) --
+    uma janela fixa que nunca "trava" e o comportamento correto para reagir
+    a essas mudancas, ao custo de nao atingir o regret sub-linear assintotico
+    de um UCB1 puro em ambiente estacionario. Essa e a caracterizacao a
+    reportar no artigo -- nao um bound O(log T) emprestado de um artigo que
+    usa um mecanismo de janela diferente do implementado.
+
+    Calibracao de delta_min: este parametro nao deve ser um valor
+    ilustrativo arbitrario. Ver reward_signal_gap_analysis(), que mede o
+    gap real Q_top-Q_2o a partir de execucoes MOEAD_AOS de verdade.
+    Achado empirico dessa funcao: sob reward_mode="hypervolume", o gap
+    medido frequentemente e ~0 (a recompensa de contribuicao marginal ao
+    arquivo global satura cedo quando a frente de Pareto alcancavel e
+    pequena, o que e comum neste catalogo) -- nesse regime, o bound de
+    confusao abaixo deve ser lido como quase-vacuo (K-1 operadores
+    genuinamente empatados, nao apenas dificeis de distinguir). Sob
+    reward_mode="scalar" o gap medido e tipicamente maior que zero, e o
+    bound e mais informativo.
+
+    Nota de rigor sobre steady_state_regret (revisao cruzada, ago/2026):
+    o termo usa delta_min tanto para a probabilidade de confusao QUANTO
+    para a magnitude do regret quando o algoritmo erra -- isso NAO e um
+    upper bound formal, e uma aproximacao heuristica (ja seria de se
+    esperar dado que a secao acima se descreve como "analise honesta",
+    nao teorema). A funcao g(x) = x*exp(-W*x^2/R^2) nao e monotona
+    (cresce ate x*=R/sqrt(2W), decresce depois); um operador subotimo com
+    gap entre delta_min e x* pode contribuir mais regret por rodada do
+    que delta_min*p_confusion sugere. Um bound formal exigiria somar
+    delta_j*exp(-W*delta_j^2/R^2) sobre cada operador subotimo
+    individualmente, nao uma unica aproximacao via delta_min.
+
+    Por outro lado, IGNORAR o termo de exploracao do UCB (score real:
+    Q_k + c*sqrt(log(total)/n_k), ver UCBSelector._ucb_scores() em
+    mab.py) nesta analise NAO e uma simplificacao arbitraria -- e exata
+    no regime estacionario. Ali, total = soma dos tamanhos de janela de
+    todos os K operadores (mab.py, "total = n.sum()"), NAO um contador
+    global crescente; uma vez que as K janelas atingem tamanho W
+    simultaneamente, total = K*W e n_k = W para todos, ficando fixos
+    dali em diante -- o termo de exploracao vira uma CONSTANTE identica
+    para todo operador, em toda rodada futura, e por isso nunca afeta o
+    argmax da selecao: a comparacao de fato se reduz a comparar os Q_k
+    puros, exatamente como a derivacao acima assume. Isso tambem expoe
+    outra diferenca frente ao UCB1 classico: o termo de exploracao aqui
+    NUNCA cresce com o tempo real decorrido (log(total) satura em
+    log(K*W)), diferente do log(t) irrestrito de Auer et al. (2002) --
+    mais um motivo para as janelas nunca "travarem" no operador supostamente
+    otimo. A simplificacao so vale no regime estacionario: durante o
+    burn-in os n_k diferem entre operadores e o termo de exploracao
+    importa de verdade -- por isso burn_in_cost trata essa fase em
+    separado, com um bound propositalmente grosseiro (pior caso R por
+    rodada) em vez de tentar modelar a exploracao com precisao ali.
 
     Referencias
     -----------
-    Garivier, A., Moulines, E. (2011). On upper-confidence bound policies for
-        switching bandit problems. ALT 2011, LNCS 6925, 174-188.
+    Hoeffding, W. (1963). Probability inequalities for sums of bounded
+        random variables. JASA, 58(301), 13-30.
     """
-    n_eras = math.ceil(T / W)
+    p_confusion = (K - 1) * math.exp(-W * (delta_min ** 2) / (R ** 2))
+    p_confusion = min(p_confusion, 1.0)
 
-    # Termo de exploracao por era
-    exploration_term = 8 * K * (c ** 2) * math.log(W) / (delta_min ** 2)
-
-    # Termo de probabilidade de erro
-    error_term = (math.pi ** 2 / 3 + 1) * K
-
-    regret_per_era = exploration_term + error_term
-    total_regret   = n_eras * regret_per_era
-
-    # Regret normalizado por T (regret medio por round)
-    avg_regret = total_regret / T
-
-    # W otimo (minimiza regret total sob variacao de ambiente com taxa gamma)
-    # W* ~ sqrt(T / K) para ambientes estacionarios
-    w_optimal_stationary = int(math.sqrt(T / K))
+    burn_in_cost = K * W * R
+    steady_state_rounds = max(T - K * W, 0)
+    steady_state_regret = steady_state_rounds * delta_min * p_confusion
+    total_regret = burn_in_cost + steady_state_regret
 
     return {
-        "K": K,
-        "T": T,
-        "W": W,
-        "c": c,
-        "delta_min": delta_min,
-        "n_eras": n_eras,
+        "K": K, "T": T, "W": W, "delta_min": delta_min, "R": R,
+        "p_confusion_per_round": round(p_confusion, 6),
+        "burn_in_cost": round(burn_in_cost, 2),
+        "steady_state_regret": round(steady_state_regret, 2),
         "regret_bound": round(total_regret, 2),
-        "avg_regret_per_round": round(avg_regret, 4),
-        "w_optimal_stationary": w_optimal_stationary,
+        "avg_regret_per_round": round(total_regret / max(T, 1), 6),
         "note": (
-            f"Regret O({n_eras} * K * ln(W) / delta^2). "
-            f"W_otimo = {w_optimal_stationary} para ambiente estacionario. "
-            f"W={W} e {'adequado' if abs(W - w_optimal_stationary) / max(w_optimal_stationary,1) < 0.5 else 'sub-otimo'}."
+            f"P(confusao/rodada, regime estacionario) ~= {p_confusion:.4g} "
+            f"(K={K}, W={W}, delta_min={delta_min}, R={R}). "
+            f"{'Janela suficiente para discriminacao confiavel.' if p_confusion < 0.05 else 'Janela pequena para este gap -- confusao frequente esperada (pode ser desejavel se o ambiente mudar rapido).'}"
         ),
     }
+
+
+def operator_dominance_switches(operator_selections: list, window: int = 50,
+                                 stride: int = 10) -> dict:
+    """Mede, a partir do log real de selecoes (MOEADResult.operator_selections),
+    quantas vezes o operador "dominante" (moda dentro de uma janela deslizante
+    de tamanho `window`) muda ao longo de uma execucao.
+
+    Evidencia empirica direta de que o ambiente de selecao de operadores E
+    de fato nao-estacionario durante um run do MOEA/D-AOS -- motiva por que
+    uma janela fixa e responsiva (em vez de uma janela crescente com T, que
+    daria regret sub-linear em troca de reagir mais devagar a mudancas) e a
+    escolha de design correta aqui. Ferramenta de medicao -- rodar de novo
+    no experimento completo para os numeros finais do artigo, nao usar um
+    unico run como constante universal.
+    """
+    from collections import Counter
+    n = len(operator_selections)
+    if n < window:
+        return {"n_windows": 0, "n_switches": 0, "switch_rate": None}
+
+    dominant_seq = []
+    for i in range(0, n - window + 1, stride):
+        w = operator_selections[i:i + window]
+        mode = Counter(w).most_common(1)[0][0]
+        dominant_seq.append(mode)
+
+    switches = sum(1 for i in range(1, len(dominant_seq)) if dominant_seq[i] != dominant_seq[i - 1])
+    return {
+        "n_windows": len(dominant_seq),
+        "n_switches": switches,
+        "switch_rate": round(switches / max(len(dominant_seq) - 1, 1), 4),
+    }
+
+
+def reward_signal_gap_analysis(instances: list, n_sample: int = 4,
+                                n_weights: int = 20, neighborhood_size: int = 5,
+                                max_gen: int = 80, ucb_window: int = 50,
+                                reward_modes: tuple = ("hypervolume", "scalar"),
+                                seed: int = 42) -> dict:
+    """Mede empiricamente o gap real (delta = Q_top - Q_2o) entre operadores
+    ao final de execucoes reais do MOEA/D-AOS, por reward_mode.
+
+    Motivacao: ucb_regret_bound() precisa de um delta_min (o menor gap de
+    recompensa que se deseja discriminar de forma confiavel). Um valor
+    ilustrativo fixo (ex.: 0.1) e arbitrario -- pode superestimar ou
+    subestimar o gap real dependendo do reward_mode e da instancia. Esta
+    funcao roda o MOEAD_AOS de verdade e le MOEADResult.operator_q_values
+    ao final, para calibrar delta_min com um numero medido.
+
+    ACHADO EMPIRICO (rodado neste catalogo; ver tambem docstring de
+    ucb_regret_bound()): com reward_mode="hypervolume", os
+    operator_q_values finais frequentemente colapsam para ~0 em TODOS os
+    operadores simultaneamente (gap ~= 0), confirmado tanto em runs novos
+    quanto em resultados ja existentes em results/runs/*.json.
+    Investigado (nao suposto): instrumentado UCBSelector.update() para
+    logar toda recompensa bruta recebida -- confirmado que a recompensa e
+    exatamente 0.0 na overwhelming maioria das chamadas, ja desde as
+    primeiras geracoes. Causa raiz identificada (nao e bug de HV nem de
+    arquivo -- ambos auditados e corretos): a recompensa "hypervolume"
+    mede contribuicao marginal ao ARQUIVO GLOBAL (todos os T subproblemas,
+    todas as geracoes); a frente de Pareto real de MaxSum/MaxMin costuma
+    ser pequena (poucos pontos -- ver analyze_conflict()/
+    catalog_conflict_summary()), e a populacao inicial do MOEA/D
+    (construida a partir dos proprios vetores de peso, ja diversos)
+    frequentemente ja a captura quase por completo -- deixando pouquissimo
+    espaco de melhoria de HV-do-arquivo pelo resto da execucao, para
+    QUALQUER operador. Sweep de max_gen (10/20/40/80/160/320, mesma
+    instancia e seed) confirma o padrao: reward_mode="hypervolume" fica
+    identicamente 0 para todos os operadores a partir de ~20 geracoes e
+    NAO se recupera pelo resto do run (ate 320 geracoes testado);
+    reward_mode="scalar" (melhoria Tchebycheff LOCAL por subproblema --
+    sinal denso, nao depende do arquivo global) mantem sinal
+    intermitentemente nao-nulo por muito mais tempo, ainda que tambem
+    passe por janelas momentaneamente zeradas (efeito da janela deslizante
+    de tamanho fixo, nao morte permanente do sinal). Ou seja: os dois
+    modos eventualmente mostram gap~0 em amostras pontuais (por isso
+    n_collapsed pode ser alto para ambos numa amostra pequena de
+    instancias), mas por razoes DIFERENTES -- saturacao estrutural
+    permanente no caso HV, janela momentaneamente sem melhoria no caso
+    scalar. Isso nao invalida o metodo, mas significa que sob
+    reward_mode="hypervolume" especificamente, delta_min ~= 0 em regime
+    estacionario para boa parte do catalogo -- achado a reportar
+    explicitamente no artigo, nao um detalhe a esconder atras de um
+    delta_min ilustrativo otimista.
+
+    Parameters
+    ----------
+    instances : list[MDPInstance]
+        Amostra de instancias (recomenda-se variar tamanho/familia).
+    n_sample : int
+        Quantas instancias de `instances` usar (as primeiras `n_sample`).
+    max_gen, n_weights, neighborhood_size, ucb_window : int
+        Orcamento do MOEAD_AOS. Valores pequenos por padrao (diagnostico
+        rapido) -- para os numeros finais do artigo, rodar com o
+        orcamento completo de budget_for(inst.n) (ver experiment.py).
+
+    Returns
+    -------
+    dict
+        Uma entrada por reward_mode, com: n_runs, n_collapsed (runs com
+        Q~=0 para todos os operadores), frac_collapsed, median_gap,
+        recommended_delta_min (mediana dos gaps nao-colapsados, ou 0.0 se
+        todos colapsaram) e details (lista por instancia).
+    """
+    from moead_aos import MOEAD_AOS, MOEADConfig
+
+    out = {}
+    for rw in reward_modes:
+        gaps = []
+        n_collapsed = 0
+        details = []
+        for inst in instances[:n_sample]:
+            cfg = MOEADConfig(
+                n_weights=n_weights, neighborhood_size=neighborhood_size,
+                max_gen=max_gen, operator_selection="ucb", reward_mode=rw,
+                ucb_c=0.5, ucb_window=ucb_window, log_every=0,
+                seed=(seed + zlib.crc32(inst.name.encode("utf-8"))) % (2**31),
+            )
+            res = MOEAD_AOS(inst, cfg).run()
+            q = np.asarray(res.operator_q_values, dtype=float)
+            order = np.argsort(q)[::-1]
+            gap = float(q[order[0]] - q[order[1]]) if len(q) > 1 else 0.0
+            collapsed = bool(np.max(q) < 1e-9)
+            gaps.append(gap)
+            if collapsed:
+                n_collapsed += 1
+            details.append({"instance": inst.name, "n": inst.n, "gap": round(gap, 6), "collapsed": collapsed})
+
+        gaps_arr = np.array(gaps) if gaps else np.array([0.0])
+        nonzero_gaps = gaps_arr[gaps_arr > 1e-9]
+        out[rw] = {
+            "n_runs": len(gaps),
+            "n_collapsed": n_collapsed,
+            "frac_collapsed": round(n_collapsed / max(len(gaps), 1), 3),
+            "median_gap": round(float(np.median(gaps_arr)), 6),
+            "recommended_delta_min": round(float(np.median(nonzero_gaps)) if len(nonzero_gaps) else 0.0, 6),
+            "details": details,
+        }
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -320,53 +654,95 @@ def ucb_regret_bound(K: int, T: int, W: int, c: float,
 
 def verify_tchebycheff_completeness(pf_points: np.ndarray,
                                      n_weights: int = 100) -> dict:
-    """Verifica empiricamente a completude da decomposicao de Tchebycheff.
+    """Mede empiricamente quantos pontos de uma frente de Pareto aproximada
+    sao "capturados" (viram o argmin de g_tch para pelo menos um peso) por
+    uma grade de n_weights vetores de peso uniformes.
 
-    Proposicao 4 (artigo): A decomposicao de Tchebycheff e completa para o
-    BODP se a frente de Pareto e convexa. Para regioes nao-convexas, existem
-    pontos Pareto-otimos que nao podem ser encontrados por nenhum vetor de pesos
-    escalar, mas sao alcancaveis por vetores de pesos no espaco aumentado
-    (penalty-based boundary intersection — PBI).
+    CORRIGIDO apos auditoria -- a Proposicao 4 original alegava o oposto do
+    resultado classico: dizia que Tchebycheff so e completo se a frente for
+    convexa, e que regioes nao-convexas precisariam de PBI. A literatura de
+    escalarizacao diz o oposto: e a SOMA PONDERADA que so alcanca a parte
+    convexa/suportada da frente. Tchebycheff ponderado, com um ponto ideal
+    que domine estritamente toda a frente, alcanca QUALQUER ponto
+    Pareto-otimo -- convexo ou nao (Choo & Atkins, 1983; Bowman, 1976;
+    Steuer & Choo, 1983; ver tambem Ehrgott, 2005, cap. 3.3-3.4, ja citado
+    nas referencias deste modulo). E exatamente por essa propriedade que
+    Zhang & Li (2007) escolheram Tchebycheff em vez de soma ponderada para o
+    MOEA/D. O papel do PBI na literatura do MOEA/D e outro: controlar
+    diversidade/cobertura em problemas com 3+ objetivos -- nao "alcancar"
+    regioes nao-convexas, que o Tchebycheff simples ja alcanca em 2
+    objetivos.
 
-    Esta funcao verifica empiricamente: para cada ponto da frente aproximada,
-    existe algum vetor de pesos lambda tal que esse ponto minimiza g_tch?
-
-    Retorna a proporcao de pontos 'alcancaveis' e os 'inaccessible' (nao-convexos).
+    Por isso esta funcao NAO testa "acessibilidade por convexidade" (essa
+    pergunta tem resposta teorica direta: sempre acessivel, dado peso e
+    ponto ideal adequados). Ela testa uma pergunta pratica diferente e
+    legitima: com uma grade FINITA de n_weights vetores de peso uniformemente
+    espacados, quantos pontos conhecidos da frente sao de fato capturados?
+    Um ponto "nao capturado" aqui e evidencia de grade grossa demais para
+    aquela regiao -- nunca evidencia de nao-convexidade. Ver
+    sweep_weight_density() abaixo: a cobertura converge a 100% conforme
+    n_weights cresce, inclusive em frentes com regioes nao-convexas --
+    confirmando empiricamente a completude teorica, nao a limitacao alegada
+    originalmente.
     """
     if len(pf_points) == 0:
-        return {"coverage": 1.0, "n_accessible": 0, "n_inaccessible": 0}
+        return {"coverage": 1.0, "n_captured": 0, "n_missed": 0}
 
     # Gera grade de pesos uniformes
     lambdas = np.zeros((n_weights, 2))
     for i in range(n_weights):
-        t = i / (n_weights - 1)
+        t = i / (n_weights - 1) if n_weights > 1 else 0.5
         lambdas[i, 0] = 1e-4 + (1 - 2e-4) * t
         lambdas[i, 1] = 1.0 - lambdas[i, 0]
 
-    # Ponto ideal (utopico)
-    z_star = pf_points.max(axis=0)
+    # Ponto ideal (utopico): precisa dominar estritamente toda a frente para
+    # a garantia de completude valer -- soma-se uma margem pequena para
+    # evitar empates exatos com o proprio ponto extremo da amostra.
+    pf_max = pf_points.max(axis=0)
+    z_star = pf_max + 1e-6 * np.maximum(np.abs(pf_max), 1.0)
 
     # Para cada lambda, qual ponto da frente minimiza g_tch?
-    accessible = set()
+    captured = set()
     for lam in lambdas:
         g_vals = np.max(lam * (z_star - pf_points), axis=1)
         best = int(np.argmin(g_vals))
-        accessible.add(best)
+        captured.add(best)
 
     n_total = len(pf_points)
-    n_accessible = len(accessible)
-    n_inaccessible = n_total - n_accessible
+    n_captured = len(captured)
+    n_missed = n_total - n_captured
 
     return {
         "n_total": n_total,
-        "n_accessible": n_accessible,
-        "n_inaccessible": n_inaccessible,
-        "coverage": round(n_accessible / max(n_total, 1), 4),
+        "n_captured": n_captured,
+        "n_missed": n_missed,
+        "coverage": round(n_captured / max(n_total, 1), 4),
         "note": (
-            f"{n_accessible}/{n_total} pontos alcancaveis por Tchebycheff. "
-            f"{'Frente totalmente convexa.' if n_inaccessible == 0 else f'{n_inaccessible} pontos em regioes nao-convexas — necessitam PBI ou epsilon-decomposicao.'}"
+            f"{n_captured}/{n_total} pontos capturados com {n_weights} pesos. "
+            f"{'Grade suficiente para cobertura total.' if n_missed == 0 else f'{n_missed} pontos nao capturados por esta grade -- aumentar n_weights (ver sweep_weight_density).'}"
         ),
     }
+
+
+def sweep_weight_density(pf_points: np.ndarray,
+                          weight_counts: list[int] | None = None) -> list[dict]:
+    """Roda verify_tchebycheff_completeness com grades de densidade crescente.
+
+    Evidencia empirica direta da completude do Tchebycheff ponderado: se a
+    alegacao teorica corrigida estiver certa (independente de convexidade),
+    a cobertura deve tender a 100% conforme n_weights cresce, para qualquer
+    frente -- inclusive frentes com regioes nao-convexas. E o oposto do que
+    a formulacao antiga (Proposicao 4 original) levaria a esperar (cobertura
+    estagnada abaixo de 100% em frentes nao-convexas, mesmo com grade densa).
+    """
+    if weight_counts is None:
+        weight_counts = [5, 10, 20, 50, 100, 200, 500, 1000]
+    results = []
+    for nw in weight_counts:
+        r = verify_tchebycheff_completeness(pf_points, n_weights=nw)
+        r["n_weights"] = nw
+        results.append(r)
+    return results
 
 
 # ---------------------------------------------------------------------------
@@ -374,7 +750,7 @@ def verify_tchebycheff_completeness(pf_points: np.ndarray,
 # ---------------------------------------------------------------------------
 
 def operator_complementarity_matrix(runs_dir: Path,
-                                     n_operators: int = 7) -> np.ndarray:
+                                     n_operators: int | None = None) -> np.ndarray:
     """Calcula a matriz de complementaridade dos operadores a partir dos logs.
 
     Para cada run do MOEA/D-AOS-HV, analisa quais operadores foram mais
@@ -387,6 +763,10 @@ def operator_complementarity_matrix(runs_dir: Path,
 
     Esta analise fundamenta a Secao 5.3 do artigo ('Operator behavior analysis').
     """
+    if n_operators is None:
+        from operators import OPERATOR_NAMES
+        n_operators = len(OPERATOR_NAMES)
+
     import glob, json
 
     json_files = sorted(glob.glob(str(runs_dir / "*.json")))
@@ -437,7 +817,7 @@ def operator_complementarity_matrix(runs_dir: Path,
     return np.column_stack([freq_matrix, qval_matrix, hv_contrib])
 
 
-def operator_phase_analysis(runs_dir: Path, n_operators: int = 7,
+def operator_phase_analysis(runs_dir: Path, n_operators: int | None = None,
                              n_phases: int = 3) -> np.ndarray:
     """Analisa a frequencia de selecao de operadores por fase da busca.
 
@@ -448,6 +828,10 @@ def operator_phase_analysis(runs_dir: Path, n_operators: int = 7,
     do tempo (hipotese: operadores de exploracao dominam no inicio, operadores
     de intensificacao dominam no fim).
     """
+    if n_operators is None:
+        from operators import OPERATOR_NAMES
+        n_operators = len(OPERATOR_NAMES)
+
     import glob, json
 
     json_files = sorted(glob.glob(str(runs_dir / "*.json")))
@@ -504,43 +888,79 @@ def build_theory_report(instances: list[MDPInstance],
     lines += [sep, "  ANALISE TEORICA — BODP BI-OBJETIVO", sep, ""]
 
     # 1. Conflito estrutural
-    lines += ["  1. CONFLITO ESTRUTURAL (MaxSum vs. MaxMin)", "-" * 60]
+    lines += ["  1. RELACAO EMPIRICA MaxSum x MaxMin (corrigido apos auditoria)", "-" * 60]
     rho_vals = []
+    n_degenerate = 0
     for inst in instances[:10]:   # amostra de 10 instancias
         try:
             rep = analyze_conflict(inst, n_sample=n_sample)
-            rho_vals.append(rep.spearman_rho)
-            lines.append(
-                f"  {rep.instance_name:<30}  rho={rep.spearman_rho:+.3f}"
-                f"  PF_size~={rep.estimated_pf_size:3d}"
-                f"  dom_rate={rep.dominance_rate:.3f}"
-            )
+            if rep.degenerate:
+                n_degenerate += 1
+                lines.append(f"  {rep.instance_name:<30}  rho=indefinido (MaxMin constante em {rep.frac_maxmin_zero:.0%} das amostras)")
+            else:
+                rho_vals.append(rep.spearman_rho)
+                lines.append(
+                    f"  {rep.instance_name:<30}  rho={rep.spearman_rho:+.3f}"
+                    f"  PF_size~={rep.estimated_pf_size:3d}"
+                    f"  dom_rate={rep.dominance_rate:.3f}"
+                )
         except Exception as e:
             lines.append(f"  {inst.name}: erro ({e})")
 
     if rho_vals:
         mean_rho = float(np.mean(rho_vals))
         lines.append(
-            f"\n  Media rho = {mean_rho:+.3f}  "
-            f"({'conflito confirmado' if mean_rho < -0.1 else 'conflito fraco' if mean_rho < 0 else 'sem conflito'})"
+            f"\n  Media rho (instancias nao-degeneradas) = {mean_rho:+.3f}  "
+            f"({n_degenerate}/{len(instances[:10])} instancias com rho indefinido nesta amostra)"
         )
         lines.append(
-            "  Proposicao 1: rho < 0 em todas as instancias testadas "
-            "confirma conflito estrutural entre MaxSum e MaxMin no BODP."
+            "  Nao ha alegacao universal de sinal: no catalogo completo do projeto "
+            "(183 instancias, ver catalog_conflict_summary()), a maioria (91% das "
+            "instancias com correlacao definida) mostra rho POSITIVO, nao negativo -- "
+            "ver docstring de analyze_conflict() para o achado completo e a citacao "
+            "da literatura relacionada."
         )
 
-    # 2. Regret bound UCB
-    lines += ["", "-" * 60, "  2. REGRET BOUND UCB SLIDING-WINDOW", "-" * 60]
-    for W in [50, 100, 200]:
-        rb = ucb_regret_bound(K=7, T=6000, W=W, c=0.5)
+    # 2. UCB com janela deslizante -- analise corrigida (Hoeffding, nao Garivier-Moulines)
+    from operators import OPERATOR_NAMES as _OPN
+    _K = len(_OPN)
+    lines += ["", "-" * 60, "  2. UCB COM JANELA DESLIZANTE -- ANALISE CORRIGIDA", "-" * 60]
+
+    gap_info = reward_signal_gap_analysis(instances, n_sample=4, max_gen=80)
+    lines.append("  Gap real medido (Q_top - Q_2o) via execucoes MOEAD_AOS reais (diagnostico rapido):")
+    for rw, info in gap_info.items():
         lines.append(
-            f"  W={W:3d}  R(T)={rb['regret_bound']:8.1f}  "
-            f"avg_r={rb['avg_regret_per_round']:.4f}  W*={rb['w_optimal_stationary']}"
+            f"    reward_mode={rw:<12} mediana_gap={info['median_gap']:.4f}  "
+            f"colapsados(Q~=0 p/ todos)={info['n_collapsed']}/{info['n_runs']}  "
+            f"delta_min_recomendado={info['recommended_delta_min']:.4f}"
         )
+
+    for rw, info in gap_info.items():
+        dmin = info["recommended_delta_min"] or 0.001  # evita delta_min=0 (bound trivialmente vacuo)
+        lines.append(f"\n  Bound com delta_min medido p/ reward_mode={rw} (delta_min={dmin:.4f}):")
+        for W in [50, 100, 200]:
+            rb = ucb_regret_bound(K=_K, T=6000, W=W, c=0.5, delta_min=dmin, R=1.0)
+            lines.append(
+                f"    W={W:3d}  P(confusao/rodada)={rb['p_confusion_per_round']:.4g}  "
+                f"regret_total~={rb['regret_bound']:8.1f}  avg_r={rb['avg_regret_per_round']:.5f}"
+            )
+
     lines.append(
-        "\n  Proposicao 3: R(T) = O((T/W) * K * ln(W) / delta^2)."
-        "\n  W=50 (padrao) e sub-otimo para instancias grandes (W*~29 para T=6000, K=7)."
-        "\n  Recomendacao: usar W=max(30, sqrt(T/K)) em implementacoes futuras."
+        "\n  Sem regret bound O(log T) emprestado de Garivier & Moulines: o UCBSelector"
+        " real usa janela por-operador (nao por-rodada global), mecanismo que nenhum dos"
+        " dois artigos originalmente citados descreve. Ver docstring de ucb_regret_bound()"
+        " para a analise via Hoeffding e a justificativa: regret linear com inclinacao"
+        " pequena e a escolha de design correta para reagir a um ambiente nao-estacionario"
+        " dentro de um T fixo -- nao um defeito a esconder."
+        "\n  Achado adicional (reward_signal_gap_analysis): sob reward_mode=\"hypervolume\","
+        " o gap real tipicamente cai para 0 (para todos os operadores) ja nas primeiras ~20"
+        " geracoes e nao se recupera pelo resto do run -- saturacao estrutural (frente de"
+        " Pareto alcancavel pequena, capturada cedo pelo arquivo). Sob reward_mode=\"scalar\""
+        " o sinal e mais persistente (janelas ocasionalmente zeradas, mas nao morte"
+        " permanente). Nesse regime o bound de confusao para reward_mode=\"hypervolume\" deve"
+        " ser lido como quase-vacuo -- nao como evidencia de falha do AOS em si. Ver docstring"
+        " de reward_signal_gap_analysis() para a investigacao completa (inclui sweep de"
+        " max_gen que separa saturacao permanente de janela momentaneamente zerada)."
     )
 
     # 3. Operadores (se runs disponivel)
@@ -582,10 +1002,6 @@ if __name__ == "__main__":
     print(f"Analisando {len(instances)} instancias...")
     report = build_theory_report(instances)
     print(report)
-
-    # Regret bound para parametros padrao do experimento
-    print("\nRegret bounds para parametros do experimento:")
-    for n_size, T_total in [(100, 15000), (300, 60000), (500, 100000)]:
-        bgt = {"T": T_total, "K": 7, "W": 50, "c": 0.5}
-        rb = ucb_regret_bound(K=bgt["K"], T=bgt["T"], W=bgt["W"], c=bgt["c"])
-        print(f"  n~{n_size}: T={T_total}  {rb['note']}")
+    # Nota: a analise de confusao/regret do UCB (com delta_min calibrado
+    # empiricamente, nao um valor ilustrativo) ja esta na secao 2 do
+    # `report` acima -- ver reward_signal_gap_analysis() e ucb_regret_bound().

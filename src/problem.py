@@ -15,6 +15,7 @@ Dado um conjunto solucao S com |S| = m:
 
 from __future__ import annotations
 
+import io
 import numpy as np
 from pathlib import Path
 from typing import Sequence
@@ -44,15 +45,51 @@ class MDPInstance:
         if self.m >= self.n:
             raise ValueError(f"m ({self.m}) deve ser < n ({self.n})")
 
-        # Constroi matriz simetrica a partir da lista de arestas (i j d)
+        # Constroi matriz simetrica a partir da lista de arestas (i j d).
+        # CORRIGIDO nesta sessao -- performance: o parsing original fazia um
+        # loop Python linha-a-linha (int()/float() por aresta), custando
+        # ~2.4s so de parsing para as maiores instancias do catalogo (MDG-c,
+        # n=3000, ~4.5M arestas). run_full.py recarrega a instancia do zero a
+        # cada replica (nao ha cache entre modo/rep em _task()), entao esse
+        # custo se repete centenas de vezes por instancia grande ao longo de
+        # um experimento completo. Caminho rapido: parse vetorizado via
+        # np.loadtxt (~2x mais rapido nas maiores instancias do catalogo --
+        # verificado produzindo matriz D IDENTICA, np.array_equal, ao metodo
+        # antigo em instancias de varios tamanhos antes de substituir). Com
+        # validacao defensiva (exatamente 3 colunas, indices inteiros dentro
+        # de [0,n)) -- qualquer falha cai automaticamente no loop linha-a-
+        # linha original, preservando o comportamento exato para arquivos
+        # atipicos ou malformados.
         D = np.zeros((self.n, self.n), dtype=np.float64)
-        for line in lines[1:]:
-            parts = line.split()
-            if len(parts) != 3:
-                continue
-            i, j, d = int(parts[0]), int(parts[1]), float(parts[2])
-            D[i, j] = d
-            D[j, i] = d
+        body_lines = lines[1:]
+        fast_ok = False
+        if body_lines:
+            try:
+                arr = np.loadtxt(io.StringIO("\n".join(body_lines)))
+                if arr.ndim == 1:
+                    arr = arr.reshape(1, -1)
+                if arr.ndim == 2 and arr.shape[1] == 3:
+                    ii_f, jj_f, dd = arr[:, 0], arr[:, 1], arr[:, 2]
+                    if np.all(ii_f == np.round(ii_f)) and np.all(jj_f == np.round(jj_f)):
+                        ii = ii_f.astype(np.intp)
+                        jj = jj_f.astype(np.intp)
+                        if (ii.size and ii.min() >= 0 and ii.max() < self.n
+                                and jj.min() >= 0 and jj.max() < self.n):
+                            D[ii, jj] = dd
+                            D[jj, ii] = dd
+                            fast_ok = True
+            except (ValueError, IndexError):
+                fast_ok = False
+
+        if not fast_ok:
+            D[:] = 0.0
+            for line in body_lines:
+                parts = line.split()
+                if len(parts) != 3:
+                    continue
+                i, j, d = int(parts[0]), int(parts[1]), float(parts[2])
+                D[i, j] = d
+                D[j, i] = d
 
         self.D: np.ndarray = D
 
@@ -103,6 +140,50 @@ class MDPInstance:
 
         return float(new_maxsum), new_maxmin
 
+    def evaluate_swaps_batch(
+        self,
+        solution: np.ndarray,
+        f: tuple[float, float],
+        out_idx: int,
+        cands,
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Versao em lote de evaluate_swap para TODOS os candidatos `cands` de uma vez.
+
+        MaxSum igual a evaluate_swap. MaxMin: se out_elem NAO participa de nenhum par
+        que define o MaxMin atual f[1], entao MaxMin(S sem out) == f[1] exatamente e
+        MaxMin(S') = min(f[1], min_k D[in, remaining]) em O(m) (mesma prova de
+        CDPInstance.evaluate_swap); so no caso raro em que out_elem define o minimo
+        recalcula a submatriz completa, candidato a candidato. Resultado numericamente
+        identico a chamar evaluate_swap em laco (testado bit a bit). Antes, o MDP
+        recalculava O(m^2) para cada candidato, o que dominava o custo em MDG-c (n=3000).
+        Requer f[1] consistente com `solution` (como produzido por evaluate())."""
+        solution = np.asarray(solution, dtype=np.intp)
+        cands = np.asarray(cands, dtype=np.intp)
+        out_elem = int(solution[out_idx])
+        mask = np.ones(self.m, dtype=bool)
+        mask[out_idx] = False
+        remaining = solution[mask]
+
+        Dr = self.D[np.ix_(cands, remaining)]
+        gain = Dr.sum(axis=1)
+        loss = float(self.D[out_elem, remaining].sum())
+        new_maxsum = f[0] + gain - loss
+
+        out_involved = bool(np.any(
+            np.isclose(self.D[out_elem, remaining], f[1], rtol=0.0, atol=1e-9)
+        ))
+        if not out_involved:
+            rem_min = f[1]
+        else:
+            # ver CDPInstance.evaluate_swaps_batch: termo comum calculado uma vez, exato.
+            if remaining.size >= 2:
+                iu = np.triu_indices(remaining.size, k=1)
+                rem_min = float(self.D[np.ix_(remaining, remaining)][iu].min())
+            else:
+                rem_min = np.inf
+        new_maxmin = np.minimum(rem_min, Dr.min(axis=1))
+        return new_maxsum, new_maxmin
+
     # ------------------------------------------------------------------
     # Geracao de solucoes
     # ------------------------------------------------------------------
@@ -111,9 +192,18 @@ class MDPInstance:
         """Gera uma solucao aleatoria (m elementos distintos de {0,...,n-1})."""
         return rng.choice(self.n, size=self.m, replace=False).astype(np.intp)
 
-    def greedy_solution(self, alpha: float = 0.0) -> np.ndarray:
-        """Construcao GRASP-greedy para MaxSum (alpha=0 guloso, alpha=1 aleatorio)."""
-        rng = np.random.default_rng()
+    def greedy_solution(self, alpha: float = 0.0, rng: np.random.Generator | None = None) -> np.ndarray:
+        """Construcao GRASP-greedy para MaxSum (alpha=0 guloso, alpha=1 aleatorio).
+
+        rng opcional (mesmo padrao de CDPInstance/GDPInstance.greedy_solution em
+        capacitated_problem.py) -- se None, cria um gerador novo a cada chamada
+        (comportamento original, preservado para chamadores que nao passam rng).
+        Adicionado para corrigir nsga2.py::_initialize(): no init_mode="grasp" (o
+        default), este metodo nunca aceitava um gerador semeado, entao a
+        populacao inicial do NSGA2 nunca era exatamente reproduzivel so pela
+        semente -- achado documentado na secao 11 do artefato de diagnostico."""
+        if rng is None:
+            rng = np.random.default_rng()
         iu, iv = np.triu_indices(self.n, k=1)
         best_pair = int(np.argmax(self.D[iu, iv]))
         selected = [int(iu[best_pair]), int(iv[best_pair])]

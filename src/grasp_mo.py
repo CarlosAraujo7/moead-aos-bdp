@@ -1,5 +1,5 @@
 """
-grasp_mo.py -- GRASP multi-objetivo com arquivo de Pareto para o MDP bi-objetivo.
+grasp_mo.py -- GRASP multi-objetivo com arquivo de Pareto para MDP, CDP e GDP.
 
 Implementa um GRASP multi-start adaptado ao contexto bi-objetivo (MaxSum + MaxMin),
 utilizando um arquivo externo de solucoes nao-dominadas. Em cada iteracao, a
@@ -10,6 +10,38 @@ local por melhor melhoria e aplicada.
 O path relinking e implementado como intensificacao final: para cada par de solucoes
 no arquivo, os caminhos intermediarios sao percorridos e as solucoes nao-dominadas
 adicionadas ao arquivo.
+
+Compatibilidade CDP/GDP
+------------------------
+No MDP (instance.m definido), _construct() adiciona exatamente m-1 elementos via
+RCL -- comportamento inalterado, inclusive a sequencia de chamadas de rng (mesma
+seed reproduz os mesmos resultados de antes desta adaptacao).
+
+No CDP/GDP (sem m), _construct() para quando a capacidade minima e atingida
+(>=2 elementos), filtrando a CADA passo do RCL os candidatos que ainda respeitam
+o orcamento maximo (inst.can_extend) -- construcao nativamente viavel na maior
+parte do tempo, nao so reparada no final. Se ficar presa (RCL vazio antes de
+alcancar capacidade), cai para inst.repair() como rede de seguranca, mesmo
+padrao ja usado por _grasp_init (moead_aos.py) e por greedy_solution/
+random_solution (capacitated_problem.py).
+
+_local_search() usa sol.size no lugar de m (identico em espirito ao MDP) e ja
+usa inst.evaluate_swap(), que capacitated_problem.py generaliza para tamanho
+livre (mesmo metodo usado por BiObjBestSwap em operators.py) -- sem mudanca
+estrutural. Como uma troca 1-por-1 pode derrubar capacidade/orcamento, cada
+troca aceita passa por um "repair-net" duck-typed antes de ser adotada.
+
+_generate_path() (path relinking) tambem recebe o mesmo repair-net a cada
+passo. Quando as duas solucoes do par tem tamanhos diferentes (possivel em
+CDP/GDP), o caminho pode nao alcancar exatamente a solucao-guia -- o loop so
+para mais cedo ou deixa de incluir algum elemento exclusivo dela; isso nao
+quebra nada (os pontos intermediarios continuam avaliados e podem entrar no
+arquivo), so significa que o "caminho" nem sempre conecta literalmente as
+duas pontas quando os tamanhos diferem.
+
+instance aceita MDPInstance, CDPInstance ou GDPInstance
+(capacitated_problem.py); type hint continua MDPInstance por consistencia
+com o resto do projeto (contrato real e duck-typed).
 
 Referencias
 -----------
@@ -46,6 +78,9 @@ class GRASPMOConfig:
     hv_ref_factor: float = 0.9
     log_every: int = 0
     seed: int | None = None
+    # Limite de tempo de parede (s) do laco de construcoes, para comparacoes a TEMPO IGUAL (E4); None = so max_iter (historico).
+    # O path relinking final nao e limitado (custo pequeno perto do laco).
+    time_limit_s: float | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -88,8 +123,14 @@ class GRASPMO:
         archive_sols: list[np.ndarray] = []
         archive_objs: list[tuple[float, float]] = []
         hv_history: list[float] = []
+        import time as _time
+        _t0 = _time.perf_counter()
 
+        n_done = 0
         for it in range(cfg.max_iter):
+            if cfg.time_limit_s is not None and _time.perf_counter() - _t0 >= cfg.time_limit_s:
+                break
+            n_done = it + 1
             # Scalarizacao aleatoria (pesos uniformes no simplex)
             lam = rng.dirichlet([1.0, 1.0])
 
@@ -127,7 +168,7 @@ class GRASPMO:
             operator_selections=[],
             operator_counts=np.zeros(4),
             operator_q_values=np.zeros(4),
-            n_gen_executed=cfg.max_iter,
+            n_gen_executed=n_done if cfg.time_limit_s is not None else cfg.max_iter,
             best_hv=float(final_hv),
             config=cfg,
         )
@@ -137,35 +178,72 @@ class GRASPMO:
     # ------------------------------------------------------------------
 
     def _construct(self, lam: np.ndarray, rng: np.random.Generator) -> np.ndarray:
-        """Constroi uma solucao GRASP guiada pela scalarizacao linear com pesos lam."""
+        """Constroi uma solucao GRASP guiada pela scalarizacao linear com pesos lam.
+
+        MDP (inst.m definido): adiciona exatamente m-1 elementos via RCL, igual
+        a antes desta adaptacao -- mesma sequencia de chamadas de rng, zero
+        mudanca de comportamento.
+
+        CDP/GDP (sem m): para quando a capacidade minima e atingida (>=2
+        elementos), filtrando a cada passo os candidatos do RCL que ainda
+        respeitam o orcamento maximo (inst.can_extend) -- ver docstring do
+        modulo. Se o RCL ficar vazio antes de alcancar a capacidade, cai para
+        inst.repair() como rede de seguranca.
+        """
         inst = self.inst
-        n, m = inst.n, inst.m
+        n = inst.n
+        m = getattr(inst, "m", None)
         alpha = self.cfg.alpha
 
         selected: list[int] = []
         available = list(range(n))
 
-        # Adiciona primeiro elemento: maximiza lam[0]*sum_contribution + lam[1]*min_dist
-        # (para o primeiro elemento, contribuicao de MaxSum = 0, usamos lam[1])
-        # Escolha aleatoria para o primeiro elemento.
+        # Adiciona primeiro elemento: escolha aleatoria.
         first = int(rng.integers(n))
         selected.append(first)
         available.remove(first)
 
-        for _ in range(m - 1):
+        total_cost = 0.0
+        total_cap = 0.0
+        if m is None:
+            total_cost = inst.cost_of_element(first)
+            total_cap = float(inst.capacity[first])
+
+        def _done() -> bool:
+            if m is not None:
+                return len(selected) >= m
+            return len(selected) >= 2 and total_cap >= inst.min_capacity - 1e-9
+
+        while not _done():
+            if m is None:
+                candidates = [a for a in available if inst.can_extend(total_cost, a)]
+            else:
+                candidates = available
+
+            if not candidates:
+                # RCL preso (orcamento esgotado antes da capacidade minima) --
+                # inst.repair() completa em vez de falhar aqui.
+                break
+
             # Avalia contribuicao de cada candidato
-            scores = self._candidate_scores(selected, available, lam)
+            scores = self._candidate_scores(selected, candidates, lam)
 
             # RCL: elementos com score >= max - alpha*(max - min)
             s_max, s_min = scores.max(), scores.min()
             threshold = s_max - alpha * (s_max - s_min)
-            rcl = [available[i] for i in range(len(available)) if scores[i] >= threshold]
+            rcl = [candidates[i] for i in range(len(candidates)) if scores[i] >= threshold]
 
             chosen = int(rng.choice(rcl))
             selected.append(chosen)
             available.remove(chosen)
+            if m is None:
+                total_cost += inst.cost_of_element(chosen)
+                total_cap += float(inst.capacity[chosen])
 
-        return np.sort(np.array(selected, dtype=np.int64))
+        sol = np.sort(np.array(selected, dtype=np.int64))
+        if m is None and hasattr(inst, "repair"):
+            sol = inst.repair(sol, rng)
+        return sol
 
     def _candidate_scores(
         self,
@@ -182,15 +260,11 @@ class GRASPMO:
             return scores
 
         sel_arr = np.array(selected)
-        for k, cand in enumerate(available):
-            # Contribuicao ao MaxSum: soma das distancias para os elementos ja selecionados
-            delta_sum = float(D[cand, sel_arr].sum())
-
-            # Contribuicao ao MaxMin: min das distancias para os elementos ja selecionados
-            min_dist = float(D[cand, sel_arr].min())
-
-            # Score escalar ponderado
-            scores[k] = lam[0] * delta_sum + lam[1] * min_dist
+        # Vetorizado (era 1 chamada Python de sum+min por candidato); a soma por linha da
+        # submatriz equivale ao sum() do vetor D[cand, sel] -- verificado bit a bit.
+        # delta_sum = contribuicao ao MaxSum; min_dist = contribuicao ao MaxMin.
+        Dc = D[np.ix_(np.asarray(available, dtype=np.intp), sel_arr)]
+        scores = lam[0] * Dc.sum(axis=1) + lam[1] * Dc.min(axis=1)
 
         return scores
 
@@ -206,17 +280,19 @@ class GRASPMO:
     ) -> tuple[np.ndarray, tuple[float, float]]:
         """Busca local BestImprovement via trocas 1x1 com avaliacao incremental.
 
-        Utiliza MDPInstance.evaluate_swap para calcular o delta de MaxSum em
-        O(m) (em vez de O(m²)), reduzindo o custo total de cada passe de
-        O(m * (n-m) * m²) para O(m * (n-m) * m).
+        Utiliza inst.evaluate_swap para calcular o delta de MaxSum em
+        O(sol.size) (em vez de O(sol.size**2)) -- metodo generalizado para
+        tamanho livre em capacitated_problem.py (mesmo usado por
+        BiObjBestSwap, operators.py), entao funciona em MDP e CDP/GDP sem
+        mudanca estrutural aqui.
         """
         if self.cfg.local_search_iter <= 0:
             return sol, f
 
         inst = self.inst
-        n, m = inst.n, inst.m
+        n = inst.n
 
-        # Mascara booleana de pertencimento — atualizada incrementalmente
+        # Mascara booleana de pertencimento
         in_sol = np.zeros(n, dtype=bool)
         in_sol[sol] = True
         outside = np.where(~in_sol)[0]
@@ -232,23 +308,44 @@ class GRASPMO:
             best_new_f: tuple[float, float] = f
             cur_scalar = self._scalar(f, lam)
 
-            for out_idx in range(m):
-                for in_el in outside:
-                    new_f = inst.evaluate_swap(sol, f, out_idx, int(in_el))
-                    delta = self._scalar(new_f, lam) - cur_scalar
-                    if delta > best_delta:
-                        best_delta = delta
+            if hasattr(inst, "evaluate_swaps_batch") and outside.size > 0:
+                # Em lote por elemento removido. O laco sequencial com `delta > best_delta`
+                # estrito equivale a escolher a PRIMEIRA ocorrencia do maximo na ordem
+                # (out_idx, in_el crescentes); aqui: argmax (1a ocorrencia) por out_idx e
+                # atualiza so se o maximo local for estritamente maior -> mesmo resultado.
+                for out_idx in range(sol.size):
+                    ms, mm = inst.evaluate_swaps_batch(sol, f, out_idx, outside)
+                    deltas = (lam[0] * ms + lam[1] * mm) - cur_scalar
+                    k = int(np.argmax(deltas))
+                    if deltas[k] > best_delta:
+                        best_delta = float(deltas[k])
                         best_out_idx = out_idx
-                        best_in_el = int(in_el)
-                        best_new_f = new_f
+                        best_in_el = int(outside[k])
+                        best_new_f = (float(ms[k]), float(mm[k]))
+            else:
+                for out_idx in range(sol.size):
+                    for in_el in outside:
+                        new_f = inst.evaluate_swap(sol, f, out_idx, int(in_el))
+                        delta = self._scalar(new_f, lam) - cur_scalar
+                        if delta > best_delta:
+                            best_delta = delta
+                            best_out_idx = out_idx
+                            best_in_el = int(in_el)
+                            best_new_f = new_f
 
             if best_out_idx >= 0:
-                out_el = int(sol[best_out_idx])
-                sol = sol.copy()
-                sol[best_out_idx] = best_in_el
-                f = best_new_f
-                in_sol[out_el] = False
-                in_sol[best_in_el] = True
+                new_sol = sol.copy()
+                new_sol[best_out_idx] = best_in_el
+                new_f = best_new_f
+                if hasattr(inst, "repair"):
+                    # A troca pode ter derrubado capacidade/orcamento -- repara
+                    # e reavalia (repair pode inclusive mudar o tamanho).
+                    new_sol = inst.repair(new_sol)
+                    new_f = inst.evaluate(new_sol)
+                sol = new_sol
+                f = new_f
+                in_sol = np.zeros(n, dtype=bool)
+                in_sol[sol] = True
                 outside = np.where(~in_sol)[0]
                 improved = True
 
@@ -274,6 +371,21 @@ class GRASPMO:
         n_pairs = min(self.cfg.pr_pairs, len(archive_sols) * (len(archive_sols) - 1) // 2)
 
         for _ in range(n_pairs):
+            if len(archive_sols) < 2:
+                # O arquivo pode encolher DENTRO deste laco -- cada
+                # _update_archive() abaixo pode podar solucoes dominadas
+                # (inclusive as usadas como s_init/s_guide em iteracoes
+                # anteriores). n_pairs foi calculado uma unica vez, no
+                # tamanho do arquivo ANTES do laco comecar, entao deixa de
+                # ser valido se o arquivo encolher demais no meio do
+                # caminho. Sem esta guarda, rng.choice(..., replace=False)
+                # quebra com ValueError quando sobra menos de 2 solucoes --
+                # bug real, pre-existente (nao introduzido na adaptacao
+                # CDP/GDP), reproduzido com GRASPMOConfig(max_iter=5,
+                # path_relink=True, seed=12345) na instancia CDP
+                # GKD-c_01_n500_b02_m50. Parar cedo aqui e o comportamento
+                # correto: nao ha mais pares distintos pra path-relink.
+                break
             idx = rng.choice(len(archive_sols), size=2, replace=False)
             s_init = archive_sols[idx[0]].copy()
             s_guide = archive_sols[idx[1]].copy()
@@ -322,6 +434,8 @@ class GRASPMO:
             new_sol = current.copy()
             new_sol = new_sol[new_sol != remove_el]
             new_sol = np.sort(np.append(new_sol, add_el))
+            if hasattr(inst, "repair"):
+                new_sol = inst.repair(new_sol)
             current = new_sol
 
             f = inst.evaluate(current)

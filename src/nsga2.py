@@ -1,27 +1,45 @@
 """
-nsga2.py -- NSGA-II para o MDP bi-objetivo.
+nsga2.py -- NSGA-II bi-objetivo para MDP, CDP e GDP.
 
-Implementa o NSGA-II (Deb et al., 2002) adaptado para o Problema de
-Diversidade Maxima bi-objetivo (MaxSum + MaxMin), utilizado como
+Implementa o NSGA-II (Deb et al., 2002) adaptado para os problemas de
+dispersao bi-objetivo (MaxSum + MaxMin) deste projeto, utilizado como
 baseline de comparacao com o MOEA/D-AOS.
 
 Representacao
 -------------
-Cada individuo e um array numpy de inteiros de tamanho m (indices dos
-elementos selecionados), ordenado. O espaco de busca e combinatorial:
-C(n, m) solucoes possiveis.
+Cada individuo e um array numpy de inteiros ordenado (indices dos
+elementos selecionados). No MDP (instance.m definido) todo individuo tem
+tamanho FIXO m -- espaco de busca C(n, m). No CDP/GDP (sem m -- ver
+capacitated_problem.py) o tamanho e LIVRE: cada individuo so precisa
+satisfazer capacidade minima (e, no GDP, orcamento maximo). A inicializacao
+(_initialize) ja delega a inst.greedy_solution()/inst.random_solution(),
+que constroem solucoes viaveis por conta propria em ambos os casos.
 
 Operadores geneticos
 --------------------
 - Crossover de subconjunto: elementos comuns sao herdados; os restantes
-  sao repartidos aleatoriamente entre os filhos.
+  sao repartidos aleatoriamente entre os filhos. Generalizado: o filho c1
+  sempre sai do tamanho do pai s1 e c2 do tamanho de s2, mesmo quando os
+  pais tem tamanhos diferentes (so possivel em CDP/GDP) -- verificado
+  algebricamente que nao ha risco de indice invalido.
 - Mutacao por troca (RandomSwap1x1): um elemento aleatorio de S e
   substituido por um elemento aleatorio fora de S.
+- Em CDP/GDP, nem crossover nem mutacao garantem viabilidade por si sos
+  (podem quebrar capacidade minima/orcamento) -- run() aplica um
+  "repair-net" duck-typed (if hasattr(inst, "repair")) sobre cada filho
+  antes de avalia-lo, mesmo padrao ja usado em moead_aos.py/operators.py.
 
 Criterio de selecao
 -------------------
 Torneio binario baseado em (rank, distancia de crowding), conforme
 o NSGA-II original.
+
+Instancia aceita
+-----------------
+instance : MDPInstance, CDPInstance ou GDPInstance (capacitated_problem.py)
+    -- mesmo padrao de operators.py/moead_aos.py. O type hint no __init__
+    continua MDPInstance por consistencia com o resto do projeto; o
+    contrato real e duck-typed (hasattr(inst, "m") / hasattr(inst, "repair")).
 
 Referencias
 -----------
@@ -57,6 +75,11 @@ class NSGA2Config:
     hv_ref_factor: float = 0.9
     log_every: int = 0
     seed: int | None = None
+    # Limite de tempo de parede (s) para comparacoes a TEMPO IGUAL (E4); None = so max_gen (comportamento historico).
+    # Com limite, defina max_gen alto: o laco para na 1a geracao que comeca depois do limite.
+    time_limit_s: float | None = None
+    # E11: se True, o limite de tempo conta tambem a inicializacao da populacao (padrao False = comportamento do E4).
+    include_init_time: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -96,6 +119,8 @@ class NSGA2:
         inst = self.inst
         rng = self.rng
         N = cfg.pop_size
+        import time as _time
+        _t_run0 = _time.perf_counter()
 
         # Inicializacao
         pop = self._initialize(N)
@@ -106,8 +131,13 @@ class NSGA2:
         archive_sols, archive_objs = self._update_archive(archive_sols, archive_objs, [], [])
 
         hv_history: list[float] = []
+        _t0 = _t_run0 if cfg.include_init_time else _time.perf_counter()
+        n_gen_done = 0
 
         for gen in range(cfg.max_gen):
+            if cfg.time_limit_s is not None and _time.perf_counter() - _t0 >= cfg.time_limit_s:
+                break
+            n_gen_done = gen + 1
             # Ordenacao por nao-dominancia + crowding
             ranks, crowding = self._fast_non_dominated_sort(objs)
 
@@ -124,6 +154,8 @@ class NSGA2:
                 for child in [c1, c2]:
                     if rng.random() < cfg.mutation_prob:
                         child = self._mutate(child, rng)
+                    if hasattr(inst, "repair"):
+                        child = inst.repair(child)
                     offspring_sols.append(child)
                     offspring_objs.append(inst.evaluate(child))
 
@@ -158,7 +190,7 @@ class NSGA2:
             operator_selections=[],
             operator_counts=np.zeros(4),
             operator_q_values=np.zeros(4),
-            n_gen_executed=cfg.max_gen,
+            n_gen_executed=n_gen_done if cfg.time_limit_s is not None else cfg.max_gen,
             best_hv=float(final_hv),
             config=cfg,
         )
@@ -171,7 +203,7 @@ class NSGA2:
         solutions = []
         for _ in range(N):
             if self.cfg.init_mode == "grasp":
-                sol = self.inst.greedy_solution(alpha=self.cfg.grasp_alpha)
+                sol = self.inst.greedy_solution(alpha=self.cfg.grasp_alpha, rng=self.rng)
             else:
                 sol = self.inst.random_solution(self.rng)
             solutions.append(sol)
@@ -354,8 +386,9 @@ class NSGA2:
         return np.array([min(f1) * fc, min(f2) * fc])
 
     def __repr__(self) -> str:
+        m = getattr(self.inst, "m", None)
         return (f"NSGA2(pop={self.cfg.pop_size}, gen={self.cfg.max_gen}, "
-                f"n={self.inst.n}, m={self.inst.m})")
+                f"n={self.inst.n}, m={m})")
 
 
 # ---------------------------------------------------------------------------

@@ -43,25 +43,42 @@ COLORS = {
     "scalar":           "#E53935",
     "thompson_hv":      "#00ACC1",
     "thompson_scalar":  "#F4511E",
+    "dyts_hv":          "#00897B",
+    "dyts_scalar":      "#D81B60",
     "random":           "#43A047",
     "nsga2":            "#8E24AA",
     "grasp":            "#FB8C00",
     "grasp_pr":         "#6D4C41",
+    "vns_pareto":       "#546E7A",
+    "vns_tchebycheff":  "#9E9D24",
 }
 LABELS = {
     "hypervolume":      "MOEAD-AOS-HV",
     "scalar":           "MOEAD-AOS-scalar",
     "thompson_hv":      "MOEAD-Thompson-HV",
     "thompson_scalar":  "MOEAD-Thompson-scalar",
+    "dyts_hv":          "MOEAD-DYTS-HV",
+    "dyts_scalar":      "MOEAD-DYTS-scalar",
     "random":           "MOEAD-random",
     "nsga2":            "NSGA-II",
     "grasp":            "GRASP-MO",
     "grasp_pr":         "GRASP-PR",
+    "vns_pareto":       "VNS-Pareto",
+    "vns_tchebycheff":  "VNS-Tchebycheff",
 }
+# ATUALIZADO (1 set 2026): faltavam dyts_hv/dyts_scalar/vns_pareto/
+# vns_tchebycheff nos 3 dicionarios acima -- os 4 modos existem em
+# experiment.py ha varias sessoes (DYTS e VNS foram conectados em rodadas
+# anteriores), mas analysis.py nunca foi atualizado. Como _present_modes()
+# usa "for m in MODE_ORDER if m in present" (intersecao, nao uniao),
+# esses 4 modos eram SILENCIOSAMENTE excluidos de toda comparacao
+# (wilcoxon_all_pairs_holm, friedman_nemenyi, todas as fig_*) sem erro
+# nem aviso -- bug real, pre-existente, achado ao rodar a analise
+# estatistica dos 3.036 resultados pela primeira vez sobre estes dados.
 MODE_ORDER = [
-    "hypervolume", "thompson_hv",
-    "scalar", "thompson_scalar", "random",
-    "nsga2", "grasp", "grasp_pr",
+    "hypervolume", "thompson_hv", "dyts_hv",
+    "scalar", "thompson_scalar", "dyts_scalar", "random",
+    "nsga2", "grasp", "grasp_pr", "vns_pareto", "vns_tchebycheff",
 ]
 
 
@@ -84,8 +101,13 @@ def load_csv(path: Path) -> list[dict]:
                 r[c] = float(r[c])
             except (KeyError, ValueError):
                 r[c] = 0.0
-        r["n"] = int(r.get("n", 0))
-        r["m"] = int(r.get("m", 0))
+        r["n"] = int(r.get("n") or 0)
+        # CDP/GDP nao tem m fixo -- summary.csv grava a coluna vazia para
+        # essas linhas (ver capacitated_problem.py). int("") quebrava aqui
+        # antes -- bug pre-existente, nunca exercitado contra dados CDP/GDP
+        # ate esta analise. m nao e lido em nenhum outro lugar deste
+        # arquivo (grep confirma), entao 0 como sentinela e seguro.
+        r["m"] = int(r.get("m") or 0)
         # Garante coluna family
         if "family" not in r:
             r["family"] = "unknown"
@@ -809,7 +831,7 @@ def fig_operator_phase_analysis(runs_dir: Path, out_dir: Path,
     try:
         from operators import OPERATOR_NAMES as OP_NAMES
     except Exception:
-        OP_NAMES = [f"op_{k}" for k in range(7)]
+        OP_NAMES = [f"op_{k}" for k in range(8)]
     n_ops = len(OP_NAMES)
 
     phase_counts = np.zeros((n_phases, n_ops))
@@ -889,7 +911,7 @@ def fig_operator_complementarity(runs_dir: Path, out_dir: Path) -> None:
     try:
         from operators import OPERATOR_NAMES as OP_NAMES
     except Exception:
-        OP_NAMES = [f"op_{k}" for k in range(7)]
+        OP_NAMES = [f"op_{k}" for k in range(8)]
     n_ops = len(OP_NAMES)
 
     # 3 regioes: MaxSum-extremo, knee, MaxMin-extremo

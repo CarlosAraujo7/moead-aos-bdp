@@ -231,6 +231,41 @@ class RandomSelector:
 
 
 
+class FixedSelector(RandomSelector):
+    """Sempre o mesmo operador (ablacao de operador unico; nao e um metodo do catalogo)."""
+
+    def __init__(self, n_operators: int, fixed: int) -> None:
+        super().__init__(n_operators)
+        if not 0 <= fixed < n_operators:
+            raise ValueError(f"operador fixo {fixed} fora de [0,{n_operators})")
+        self.fixed = fixed
+
+    def select(self, rng: np.random.Generator) -> int:
+        self._counts[self.fixed] += 1
+        return self.fixed
+
+    def __repr__(self) -> str:
+        return f"FixedSelector(K={self.K}, fixed={self.fixed})"
+
+
+class SubsetRandomSelector(RandomSelector):
+    """Selecao uniforme restrita a um subconjunto de operadores (ablacao leave-one-out)."""
+
+    def __init__(self, n_operators: int, excluded) -> None:
+        super().__init__(n_operators)
+        self.allowed = [k for k in range(n_operators) if k not in set(excluded)]
+        if not self.allowed:
+            raise ValueError("todos os operadores foram excluidos")
+
+    def select(self, rng: np.random.Generator) -> int:
+        k = self.allowed[int(rng.integers(len(self.allowed)))]
+        self._counts[k] += 1
+        return k
+
+    def __repr__(self) -> str:
+        return f"SubsetRandomSelector(K={self.K}, allowed={self.allowed})"
+
+
 # ---------------------------------------------------------------------------
 # Variante proposta: Thompson Sampling com janela deslizante
 # ---------------------------------------------------------------------------
@@ -333,12 +368,18 @@ class DYTSSelector:
     atualizado com recompensas continuas dentro de uma janela deslizante.
 
     Ao contrario do ThompsonSelector binario, este seletor usa a magnitude
-    real da recompensa, sendo fiel ao MOEA/D-DYTS de Sun & Li (2020, PPSN).
+    real da recompensa.
+
+    ATENCAO (conferido contra o artigo em 3 out 2026): apesar do nome `dyts`, este
+    seletor NAO e o DYTS de Sun & Li (2020), que usa posteriores Beta, recompensa
+    binaria e um limiar de decaimento C (ver `DYTSBetaSelector`, fiel ao artigo). Este
+    e um amostrador gaussiano de janela deslizante; nos artigos/tabelas chama-se GTS.
+    O nome `dyts` foi mantido nos modos/arquivos para nao invalidar o catalogo.
 
     Referencias
     -----------
-    Sun, Y., Li, M. (2020). Adaptive Operator Selection Based on Dynamic
-        Thompson Sampling for MOEA/D. PPSN 2020, LNCS 12270, pp. 271-284.
+    Sun, L., Li, K. (2020). Adaptive Operator Selection Based on Dynamic
+        Thompson Sampling for MOEA/D. PPSN 2020 (arXiv:2004.10874) -- NAO implementado aqui.
     """
 
     def __init__(
@@ -449,6 +490,129 @@ class DYTSSelector:
 # ---------------------------------------------------------------------------
 # Funcoes de recompensa (usadas por moead_aos.py)
 # ---------------------------------------------------------------------------
+
+class DYTSBetaSelector:
+    """Dynamic Thompson sampling EXATAMENTE como em Sun & Li (2020), Algoritmos 1-2 (arXiv:2004.10874).
+
+    Cada operador k tem uma Beta(alpha_k, beta_k), ambos iniciados em 1; a selecao amostra uma Beta por operador e escolhe o maior
+    valor (nao ha aquecimento). Recompensa BINARIA r em {0,1}. Atualizacao (Alg. 1): se alpha+beta < C, atualizacao classica
+    (alpha += r; beta += 1 - r); senao, ambos sao reescalados por C/(C+1) apos a atualizacao, o que da peso geometrico decrescente
+    as recompensas antigas (nao-estacionariedade). C = 100 no artigo original.
+
+    NAO confundir com `DYTSSelector` deste modulo, que (apesar do nome) e um amostrador gaussiano de janela deslizante
+    (prior normal-inversa-qui-quadrado, recompensas continuas) e NAO e o DYTS de Sun & Li.
+    """
+
+    def __init__(self, n_operators: int, C: float = 100.0) -> None:
+        if n_operators < 1:
+            raise ValueError("n_operators deve ser >= 1")
+        self.K = n_operators
+        self.C = float(C)
+        self.alpha = np.ones(n_operators)
+        self.beta = np.ones(n_operators)
+
+    def select(self, rng: np.random.Generator) -> int:
+        return int(np.argmax(rng.beta(self.alpha, self.beta)))
+
+    def update(self, operator_idx: int, reward: float) -> None:
+        r = 1.0 if reward > 0.0 else 0.0
+        k = operator_idx
+        if self.alpha[k] + self.beta[k] < self.C:
+            self.alpha[k] += r
+            self.beta[k] += 1.0 - r
+        else:
+            f = self.C / (self.C + 1.0)
+            self.alpha[k] = (self.alpha[k] + r) * f
+            self.beta[k] = (self.beta[k] + 1.0 - r) * f
+
+    def q_values(self) -> np.ndarray:
+        return self.alpha / (self.alpha + self.beta)
+
+
+class FRRMABSelector:
+    """FRRMAB de Li, Fialho, Kwong & Zhang (2014, IEEE TEVC 18(1):114-130), Algoritmos 1-2.
+
+    Janela deslizante FIFO de tamanho W com pares (operador, FIR); Reward_i = soma dos FIR do operador i na janela; os Reward sao
+    ordenados em ordem decrescente e Decay_i = D**Rank_i * Reward_i; FRR_i = Decay_i / sum_j Decay_j; selecao UCB
+    argmax_i FRR_i + C * sqrt(2 ln(sum_j n_j) / n_i), com n_i = numero de aplicacoes do operador i NA JANELA. Enquanto algum operador
+    nunca foi aplicado, escolhe-se uniformemente entre os nunca aplicados. Padroes do artigo: W = 0,5 N, C = 5, D = 1.
+    O FIR (fitness improvement rate) de um filho e a soma, sobre os subproblemas cuja solucao ele substitui, de (g_antigo - g_novo)/g_antigo
+    (calculado pelo MOEA/D com reward_mode='frr').
+    """
+
+    def __init__(self, n_operators: int, window: int, C: float = 5.0, D: float = 1.0) -> None:
+        if n_operators < 1 or window < 1:
+            raise ValueError("n_operators e window devem ser >= 1")
+        self.K = n_operators
+        self.W = int(window)
+        self.C = float(C)
+        self.D = float(D)
+        self._ops: list[int] = []
+        self._fir: list[float] = []
+        self._applied = np.zeros(n_operators, dtype=bool)
+
+    def _frr(self) -> tuple[np.ndarray, np.ndarray]:
+        reward = np.zeros(self.K)
+        n = np.zeros(self.K)
+        for o, f in zip(self._ops, self._fir):
+            reward[o] += f
+            n[o] += 1.0
+        order = np.argsort(-reward, kind="stable")
+        rank = np.empty(self.K)
+        rank[order] = np.arange(self.K)
+        decay = (self.D ** rank) * reward
+        s = decay.sum()
+        return (decay / s if s > 0.0 else np.zeros(self.K)), n
+
+    def select(self, rng: np.random.Generator) -> int:
+        if not self._applied.all():
+            cand = np.flatnonzero(~self._applied)
+            return int(rng.choice(cand))
+        frr, n = self._frr()
+        total = n.sum()
+        with np.errstate(divide="ignore", invalid="ignore"):
+            bonus = np.where(n > 0, self.C * np.sqrt(2.0 * np.log(max(total, 1.0)) / np.maximum(n, 1.0)), np.inf)
+        score = frr + bonus
+        best = np.flatnonzero(score >= score.max() - 1e-12)
+        return int(rng.choice(best)) if len(best) > 1 else int(best[0])
+
+    def update(self, operator_idx: int, reward: float) -> None:
+        self._applied[operator_idx] = True
+        self._ops.append(int(operator_idx))
+        self._fir.append(float(reward))
+        if len(self._ops) > self.W:
+            self._ops.pop(0)
+            self._fir.pop(0)
+
+    def q_values(self) -> np.ndarray:
+        return self._frr()[0]
+
+    def counts(self) -> np.ndarray:
+        return self._frr()[1]
+
+
+class ContextualSelector:
+    """Seletor contextual (E3): um seletor independente por contexto; `set_context(c)` escolhe qual esta ativo.
+    O MOEA/D define o contexto antes de cada selecao/atualizacao (regiao do vetor de pesos do subproblema e/ou fase da busca).
+    Nenhuma informacao e compartilhada entre contextos (ver CLAUDE.md §2r/E3)."""
+
+    def __init__(self, factory, n_contexts: int) -> None:
+        self.sels = [factory() for _ in range(n_contexts)]
+        self.K = self.sels[0].K
+        self.ctx = 0
+
+    def set_context(self, c: int) -> None:
+        self.ctx = int(c)
+
+    def select(self, rng: np.random.Generator) -> int:
+        return self.sels[self.ctx].select(rng)
+
+    def update(self, operator_idx: int, reward: float) -> None:
+        self.sels[self.ctx].update(operator_idx, reward)
+
+    def q_values(self) -> np.ndarray:
+        return np.mean([s.q_values() for s in self.sels], axis=0)
+
 
 def scalar_reward(old_g: float, new_g: float) -> float:
     """Recompensa baseada em melhoria escalar Tchebycheff.
