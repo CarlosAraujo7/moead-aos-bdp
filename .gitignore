@@ -3,16 +3,32 @@ __pycache__/
 *.pyo
 
 # Instancias de benchmark (MDPLIB 2.0 + derivados): ~5.1 GB no total,
-# grande demais para versionar em git. Mantem-se apenas instances/catalog.csv
-# (metadados) e instances/MDPLIB_2_0.pdf (documentacao da fonte).
-# TODO (Carlos): documentar no README de onde re-baixar/gerar cada familia.
+# grande demais para versionar em git. Mantem-se apenas os catalogos (instances/catalog*.csv)
+# e a documentacao da fonte. Onde obter cada familia: README_REPLICATION.md e DATA_PACKAGE_MANIFEST.md.
 instances/*/
 
-# Resultados de experimentos: regeneraveis via run_full.py + export_results.py.
-# Os checkpoints atuais em results/runs/ sao de uma versao ANTERIOR do codigo
-# (pool de 4 operadores; o atual tem 7 + DYTS) e nao devem ser tratados como
-# resultado final -- por isso ficam fora do controle de versao.
-results/
+# Resultados de experimentos: ~100 mil arquivos JSON (um por instancia, metodo e replica), 84 MB. Vao para o deposito de dados (Zenodo, CC-BY 4.0),
+# nao para o git. Ficam versionados so as ANALISES derivadas (results/analysis/*.json) e as frentes de referencia CONGELADAS (6 out 2026):
+# com elas, `python regen_all.py` regenera as tabelas e figuras sem os arquivos de execucao.
+results/*
+!results/analysis/
+results/analysis/_stale/
+!results/reference_fronts/
+results/reference_fronts/*
+!results/reference_fronts/frozen_2026-10-06/
+results_norm/
+
+# Artefatos de compilacao do LaTeX (o .pdf e gerado por make_latex.py --build)
+latex/*.aux
+latex/*.log
+latex/*.out
+latex/*.blg
+latex/*.bbl
+latex/*.toc
+latex/*.pdf
+latex/*.synctex.gz
+latex/*.fls
+latex/*.fdb_latexmk
 
 # Ambientes virtuais
 .venv/
@@ -22,3 +38,12 @@ env/
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Material de terceiros baixado a pedido (artigos em PDF, codigo/instancias do Zenodo 18233882; ~3 GB): nao versionar nem redistribuir.
+a pedidos/
+
+# Rascunhos/depuracao movidos (nao apagados) em 10 out 2026 e pasta de descarte antiga
+_obsolete/
+_to_delete/
+.claude/
+run_e20_pilot.bat

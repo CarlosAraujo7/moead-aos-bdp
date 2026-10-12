@@ -1,7 +1,12 @@
 # Dependencias do projeto moead-aos-bdp.
-# Versoes fixadas conforme o ambiente verificado em 2026-08-26.
-# (unicos pacotes externos realmente importados pelo codigo -- confirmado via
-#  grep de import/from em src/*.py e *.py na raiz)
-numpy==2.2.6
-matplotlib==3.10.9
-scipy==1.15.3
+# Versoes do ambiente em que `regression_check.py` foi executado em 2026-10-06 (66/66 runs gravados reproduzidos bit a bit):
+#   Python 3.12.10
+numpy==2.5.2
+scipy==1.18.0
+matplotlib==3.11.1
+# so para a analise contra os valores publicados do GDP (anchor_gdp.py: results.xlsx do pacote Zenodo) e para as filas de execucao:
+openpyxl==3.1.5
+psutil==7.2.2
+# so para gerar o .docx do manuscrito (make_docx.py) e extrair tabelas de PDFs de terceiros (parse_cor_tables.py):
+python-docx==1.2.0
+pypdf==6.16.1
