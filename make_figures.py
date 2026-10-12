@@ -310,7 +310,31 @@ def graphical_abstract():
     save(fig, "graphical_abstract")
 
 
-FIGS = {"fig1": fig1, "fig2": fig2, "fig3": fig3, "fig4": fig4, "fig5": aos_vs_size, "ga": graphical_abstract}
+def size_figure():
+    """HV_norm medio (referencia propria do experimento) dos metodos principais do E18, no problema livre e no limitado (rho = 2), por celula."""
+    d = json.load(open(A / "e18.json"))
+    meths = [("moead", "MOEA/D-Uniform (8 operators)", COL[0], ""), ("moead_size", "+ size operators", COL[1], ""),
+             ("moead_size_ucbhv", "UCB-HV + size operators", COL[2], "//"), ("moead_size_gtshv", "GTS-HV + size operators", COL[3], "\\\\"),
+             ("vns_add", "VNS + insertions", COL[6], "xx"), ("ts_add", "Tabu + insertions", COL[4], "..")]
+    cells = [("CDP-S", "CDP, n ≤ 150"), ("GDP-S", "GDP, n ≤ 150"), ("CDP-L", "CDP, n = 500"), ("GDP-L", "GDP, n = 500")]
+    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.0), sharey=True)
+    for ax, exp, ttl in zip(axes, ("free", "bound2"), ("Free cardinality", "Cardinality bounded, |S| ≤ ⌈2 k$_{ref}$⌉")):
+        w = 0.8 / len(meths)
+        for j, (m, lab, col, hatch) in enumerate(meths):
+            xs, ys = [], []
+            for i, (c, _) in enumerate(cells):
+                x = d.get(f"{exp}/{c}", {}).get("methods", {}).get(m)
+                if x is not None:
+                    xs.append(i + (j - (len(meths) - 1) / 2) * w); ys.append(x["mean"])
+            ax.bar(xs, ys, width=w * 0.95, color=col, hatch=hatch, edgecolor="white", linewidth=0.4, label=lab if exp == "free" else None)
+        ax.set_xticks(range(len(cells))); ax.set_xticklabels([l for _, l in cells], fontsize=7)
+        ax.set_title(ttl, loc="left", fontsize=9, fontweight="bold"); ax.grid(axis="x", visible=False); ax.set_ylim(0, 1.0)
+    axes[0].set_ylabel("HV$_{norm}$ against the reference front" + chr(10) + "of each experiment (mean over instances)")
+    fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", ncol=3, frameon=False, fontsize=7, bbox_to_anchor=(0.5, -0.12))
+    save(fig, "fig6_size_operators")
+
+
+FIGS = {"fig1": fig1, "fig2": fig2, "fig3": fig3, "fig4": fig4, "fig5": aos_vs_size, "fig6": size_figure, "ga": graphical_abstract}
 
 if __name__ == "__main__":
     for k in (sys.argv[1:] or list(FIGS)):

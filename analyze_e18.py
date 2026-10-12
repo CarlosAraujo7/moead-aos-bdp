@@ -119,7 +119,17 @@ def main():
                 chi = float(friedmanchisquare(*[M[:, j] for j in range(len(modes))]).statistic)
             except Exception:
                 chi = None
-            res[f"{exp}/{cell}"] = dict(N=len(keep), metric=a.metric, friedman_chi2=chi, methods=info, instances=keep)
+            aos = {}
+            if "moead_size" in modes:
+                ks = modes.index("moead_size")
+                pl = []
+                for m in ("moead_size_ucbhv", "moead_size_gtshv"):
+                    if m in modes:
+                        d = M[:, modes.index(m)] - M[:, ks]
+                        pl.append((m, float(d.mean()), a12(M[:, modes.index(m)], M[:, ks]), float(wilcoxon(d).pvalue) if np.any(d != 0) else 1.0, int((d > 0).sum())))
+                for (m, dm, aa, pp, bb), ph_ in zip(pl, holm([x[3] for x in pl])):
+                    aos[m] = dict(diff_vs_size_uniform=dm, a12=aa, p_holm=float(ph_), better=bb)
+            res[f"{exp}/{cell}"] = dict(N=len(keep), metric=a.metric, friedman_chi2=chi, methods=info, aos_vs_size_uniform=aos, instances=keep)
             print(f"\n=== {exp} {cell} [{a.metric}]: N={len(keep)} instancias, {len(modes)} metodos, Friedman chi2 = {chi}")
             print(f"   {'metodo':44s} {'media':>7s} {'rank':>5s} {'dif vs MOEA/D':>13s} {'A12':>5s} {'melhor':>9s} {'p_Holm':>8s} {'MaxSum/ref':>10s} {'tamanho med(max)':>16s}")
             for m in sorted(modes, key=lambda m: info[m]["rank"]):

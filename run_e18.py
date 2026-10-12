@@ -53,6 +53,7 @@ def _run(method: str, cell: str, inst, seed: int, T: float):
     from experiment import budget_for
     t0 = time.perf_counter()
     sizes = None
+    counts = None
     if method.startswith("moead"):
         from moead_aos import MOEAD_AOS, MOEADConfig
         p = tuned(cell, "moead") if method.endswith("_t") else C.DEFAULT["moead"][0]
@@ -62,6 +63,7 @@ def _run(method: str, cell: str, inst, seed: int, T: float):
                                         operator_selection=sel, reward_mode=rew, normalize_objectives=True, grasp_alpha=p["grasp_alpha"],
                                         seed=seed, time_limit_s=T, extra_operators=(SIZE_OPS if "size" in method else ()))).run()
         fr, sizes = np.asarray(r.pareto_front, float).reshape(-1, 2), r.archive_sizes
+        counts = [float(x) for x in r.operator_counts]
     elif method in ("ts", "ts_add", "vns", "vns_add"):
         from bo_trajectory import BOTrajConfig, BOTrajectory
         base = "ts" if method.startswith("ts") else "vns"
@@ -72,7 +74,7 @@ def _run(method: str, cell: str, inst, seed: int, T: float):
         fr, sizes = np.asarray(r.pareto_front, float).reshape(-1, 2), [int(len(s)) for s in alg.arch_s]
     else:
         fr, _, _ = C.run_method(method, tuned(cell, method), inst, seed, T)
-    return fr, time.perf_counter() - t0, sizes
+    return fr, time.perf_counter() - t0, sizes, counts
 
 
 def _work(args):
@@ -86,12 +88,12 @@ def _work(args):
     ms = inst.set_max_size(RHO[exp]) if RHO[exp] else None
     seed = C.seed_for("e18", row["name"], rep)
     for m in todo:
-        fr, el, sizes = _run(m, cell, inst, seed, T)
+        fr, el, sizes, counts = _run(m, cell, inst, seed, T)
         out = d / f"{row['name']}_{m}_rep{rep:02d}.json"
         tmp = out.with_suffix(".tmp")
         tmp.write_text(json.dumps(dict(instance=row["name"], family=row["family"], n=inst.n, exp=exp, cell=cell, mode=m, rep=rep, seed=seed,
                                        time_target_s=T, elapsed_s=el, max_size=ms, pareto_size=int(len(fr)), pareto_front=fr.tolist(),
-                                       archive_sizes=sizes)))
+                                       archive_sizes=sizes, operator_counts=counts)))
         tmp.replace(out)
     return len(todo)
 

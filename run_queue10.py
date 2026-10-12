@@ -35,6 +35,9 @@ if __name__ == "__main__":
     while waiting_for_queue9():
         time.sleep(120)
     print("fila 9 terminada; iniciando fila 10", flush=True)
+    # completa as celulas pequenas do E18 com UCB-HV/GTS-HV + operadores de tamanho (acrescentados depois da 1a passada; so roda o que falta)
+    run(["python", "run_e18.py", "--exp", "free", "--cells", "CDP-S", "GDP-S", "--workers", w])
+    run(["python", "run_e18.py", "--exp", "bound2", "--cells", "CDP-S", "GDP-S", "--workers", w])
     V = "m_hyb_vns10,m_hyb_vns30,m_hyb_vns50"
     run(["python", "run_e20.py", "--cells", "MDP-S", "--modes", "m_ls,m_hyb," + V, "--workers", w, "--reps", "3"])
     run(["python", "run_e20.py", "--cells", "CDP-S", "GDP-S", "--modes", V, "--workers", w, "--reps", "3"])
