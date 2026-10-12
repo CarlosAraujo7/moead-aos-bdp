@@ -1,0 +1,46 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{algorithmic}
+\newcounter{ALC@line}
+\newenvironment{algorithmic}[1][0]{%
+  \par\small
+  \begin{list}{\arabic{ALC@line}:}{%
+    \usecounter{ALC@line}
+    \setlength{\itemsep}{1pt}
+    \setlength{\parsep}{0pt}
+    \setlength{\topsep}{2pt}
+    \setlength{\leftmargin}{1.5em}
+    \setlength{\labelsep}{0.5em}
+    \setlength{\labelwidth}{1.2em}
+  }
+}{%
+  \end{list}
+}
+\newcommand{\STATE}{\item}
+\newcommand{\REQUIRE}{\item[\textbf{Require:}]}
+\newcommand{\ENSURE}{\item[\textbf{Ensure:}]}
+\newcommand{\COMMENT}[1]{\hfill{\footnotesize $\triangleright$ #1}}
+\newcommand{\IF}[1]{\item \textbf{if} #1 \textbf{then}}
+\newcommand{\ELSE}{\item \textbf{else}}
+\newcommand{\ELSIF}[1]{\item \textbf{else if} #1 \textbf{then}}
+\newcommand{\ENDIF}{\item \textbf{end if}}
+\newcommand{\FOR}[1]{\item \textbf{for} #1 \textbf{do}}
+\newcommand{\FORALL}[1]{\item \textbf{for all} #1 \textbf{do}}
+\newcommand{\ENDFOR}{\item \textbf{end for}}
+\newcommand{\WHILE}[1]{\item \textbf{while} #1 \textbf{do}}
+\newcommand{\ENDWHILE}{\item \textbf{end while}}
+\newcommand{\REPEAT}{\item \textbf{repeat}}
+\newcommand{\UNTIL}[1]{\item \textbf{until} #1}
+\newcommand{\RETURN}{\item \textbf{return}}
+\newcommand{\PRINT}{\item \textbf{print}}
+\newcommand{\TRUE}{\textbf{true}}
+\newcommand{\FALSE}{\textbf{false}}
+\newcommand{\AND}{\textbf{and }}
+\newcommand{\OR}{\textbf{or }}
+\newcommand{\NOT}{\textbf{not }}
+\newcommand{\TO}{\textbf{to}}
+\newcommand{\DOWNTO}{\textbf{downto}}
+\newcommand{\STEP}{\textbf{step}}
+\newcommand{\LOOP}{\item \textbf{loop}}
+\newcommand{\ENDLOOP}{\item \textbf{end loop}}
+\newcommand{\algorithmicrequire}{\textbf{Require:}}
+\newcommand{\algorithmicensure}{\textbf{Ensure:}}

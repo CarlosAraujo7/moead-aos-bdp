@@ -1,0 +1,252 @@
+{
+  "MDP": {
+    "ranking": [
+      [
+        "dyts_hv",
+        "MOEAD-DYTS-HV",
+        0.8695133461538461,
+        0.16884371346427388,
+        78
+      ],
+      [
+        "random",
+        "MOEAD-random",
+        0.8475221666666669,
+        0.21039715843329626,
+        78
+      ],
+      [
+        "thompson_hv",
+        "MOEAD-Thompson-HV",
+        0.8448931538461537,
+        0.19768821224109165,
+        78
+      ],
+      [
+        "thompson_scalar",
+        "MOEAD-Thompson-scalar",
+        0.8439202179487177,
+        0.20305972057252264,
+        78
+      ],
+      [
+        "hypervolume",
+        "MOEAD-AOS-HV",
+        0.8437099358974357,
+        0.2035586145090137,
+        78
+      ],
+      [
+        "dyts_scalar",
+        "MOEAD-DYTS-scalar",
+        0.8432711666666668,
+        0.21801453183995625,
+        78
+      ],
+      [
+        "scalar",
+        "MOEAD-AOS-scalar",
+        0.8266508205128205,
+        0.2192963585497327,
+        78
+      ],
+      [
+        "vns_tchebycheff",
+        "VNS-Tchebycheff",
+        0.6943642948717949,
+        0.3326797958795579,
+        78
+      ],
+      [
+        "grasp",
+        "GRASP-MO",
+        0.6235437435897436,
+        0.3249557048759437,
+        78
+      ],
+      [
+        "grasp_pr",
+        "GRASP-PR",
+        0.5922954102564102,
+        0.3414030289530526,
+        78
+      ],
+      [
+        "vns_pareto",
+        "VNS-Pareto",
+        0.5394309230769231,
+        0.3388582056329972,
+        78
+      ],
+      [
+        "nsga2",
+        "NSGA-II",
+        0.36920160256410256,
+        0.3257028555310193,
+        78
+      ]
+    ],
+    "friedman": {
+      "metric": "hv_norm_mean",
+      "N": 78,
+      "K": 12,
+      "statistic": 271.595,
+      "p_value": 0.0,
+      "avg_ranks": {
+        "hypervolume": 5.0064,
+        "thompson_hv": 5.3077,
+        "dyts_hv": 4.75,
+        "scalar": 5.5064,
+        "thompson_scalar": 5.25,
+        "dyts_scalar": 5.3974,
+        "random": 5.0705,
+        "nsga2": 10.5064,
+        "grasp": 7.859,
+        "grasp_pr": 7.7756,
+        "vns_pareto": 8.8141,
+        "vns_tchebycheff": 6.7564
+      },
+      "cd": 1.8868
+    }
+  },
+  "CDP": {
+    "ranking": [
+      [
+        "random",
+        "MOEAD-random",
+        0.7166698900000001,
+        0.19196365181434194,
+        100
+      ],
+      [
+        "hypervolume",
+        "MOEAD-AOS-HV",
+        0.70818117,
+        0.21491877847335977,
+        100
+      ],
+      [
+        "dyts_hv",
+        "MOEAD-DYTS-HV",
+        0.7065026600000002,
+        0.21418126582893376,
+        100
+      ],
+      [
+        "dyts_scalar",
+        "MOEAD-DYTS-scalar",
+        0.68057828,
+        0.1912683846585776,
+        100
+      ],
+      [
+        "thompson_scalar",
+        "MOEAD-Thompson-scalar",
+        0.6761029,
+        0.2002859591155356,
+        100
+      ],
+      [
+        "thompson_hv",
+        "MOEAD-Thompson-HV",
+        0.6741344599999999,
+        0.21070824994026313,
+        100
+      ],
+      [
+        "scalar",
+        "MOEAD-AOS-scalar",
+        0.6522762999999999,
+        0.22143741847973664,
+        100
+      ]
+    ],
+    "friedman": {
+      "metric": "hv_norm_mean",
+      "N": 100,
+      "K": 7,
+      "statistic": 15.7929,
+      "p_value": 0.01491,
+      "avg_ranks": {
+        "hypervolume": 3.72,
+        "thompson_hv": 4.2,
+        "dyts_hv": 3.68,
+        "scalar": 4.45,
+        "thompson_scalar": 4.3,
+        "dyts_scalar": 4.11,
+        "random": 3.54
+      },
+      "cd": 0.9009
+    }
+  },
+  "GDP": {
+    "ranking": [
+      [
+        "hypervolume",
+        "MOEAD-AOS-HV",
+        0.723527615,
+        0.22212240449899864,
+        200
+      ],
+      [
+        "dyts_hv",
+        "MOEAD-DYTS-HV",
+        0.7110843349999999,
+        0.2335200938986253,
+        200
+      ],
+      [
+        "random",
+        "MOEAD-random",
+        0.685615525,
+        0.2310418005308766,
+        200
+      ],
+      [
+        "scalar",
+        "MOEAD-AOS-scalar",
+        0.672511875,
+        0.22762976210724153,
+        200
+      ],
+      [
+        "dyts_scalar",
+        "MOEAD-DYTS-scalar",
+        0.66882946,
+        0.2345671001188112,
+        200
+      ],
+      [
+        "thompson_hv",
+        "MOEAD-Thompson-HV",
+        0.662363715,
+        0.23715268680296198,
+        200
+      ],
+      [
+        "thompson_scalar",
+        "MOEAD-Thompson-scalar",
+        0.6508929050000001,
+        0.24490230316735687,
+        200
+      ]
+    ],
+    "friedman": {
+      "metric": "hv_norm_mean",
+      "N": 200,
+      "K": 7,
+      "statistic": 46.5146,
+      "p_value": 0.0,
+      "avg_ranks": {
+        "hypervolume": 3.405,
+        "thompson_hv": 4.205,
+        "dyts_hv": 3.48,
+        "scalar": 4.255,
+        "thompson_scalar": 4.435,
+        "dyts_scalar": 4.3575,
+        "random": 3.8625
+      },
+      "cd": 0.6371
+    }
+  }
+}

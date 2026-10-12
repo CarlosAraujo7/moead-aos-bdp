@@ -1,0 +1,102 @@
+{
+ "problem": "CDP",
+ "metric": "hv_norm",
+ "reps": 3,
+ "groups": {
+  "GKD-b n=150": {
+   "N": 20,
+   "avg_ranks": {
+    "hypervolume": 3.4,
+    "thompson_hv": 3.2,
+    "dyts_hv": 3.75,
+    "scalar": 6.05,
+    "thompson_scalar": 5.65,
+    "dyts_scalar": 2.8,
+    "random": 3.6,
+    "nsga2": 10.1,
+    "grasp": 8.35,
+    "grasp_pr": 8.2,
+    "vns_pareto": 11.25,
+    "vns_tchebycheff": 11.65
+   },
+   "best_aos": "dyts_scalar",
+   "best_baseline": "grasp_pr"
+  },
+  "GKD-b n=50": {
+   "N": 20,
+   "avg_ranks": {
+    "hypervolume": 3.75,
+    "thompson_hv": 3.8,
+    "dyts_hv": 3.3,
+    "scalar": 5.8,
+    "thompson_scalar": 5.7,
+    "dyts_scalar": 3.55,
+    "random": 3.15,
+    "nsga2": 10.8,
+    "grasp": 8.55,
+    "grasp_pr": 7.4,
+    "vns_pareto": 10.8,
+    "vns_tchebycheff": 11.4
+   },
+   "best_aos": "random",
+   "best_baseline": "grasp_pr"
+  },
+  "GKD-c n=500": {
+   "N": 20,
+   "avg_ranks": {
+    "hypervolume": 3.85,
+    "thompson_hv": 4.35,
+    "dyts_hv": 3.85,
+    "scalar": 3.9,
+    "thompson_scalar": 5.4,
+    "dyts_scalar": 2.95,
+    "random": 3.7,
+    "nsga2": 10.25,
+    "grasp": 8.65,
+    "grasp_pr": 8.35,
+    "vns_pareto": 10.8,
+    "vns_tchebycheff": 11.95
+   },
+   "best_aos": "dyts_scalar",
+   "best_baseline": "grasp_pr"
+  },
+  "MDG-b n=500": {
+   "N": 20,
+   "avg_ranks": {
+    "hypervolume": 3.75,
+    "thompson_hv": 3.7,
+    "dyts_hv": 3.35,
+    "scalar": 5.6,
+    "thompson_scalar": 4.35,
+    "dyts_scalar": 3.8,
+    "random": 3.45,
+    "nsga2": 10.35,
+    "grasp": 8.4,
+    "grasp_pr": 8.6,
+    "vns_pareto": 10.7,
+    "vns_tchebycheff": 11.95
+   },
+   "best_aos": "dyts_hv",
+   "best_baseline": "grasp"
+  },
+  "SOM-a n=50": {
+   "N": 20,
+   "avg_ranks": {
+    "hypervolume": 4.15,
+    "thompson_hv": 5.0,
+    "dyts_hv": 3.8,
+    "scalar": 5.2,
+    "thompson_scalar": 4.4,
+    "dyts_scalar": 4.85,
+    "random": 4.2,
+    "nsga2": 11.1,
+    "grasp": 7.15,
+    "grasp_pr": 6.25,
+    "vns_pareto": 11.45,
+    "vns_tchebycheff": 10.45
+   },
+   "best_aos": "dyts_hv",
+   "best_baseline": "grasp_pr"
+  }
+ }
+}

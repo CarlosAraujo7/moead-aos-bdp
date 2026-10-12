@@ -1,0 +1,197 @@
+{
+ "problem": "MDP",
+ "metric": "hv_norm",
+ "reps": 3,
+ "groups": {
+  "GKD-c": {
+   "N": 10,
+   "avg_ranks": {
+    "hypervolume": 2.4,
+    "thompson_hv": 3.6,
+    "dyts_hv": 3.8,
+    "scalar": 6.9,
+    "thompson_scalar": 4.6,
+    "dyts_scalar": 4.0,
+    "random": 2.7,
+    "nsga2": 8.0,
+    "grasp": 10.0,
+    "grasp_pr": 9.3,
+    "vns_pareto": 10.9,
+    "vns_tchebycheff": 11.8
+   },
+   "best_aos": "hypervolume",
+   "best_baseline": "nsga2"
+  },
+  "MDG-a": {
+   "N": 10,
+   "avg_ranks": {
+    "hypervolume": 5.4,
+    "thompson_hv": 4.7,
+    "dyts_hv": 5.3,
+    "scalar": 6.2,
+    "thompson_scalar": 7.0,
+    "dyts_scalar": 4.8,
+    "random": 5.6,
+    "nsga2": 11.9,
+    "grasp": 8.0,
+    "grasp_pr": 8.6,
+    "vns_pareto": 6.7,
+    "vns_tchebycheff": 3.8
+   },
+   "best_aos": "thompson_hv",
+   "best_baseline": "vns_tchebycheff"
+  },
+  "MDG-b": {
+   "N": 40,
+   "avg_ranks": {
+    "hypervolume": 3.8375,
+    "thompson_hv": 4.8625,
+    "dyts_hv": 3.375,
+    "scalar": 6.9,
+    "thompson_scalar": 6.1,
+    "dyts_scalar": 4.3875,
+    "random": 4.425,
+    "nsga2": 11.05,
+    "grasp": 8.4,
+    "grasp_pr": 8.275,
+    "vns_pareto": 8.875,
+    "vns_tchebycheff": 7.5125
+   },
+   "best_aos": "dyts_hv",
+   "best_baseline": "vns_tchebycheff"
+  },
+  "MGPO": {
+   "N": 5,
+   "avg_ranks": {
+    "hypervolume": 2.8,
+    "thompson_hv": 4.6,
+    "dyts_hv": 2.0,
+    "scalar": 3.6,
+    "thompson_scalar": 3.6,
+    "dyts_scalar": 6.2,
+    "random": 5.2,
+    "nsga2": 11.2,
+    "grasp": 8.6,
+    "grasp_pr": 8.4,
+    "vns_pareto": 11.6,
+    "vns_tchebycheff": 10.2
+   },
+   "best_aos": "dyts_hv",
+   "best_baseline": "grasp_pr"
+  },
+  "SOM-a": {
+   "N": 50,
+   "avg_ranks": {
+    "hypervolume": 4.83,
+    "thompson_hv": 5.76,
+    "dyts_hv": 5.11,
+    "scalar": 5.23,
+    "thompson_scalar": 5.19,
+    "dyts_scalar": 4.92,
+    "random": 4.58,
+    "nsga2": 10.82,
+    "grasp": 8.16,
+    "grasp_pr": 8.55,
+    "vns_pareto": 8.81,
+    "vns_tchebycheff": 6.04
+   },
+   "best_aos": "random",
+   "best_baseline": "vns_tchebycheff"
+  },
+  "SOM-b": {
+   "N": 12,
+   "avg_ranks": {
+    "hypervolume": 4.25,
+    "thompson_hv": 3.9166666666666665,
+    "dyts_hv": 4.416666666666667,
+    "scalar": 3.625,
+    "thompson_scalar": 5.125,
+    "dyts_scalar": 4.958333333333333,
+    "random": 4.583333333333333,
+    "nsga2": 10.75,
+    "grasp": 10.166666666666666,
+    "grasp_pr": 10.083333333333334,
+    "vns_pareto": 8.833333333333334,
+    "vns_tchebycheff": 7.291666666666667
+   },
+   "best_aos": "scalar",
+   "best_baseline": "vns_tchebycheff"
+  },
+  "real_facility": {
+   "N": 4,
+   "avg_ranks": {
+    "hypervolume": 4.25,
+    "thompson_hv": 3.5,
+    "dyts_hv": 3.25,
+    "scalar": 5.0,
+    "thompson_scalar": 2.75,
+    "dyts_scalar": 5.25,
+    "random": 4.0,
+    "nsga2": 10.0,
+    "grasp": 8.25,
+    "grasp_pr": 8.75,
+    "vns_pareto": 11.5,
+    "vns_tchebycheff": 11.5
+   },
+   "best_aos": "thompson_scalar",
+   "best_baseline": "grasp"
+  },
+  "real_portfolio": {
+   "N": 4,
+   "avg_ranks": {
+    "hypervolume": 5.125,
+    "thompson_hv": 8.125,
+    "dyts_hv": 6.375,
+    "scalar": 6.25,
+    "thompson_scalar": 4.75,
+    "dyts_scalar": 6.5,
+    "random": 5.875,
+    "nsga2": 7.5,
+    "grasp": 6.875,
+    "grasp_pr": 6.125,
+    "vns_pareto": 8.125,
+    "vns_tchebycheff": 6.375
+   },
+   "best_aos": "thompson_scalar",
+   "best_baseline": "grasp_pr"
+  },
+  "real_sensor": {
+   "N": 4,
+   "avg_ranks": {
+    "hypervolume": 3.75,
+    "thompson_hv": 4.25,
+    "dyts_hv": 2.25,
+    "scalar": 4.75,
+    "thompson_scalar": 3.5,
+    "dyts_scalar": 4.25,
+    "random": 5.25,
+    "nsga2": 10.0,
+    "grasp": 8.5,
+    "grasp_pr": 8.5,
+    "vns_pareto": 12.0,
+    "vns_tchebycheff": 11.0
+   },
+   "best_aos": "dyts_hv",
+   "best_baseline": "grasp"
+  },
+  "real_team": {
+   "N": 4,
+   "avg_ranks": {
+    "hypervolume": 4.25,
+    "thompson_hv": 4.25,
+    "dyts_hv": 2.25,
+    "scalar": 5.75,
+    "thompson_scalar": 4.0,
+    "dyts_scalar": 4.25,
+    "random": 3.25,
+    "nsga2": 9.5,
+    "grasp": 9.0,
+    "grasp_pr": 8.5,
+    "vns_pareto": 12.0,
+    "vns_tchebycheff": 11.0
+   },
+   "best_aos": "dyts_hv",
+   "best_baseline": "grasp_pr"
+  }
+ }
+}

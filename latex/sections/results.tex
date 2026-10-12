@@ -1,0 +1,479 @@
+\section{Results}\label{sec:results}
+
+\subsection{Objective normalisation is decisive (RQ3)}\label{sec:objective_normalisation_is_d}
+
+Our first catalogue ran MOEA/D with raw objectives. Re-running the seven MOEA/D variants with normalisation (all other settings equal, one replicate, normalised hypervolume against a common reference front) improves $\mathrm{HV}_{\mathrm{norm}}$ on most instances and by a margin that grows with n: for CDP with n $\leq$ 150 (60 instances) the mean gain is +0.17 to +0.19 per variant (Uniform: +0.11), improving 48--55 of 60 instances; for GDP with n $\leq$ 150 (120 instances) +0.12 to +0.20, improving 79--101 of 120; on the 40 CDP and 80 GDP instances with n = 500 +0.40 to +0.46 and +0.50 to +0.61, improving 37--40 of 40 and 75--80 of 80 (Figure 1). The structure of the comparison also changes: in the raw regime GRASP-PR and GRASP-MO were statistically tied with the MOEA/D family on the CDP with n = 500 (ranks 5.3 and 6.2 against 4.4--5.1 for the MOEA/D variants over 40 instances), but they fall out of the top group once the MOEA/D variants are normalised (ranks 8.0 and 8.6 against 3.5--4.7). The competitiveness of GRASP reported in our earlier catalogue was therefore an artefact of the unscaled scalarisation. (The raw-objective runs of the two Thompson variants carry the floating-point artefact of Section 4.3, which is negligible against gains of this size and is left uncorrected.)
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig1_normalisation_gain_vs_n.pdf}
+\caption{Per-instance gain in $\mathrm{HV}_{\mathrm{norm}}$ from normalising the objectives (MOEA/D-Uniform, replicate 0; reference front fixed). Medians: CDP +0.05 (n = 50), +0.08 (n = 150), +0.25 (n = 500); GDP +0.09, +0.19, +0.30. The fraction of instances that improve rises from 0.65--0.78 at n = 50 to 0.96--1.00 at n = 500. Horizontal bars: medians; vertical bars: inter-quartile ranges.}\label{fig:1}
+\end{figure}
+
+\subsection{MOEA/D variants versus classical baselines (RQ1)}\label{sec:moea_d_variants_versus_class}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Average ranks ($\mathrm{HV}_{\mathrm{norm}}$, lower is better), normalised regime, mean over 3 replicates per instance; baselines with the fixed budgets of Appendix A and no tuning (tuned baselines: Tables 13 and 14)}\label{tab:1}
+\begin{tabular}{lccc}
+\toprule
+Method & CDP (N=100) & GDP (N=200) & MDP (N=143) \\
+\midrule
+MOEA/D-GTS-HV & 3.61 & 3.25 & 4.20 \\
+MOEA/D-Uniform & 3.62 & 3.53 & 4.50 \\
+MOEA/D-UCB-HV & 3.78 & 3.65 & 4.25 \\
+MOEA/D-GTS-Scal & 3.59 & 3.54 & 4.76 \\
+MOEA/D-TS-HV & 4.01 & 3.71 & 5.01 \\
+MOEA/D-TS-Scal & 5.10 & 5.25 & 5.31 \\
+MOEA/D-UCB-Scal & 5.31 & 6.04 & 5.71 \\
+GRASP-PR & 7.76 & 8.90 & 8.59 \\
+GRASP-MO & 8.22 & 9.27 & 8.53 \\
+VNS-Tcheb. & 11.48 & 10.79 & 7.39 \\
+NSGA-II & 10.52 & 9.39 & 10.59 \\
+VNS-Pareto & 11.00 & 10.67 & 9.16 \\
+$^{*}$Friedman $\chi$$^{2}$ (p)$^{*}$ & 829.6 (8.4e-171) & 1593.3 (0.0e+00) & 642.9 (9.1e-131) \\
+$^{*}$Nemenyi CD ($\alpha$=0.05)$^{*}$ & 1.67 & 1.18 & 1.39 \\
+$^{*}$Significant pairs, Wilcoxon--Holm / Nemenyi (of 66)$^{*}$ & 55 / 44 & 53 / 51 & 51 / 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{itemize}
+\item \textbf{CDP} top group (not distinguishable from the best, Wilcoxon--Holm): MOEA/D-GTS-Scal, MOEA/D-UCB-HV, MOEA/D-TS-HV, MOEA/D-GTS-HV, MOEA/D-Uniform.
+\item \textbf{GDP} top group (not distinguishable from the best, Wilcoxon--Holm): MOEA/D-GTS-HV, MOEA/D-UCB-HV, MOEA/D-TS-HV, MOEA/D-GTS-Scal, MOEA/D-Uniform.
+\item \textbf{MDP} top group (not distinguishable from the best, Wilcoxon--Holm): MOEA/D-GTS-HV, MOEA/D-UCB-HV, MOEA/D-GTS-Scal, MOEA/D-Uniform.
+\end{itemize}
+
+Table 1 gives the average ranks on the full catalogues (three replicates per instance). The Friedman test rejects equality in every problem, and 51--55 of the 66 pairs differ significantly under Wilcoxon--Holm (critical-difference diagrams in Figure 2). In all three problems the same picture holds: a top group of four or five MOEA/D configurations that cannot be told apart, followed by GRASP-PR/GRASP-MO, with NSGA-II and the VNS variants at the bottom. These baselines are the ones of the main experiment --- fixed budgets, no tuning --- and Section 6.12 repeats the comparison with tuned baselines, where the picture changes on the MDP. The gap between the worst member of the top group and the best baseline exceeds the critical difference in every problem (CDP: 4.01 versus 7.76, CD 1.67; GDP: 3.71 versus 8.90, CD 1.18; MDP: 4.76 versus 7.39, CD 1.39).
+
+Two features differ between problems. On the MDP the baselines are closer: VNS-Tchebycheff ranks 7.39, ahead of the GRASP variants (8.5--8.6), whereas on CDP it ranks 11.5; on GDP NSGA-II (9.39) is on a par with the GRASP variants (8.90 and 9.27). In all three problems the GRASP variants fall 4--6 ranks behind the best-ranked configuration. Table 2 shows the same ordering in mean $\mathrm{HV}_{\mathrm{norm}}$, and the replicate noise: the coefficient of variation of $\mathrm{HV}_{\mathrm{norm}}$ across replicates is 8--15\% for MOEA/D, 14--21\% for GRASP and 18--30\% for NSGA-II and VNS-Pareto, so a single replicate per instance, as in our earlier catalogue, cannot support the finer rank differences.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Mean $\mathrm{HV}_{\mathrm{norm}}$ and between-replicate coefficient of variation (CV), full catalogue}\label{tab:2}
+\begin{tabular}{lcccccc}
+\toprule
+Method & CDP $\mathrm{HV}_{\mathrm{norm}}$ & CDP CV & GDP $\mathrm{HV}_{\mathrm{norm}}$ & GDP CV & MDP $\mathrm{HV}_{\mathrm{norm}}$ & MDP CV \\
+\midrule
+MOEA/D-GTS-HV & 0.715 & 9\% & 0.737 & 13\% & 0.878 & 8\% \\
+MOEA/D-Uniform & 0.714 & 10\% & 0.730 & 12\% & 0.871 & 8\% \\
+MOEA/D-UCB-HV & 0.711 & 9\% & 0.721 & 15\% & 0.872 & 9\% \\
+MOEA/D-GTS-Scal & 0.716 & 8\% & 0.726 & 12\% & 0.866 & 9\% \\
+MOEA/D-TS-HV & 0.704 & 10\% & 0.721 & 13\% & 0.863 & 8\% \\
+MOEA/D-TS-Scal & 0.688 & 10\% & 0.676 & 14\% & 0.849 & 10\% \\
+MOEA/D-UCB-Scal & 0.684 & 9\% & 0.648 & 12\% & 0.838 & 10\% \\
+GRASP-PR & 0.533 & 19\% & 0.345 & 14\% & 0.590 & 19\% \\
+GRASP-MO & 0.518 & 15\% & 0.334 & 15\% & 0.583 & 21\% \\
+VNS-Tcheb. & 0.223 & 14\% & 0.258 & 16\% & 0.621 & 11\% \\
+NSGA-II & 0.275 & 22\% & 0.381 & 18\% & 0.431 & 29\% \\
+VNS-Pareto & 0.234 & 21\% & 0.278 & 23\% & 0.535 & 30\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Ranks by instance-size regime (CDP/GDP; $\mathrm{HV}_{\mathrm{norm}}$)}\label{tab:3}
+\begin{tabular}{lcccc}
+\toprule
+Method & CDP n$\leq$150 (N=60, 5 rep.) & CDP n=500 (N=40, 3 rep.) & GDP n$\leq$150 (N=120, 5 rep.) & GDP n=500 (N=80, 3 rep.) \\
+\midrule
+MOEA/D-GTS-HV & 3.87 & 3.60 & 3.62 & 2.89 \\
+MOEA/D-Uniform & 3.45 & 3.58 & 3.42 & 3.75 \\
+MOEA/D-UCB-HV & 3.58 & 3.80 & 3.41 & 3.46 \\
+MOEA/D-GTS-Scal & 3.77 & 3.38 & 3.55 & 3.52 \\
+MOEA/D-TS-HV & 3.98 & 4.03 & 3.76 & 3.54 \\
+MOEA/D-TS-Scal & 5.02 & 4.88 & 5.49 & 5.19 \\
+MOEA/D-UCB-Scal & 5.63 & 4.75 & 6.04 & 5.67 \\
+GRASP-PR & 7.35 & 8.47 & 8.84 & 9.06 \\
+GRASP-MO & 8.35 & 8.53 & 9.22 & 9.46 \\
+VNS-Tcheb. & 11.13 & 11.95 & 10.70 & 10.97 \\
+NSGA-II & 10.68 & 10.30 & 9.36 & 9.65 \\
+VNS-Pareto & 11.18 & 10.75 & 10.59 & 10.82 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig4_cd_diagrams.pdf}
+\caption{Critical-difference diagrams (Nemenyi, $\alpha$ = 0.05) of the twelve methods on the full catalogues: $\mathrm{HV}_{\mathrm{norm}}$, mean of three replicates per instance. Methods joined by a bar are not separated by the Nemenyi test; bold blue marks the top group under the Wilcoxon--Holm criterion, which is the primary criterion of this study.}\label{fig:2}
+\end{figure}
+
+Table 3 splits CDP and GDP by size. Rankings are stable between n $\leq$ 150 and n = 500 for the MOEA/D family; GRASP-PR and GRASP-MO lose ground as n grows (CDP: GRASP-PR 7.35 $\rightarrow$ 8.47; GDP: 8.84 $\rightarrow$ 9.06 and GRASP-MO 9.22 $\rightarrow$ 9.46), while NSGA-II is steady.
+
+\emph{By family.} Supplement S2 breaks the average ranks down by instance family (descriptive only: 4--50 instances per MDP family, 20 per CDP group and 40 per GDP group). In the CDP and GDP the best baseline never ranks better than 6.25 (CDP, SOM-a) or 7.64 (GDP, SOM-a), i.e. it trails the best MOEA/D variant by 2.5 to 5.4 ranks (CDP) and 3.9 to 6.3 ranks (GDP) depending on family and size, the smallest gaps being on SOM-a. The MDP is where baselines come closest: VNS-Tchebycheff is the best baseline on SOM-a, SOM-b, MDG-b and MDG-a, and on MDG-a (ten instances) it is the best method overall (rank 3.80 against 4.70 for the best MOEA/D variant); on the sensor, facility and team application instances, on MGPO and on GKD-c the best baseline trails by 5.5--6.4 ranks, and on the portfolio instances GRASP-PR is within 1.4 ranks of the best MOEA/D variant (6.12 versus 4.75).
+
+\subsection{Adaptive selection does not beat uniform selection on average (RQ2)}\label{sec:adaptive_selection_does_not_}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Each adaptive-selection variant against uniform operator selection (paired over instances; Wilcoxon--Holm over the six comparisons; $\hat{A}_{12}$ = P(variant better than uniform))}\label{tab:4}
+\begin{tabular}{lccc}
+\toprule
+Variant & CDP: $\Delta$$\mathrm{HV}_{\mathrm{norm}}$, $\hat{A}_{12}$, p\_Holm & GDP: $\Delta$$\mathrm{HV}_{\mathrm{norm}}$, $\hat{A}_{12}$, p\_Holm & MDP: $\Delta$$\mathrm{HV}_{\mathrm{norm}}$, $\hat{A}_{12}$, p\_Holm \\
+\midrule
+MOEA/D-UCB-HV & $-$0.0035, 0.49, 1.0000 & $-$0.0092, 0.49, 1.0000 & +0.0009, 0.49, 1.0000 \\
+MOEA/D-TS-HV & $-$0.0104, 0.48, 0.2951 & $-$0.0088, 0.49, 1.0000 & $-$0.0080, 0.48, 0.6393 \\
+MOEA/D-GTS-HV & +0.0014, 0.50, 1.0000 & +0.0069, 0.51, 0.9342 & +0.0068, 0.51, 0.6393 \\
+MOEA/D-UCB-Scal & $-$0.0306, 0.39, 0.0000 $^{*}$ & $-$0.0815, 0.32, 0.0000 $^{*}$ & $-$0.0337, 0.43, 0.0005 $^{*}$ \\
+MOEA/D-TS-Scal & $-$0.0264, 0.39, 0.0001 $^{*}$ & $-$0.0540, 0.37, 0.0000 $^{*}$ & $-$0.0221, 0.44, 0.0009 $^{*}$ \\
+MOEA/D-GTS-Scal & +0.0021, 0.52, 1.0000 & $-$0.0037, 0.50, 1.0000 & $-$0.0053, 0.48, 1.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+(* = significantly \emph{worse} than uniform selection at 0.05 after Holm correction; no variant is significantly better in any problem.)
+
+Table 4 compares each adaptive variant with uniform selection, paired over instances. No variant is significantly better than uniform selection in any of the three problems (largest $\hat{A}_{12}$ is 0.52). Two variants are significantly \emph{worse}, in all three problems: the scalar-reward bandits (UCB-Scal and TS-Scal). The ordering of the HV-reward variants among themselves is within replicate noise. The effect size of the loss for scalar-reward selectors is non-trivial ($\Delta$$\mathrm{HV}_{\mathrm{norm}}$ up to $-$0.08 on GDP, $\hat{A}_{12}$ = 0.32). These averages pool instances of all sizes; Section 6.11 shows that the verdict for the HV-reward selectors depends on instance size, on the tightness of the cost budget and on the generation budget.
+
+\emph{Why.} Direct inspection of operator-selection frequencies (CDP, n = 50, full runs) explains the pattern. Under HV reward the bandits' reward is zero for every operator after roughly the first 20 generations because the population saturates the small front, so UCB1 and Thompson sampling degenerate to near-uniform selection (selection fractions 0.11--0.17 per operator even in the second half of the run) --- the HV-reward selectors \emph{are} uniform selection plus overhead. Under scalar reward the selectors do learn, but what they learn is myopic: they converge to MaxMinSwap and BiObjBestSwap (Figure 3: in the normalised CDP runs MaxMinSwap takes 0.51 of the selections of both UCB-Scal and TS-Scal and BiObjBestSwap 0.24 and 0.21; 0.66 for UCB-Scal in the raw regime), the operators that give the largest immediate Tchebycheff gain, and thereby lose the complementarity of the pool (Section 6.5). In the raw-objective regime the absolute-valued rewards also dwarf the exploration term of UCB1, which assumes rewards in [0,1]. The designs in Section 6.4 target these two failure modes and do not rescue the selectors. The Gaussian sampler with scalar reward (GTS-Scal) stays at 0.12--0.13 per operator, i.e. it is effectively uniform, which is why it ties with uniform selection.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig2_operator_selection_shares.pdf}
+\caption{Share of operator selections per selector and reward (CDP, n $\leq$ 150, 60 instances $\times$ 3 replicates, normalised regime; the dotted line marks 1/8). The HV-reward and insert-reward selectors stay within 0.09--0.20 per operator, and the scalar-reward UCB1 and Thompson sampling concentrate on MaxMinSwap and BiObjBestSwap.}\label{fig:3}
+\end{figure}
+
+\subsection{Attempts to repair adaptive selection}\label{sec:attempts_to_repair_adaptive_}
+
+Since neither the HV reward nor the scalar reward gives a bandit much to learn from (Section 6.3), we tried five further families of designs on the 60 CDP and the 120 GDP instances with n $\leq$ 150 (three replicates; two relative-scalar variants of the first family on the CDP only), each against uniform selection on the same instances: (a) other reward signals --- an \emph{insert} reward (1 if the child enters the non-dominated archive) and the relative Tchebycheff improvement, each with cost-aware scaling or with a 50/50 exploration floor; (b) the dynamic Thompson sampling of \citet{sun2020} implemented exactly as published (Beta posteriors, binary \emph{replace} reward, decay threshold C $\in$ \{30, 100, 300\}); (c) contextual selection, with one bandit per third of the weight range and/or of the run; (d) a hyper-parameter sweep of the exploration constant and the window length of the UCB1 and Thompson selectors (17 settings); and (e) FRRMAB of \citet{li2014}, the MOEA/D selector with rank-based credit and a decaying bandit, with the published parameters and four others. We also doubled and quadrupled the generations, giving the selector and uniform selection the same budget. Table 5 summarises the outcome and Supplement S1 gives the details.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Attempts to repair adaptive selection, by family of variants (n $\leq$ 150, three replicates, each variant against uniform selection on the same instances; Wilcoxon p adjusted by Holm within the family): range of the difference in $\mathrm{HV}_{\mathrm{norm}}$ to uniform selection, and number of variants significantly better / worse (p < 0.05)}\label{tab:5}
+\begin{tabular}{lccccc}
+\toprule
+Family & Variants & CDP (60 instances): difference & better / worse & GDP (120 instances): difference & better / worse \\
+\midrule
+Other rewards, cost-aware scaling, exploration floor & 8 & $-$0.024 to +0.003 & 0 / 1 & $-$0.017 to $-$0.007 & 0 / 0 \\
+Faithful DYTS and the \texttt{replace} reward & 7 & $-$0.031 to $-$0.002 & 0 / 1 & $-$0.068 to $-$0.011 & 0 / 4 \\
+Contextual selection (by weight and/or phase) & 7 & $-$0.012 to $-$0.001 & 0 / 0 & $-$0.015 to $-$0.009 & 0 / 0 \\
+Hyper-parameter sweep (c, window) & 17 & $-$0.039 to +0.006 & 0 / 4 & $-$0.086 to +0.002 & 0 / 5 \\
+FRRMAB \citep{li2014} & 5 & $-$0.011 to +0.006 & 0 / 0 & $-$0.017 to $-$0.007 & 0 / 1 \\
+More generations ($\times$2, $\times$4), same budget for selector and uniform & 4 & $-$0.008 to +0.004 & 0 / 0 & $-$0.002 to +0.003 & 0 / 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+No variant is significantly better than uniform selection, in any family and in either problem (the largest $\hat{A}_{12}$ is 0.52), and between none and five variants per family are significantly worse --- those with a scalar or relative-scalar reward, which concentrate on MaxMinSwap and BiObjBestSwap and lose the complementarity of the pool, and on the GDP the published DYTS. Three observations matter for the argument. With the insert reward the selectors spread their selections moderately (0.10--0.18 per operator on the CDP), as with the HV reward, because the reward is zero for most children once the front is crowded. Cost-aware scaling did not make the search faster (median run time 2.70 s against 2.65 s without it on the CDP; 7.45 s against 7.71 s on the GDP). FRRMAB with its published parameters is effectively round-robin (0.124--0.127 of the selections per operator on the CDP): its credits are in [0, 1] and the scaling factor C = 5 makes the exploration term dominate; the published DYTS stays moderately spread (0.06--0.26 per operator on the CDP). Their equality with uniform selection is therefore explained by near-uniform behaviour, not by a badly tuned bandit. Two independent runs of uniform selection differ by +0.006 in $\mathrm{HV}_{\mathrm{norm}}$ ($\hat{A}_{12}$ 0.52, p = 0.23), which calibrates the noise: differences of that size between equivalent methods mean nothing. More generations help uniform selection (CDP +0.022 at $\times$2 and +0.036 at $\times$4; GDP +0.015 and +0.045; $p_{\mathrm{Holm}}$ < 0.01), but at the same budget no selector differs significantly from it. We conclude that on instances of this size no reward signal and no selector we tried identifies a state-independent best operator.
+
+\subsection{The pool carries the performance (RQ4)}\label{sec:the_pool_carries_the_perform}
+
+\emph{Single operators and leave-one-out.} We ran MOEA/D with uniform selection, normalised objectives and three replicates (CDP: 60 instances, GDP: 120; n $\leq$ 150) with one fixed operator and with the pool minus one operator, and compared each of the 16 variants with the full pool (Table 6; Holm over the 16 comparisons). Every operator alone is significantly worse than the pool ($p_{\mathrm{Holm}}$ < 0.01 in all 16 comparisons). The best single operator is RandomSwap1$\times$1 ($-$0.046 on the CDP, $-$0.036 on the GDP); the greedy and recombination operators are worst (GraspGreedy $-$0.29 and $-$0.41, BestSwap1$\times$1 $-$0.21 and $-$0.30, SubsetCrossover $-$0.20 and $-$0.40, MaxMinSwap $-$0.11 and $-$0.32). The myopic operators are poor alone and useful in the mix. Removing one operator from the pool hurts for only some of them. MaxMinSwap is indispensable in both problems ($-$0.036 on the CDP, p = 0.001; $-$0.039 on the GDP, p < 0.0001); on the GDP SubsetCrossover ($-$0.028, p = 0.0001) and RandomSwap2$\times$2 ($-$0.027, p = 0.003) also matter; and the other operators can be removed one at a time without a significant loss (the largest non-significant losses are $-$0.019 on the CDP, for SubsetCrossover, and $-$0.020 on the GDP, for LargePerturbation).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Operator ablation (n $\leq$ 150, three replicates): $\mathrm{HV}_{\mathrm{norm}}$ of MOEA/D with one operator only, and with the pool minus one operator, minus the $\mathrm{HV}_{\mathrm{norm}}$ of the full pool with uniform selection (Wilcoxon p adjusted by Holm over the 16 comparisons)}\label{tab:6}
+\begin{tabular}{lcccc}
+\toprule
+Operator & CDP, only this operator & CDP, pool without it & GDP, only this operator & GDP, pool without it \\
+\midrule
+RandomSwap1$\times$1 & $-$0.046 (0.0086) & +0.003 (1) & $-$0.036 (0.0025) & $-$0.014 (0.064) \\
+BestSwap1$\times$1 & $-$0.213 (2.6e$-$10) & +0.004 (1) & $-$0.302 (3.9e$-$20) & $-$0.006 (1) \\
+RandomSwap2$\times$2 & $-$0.096 (9.7e$-$05) & $-$0.013 (0.75) & $-$0.074 (3.3e$-$08) & $-$0.027 (0.0025) \\
+GraspGreedy & $-$0.286 (2.6e$-$10) & $-$0.008 (1) & $-$0.407 (3.3e$-$20) & $-$0.004 (1) \\
+BiObjBestSwap & $-$0.082 (1.3e$-$09) & $-$0.003 (1) & $-$0.182 (1.1e$-$18) & $-$0.014 (0.52) \\
+MaxMinSwap & $-$0.115 (2.4e$-$08) & $-$0.036 (0.001) & $-$0.321 (2.5e$-$17) & $-$0.039 (7.9e$-$06) \\
+LargePerturbation & $-$0.154 (2.6e$-$10) & $-$0.007 (1) & $-$0.169 (4.1e$-$16) & $-$0.020 (0.27) \\
+SubsetCrossover & $-$0.198 (2.6e$-$10) & $-$0.019 (0.23) & $-$0.402 (6e$-$20) & $-$0.028 (7.4e$-$05) \\
+Full pool, uniform selection ($\mathrm{HV}_{\mathrm{norm}}$) & 0.711 &  & 0.771 &  \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{Lean pools.} Dropping BiObjBestSwap, BestSwap1$\times$1 and GraspGreedy in combination (pools of seven, six and five operators; CDP, 60 instances, three replicates) leaves quality statistically equal to the full pool ($\Delta$$\mathrm{HV}_{\mathrm{norm}}$ between $-$0.008 and +0.010, $\hat{A}_{12}$ 0.44--0.52, all $p_{\mathrm{Holm}}$ = 1). Pruning saves little time: after vectorising the swap evaluation, BiObjBestSwap is no longer the dominant cost (the pool without it takes 106\% of the time of the full pool) and only dropping GraspGreedy saves 14--18\%. We keep the full pool: it is robust to pruning of the costly or redundant operators but not of MaxMinSwap.
+
+\emph{A pool with harmful operators.} A natural objection to the finding that uniform selection suffices is that the pool is well curated, and that adaptive selection would earn its keep if some operators were useless. We added three deliberately bad operators to the eight --- a random restart (the solution is replaced by a random feasible one), a replacement of half of the elements at random, and a no-operation --- and repeated the experiment on the same instances, with uniform selection and with seven selectors (11 operators; Table 7). Uniform selection is not hurt: it gains +0.018 over the clean pool on the CDP (p = 0.084) and +0.002 on the GDP (p = 0.54), although 27\% of its effort now goes to the three new operators; the reason is that a child replaces a neighbour only if it is not worse, so a useless operator wastes effort but cannot damage the population, and the cost of the wasted effort is below the noise at the standard budget (doubling the generations gives +0.022; Section 6.4). No selector improves on uniform selection in the extended pool; UCB1 with the scalar reward is significantly worse on both problems ($-$0.038 and $-$0.071) and the published DYTS on the GDP ($-$0.024; p = 0.002). The selectors that learn something avoid the new operators only mildly (UCB1-HV: 0.07 of the selections for each of them against 0.09 under uniform selection), because the reward that would single them out is zero for almost every operator late in the run.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{Pool with three harmful operators (random restart, half replacement, no-operation; 11 operators; n $\leq$ 150, three replicates): difference in $\mathrm{HV}_{\mathrm{norm}}$ of each selector to uniform selection in the same extended pool, and, in the first row, of uniform selection in the extended pool to uniform selection in the clean pool of eight (Holm-adjusted Wilcoxon p in brackets; an asterisk marks p < 0.05)}\label{tab:7}
+\begin{tabular}{lcc}
+\toprule
+Selector in the extended pool & CDP (60 instances) & GDP (120 instances) \\
+\midrule
+Uniform, extended pool vs uniform, clean pool & +0.0182 (0.084) & +0.0019 (0.54) \\
+UCB1-HV & $-$0.0048 (1) & $-$0.0080 (1) \\
+GTS-HV & $-$0.0124 (0.53) & $-$0.0012 (1) \\
+UCB1-Scal & $-$0.0382 (0.00061)$^{*}$ & $-$0.0708 (4.4e$-$11)$^{*}$ \\
+GTS-Scal & $-$0.0072 (1) & $-$0.0053 (0.34) \\
+UCB1, insert reward & $-$0.0165 (0.83) & $-$0.0043 (1) \\
+DYTS (published), replace reward & $-$0.0134 (0.3) & $-$0.0236 (0.0017)$^{*}$ \\
+FRRMAB & $-$0.0105 (1) & $-$0.0109 (0.34) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{Initialisation.} The weight-guided GRASP initialisation ($\alpha$ = 0.3) is not essential: a purely greedy start ($\alpha$ = 0) is as good (CDP +0.009, p = 0.20; GDP $-$0.006, p = 0.51), and a random start ($\alpha$ = 1) costs nothing on the CDP ($-$0.002, p = 0.60) but loses 0.051 of $\mathrm{HV}_{\mathrm{norm}}$ on the GDP (p = 0.032), where random solutions are further from feasibility.
+
+\subsection{Covering the ends of the front: MaxMin anchoring and the literature (RQ3)}\label{sec:anchor_lit}
+
+\emph{The gap.} With the unscaled scalarisation the MaxMin end of our fronts was far from published values: against the best published CDP value of each instance (see Section 5; 20 instances per family, both demand factors) the best MaxMin among all twelve methods (one replicate) was 10.6\% (SOM-a, n = 50), 5.2\% (GKD-b, n = 50), 9.0\% (GKD-b, n = 150), 12.8\% (GKD-c, n = 500) and 62.7\% (MDG-b, n = 500) below it; against the 80 published GDP solutions (n = 500) the ratios were 0.93--1.05 (GKD-c) and 0.45--0.50 (MDG-b). The published solutions are rarely dominated by our union front (0--7 of 20 per group) but lie in a region our front does not cover: high MaxMin, low MaxSum. Because the hypervolume is dominated by the knee of the front, this gap costs only 2.6--6.8\% of hypervolume on average --- the indicator hides it.
+
+\emph{Normalisation helps but is not enough.} With normalised objectives (same comparison: best of the twelve methods, first replicate) the CDP ratios to the best published value rise from 0.894 to 0.936 (SOM-a), 0.948 to 0.972 (GKD-b, n = 50), 0.910 to 0.946 (GKD-b, n = 150), 0.872 to 0.905 (GKD-c) and 0.373 to 0.534 (MDG-b); on the GDP n = 500 pilot (five instances per family) the best MaxMin rises to 1.005 (GKD-c) and 0.69 (MDG-b) of the published value. In an earlier check against the Table 1 values of Gomez et al. (ten b02 instances per family), a trivial farthest-point constructive with 21 restarts reached $-$6.0\% (GKD-c) and $-$40.6\% (MDG-b), i.e. the MaxMin end of MOEA/D is only at the level of a simple heuristic.
+
+\emph{Anchoring narrows the gap.} With the tabu anchoring step of Section 4.5 (Figure 4 and Table 8; uniform selection; the no-anchor reference is the same method without the step, on the same instances and replicates) the MaxMin end of the CDP fronts with n $\leq$ 150 moves to 1.000 of the best published value on SOM-a (20 of 20 instances reach it), 0.997 on GKD-b with n = 50 (14 of 20) and 0.984 with n = 150 (0 of 20), from 0.736, 0.935 and 0.929 (both demand factors pooled), and $\mathrm{HV}_{\mathrm{norm}}$ rises by +0.019 (better on 39 of 60 instances; Wilcoxon p = 0.015) at a cost of about two seconds per run. On the GDP (120 instances with n $\leq$ 150), which adds the budget constraint, the same step raises $\mathrm{HV}_{\mathrm{norm}}$ by +0.033 (better on 76 of 120; p = 0.0009) at a median extra cost of 0.9 s. At n = 500 (6,000 iterations $\times$ 3 restarts) the effect is larger. On the CDP $\mathrm{HV}_{\mathrm{norm}}$ rises by +0.073 (better on 37 of 40; p = 3$\cdot$10$^{-}$$^{1}$$^{0}$) and the MaxMin end moves from 0.865 to 0.972 of the best published value on GKD-c and from 0.473 to 0.697 on MDG-b (20 instances each; none reaches it); on the GDP $\mathrm{HV}_{\mathrm{norm}}$ rises by +0.052 (better on 61 of 80; p = 3$\cdot$10$^{-7}$) and the MaxMin end moves from 0.975 to 1.094 of the published value on GKD-c (at or above it on 30 of 40 instances) and from 0.592 to 0.917 on MDG-b (22 of 40). The step adds about 20 s to runs of 100--140 s. The published CDP values are the best of 40 runs of C++ solvers (the tabu search SBTS of \citet{lu2023}; for MDG-b also the VNS of \citet{mladenovic2022b} and the simulated annealing of \citet{rosati2024}); against the mean of the SBTS runs the anchored fronts reach 0.992 (GKD-c) and 0.911 (MDG-b) of the 10-s mean and 0.977 and 0.771 of the 300-s mean, and on MDG-b 0.705 of the best 300-s mean among the three solvers (Xeon 2.1 GHz and C++ against our Python implementation: indications, not an equal-time comparison). Adding the anchor point to \emph{every} method's front, or only to the MOEA/D variants, leaves the ranking between methods unchanged. Anchoring is therefore a coverage and competitiveness device, not a change to the comparison.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{MaxMin anchoring (uniform selection, three replicates): $\mathrm{HV}_{\mathrm{norm}}$, paired difference to the same method without the step (uncorrected Wilcoxon p) and MaxMin end of the front relative to the best published value (CDP) or to the published 60-s VNS value (GDP), averaged over the instances of each family and both demand factors; median run time}\label{tab:8}
+\begin{tabular}{lcccccc}
+\toprule
+Problem, size (N instances) & Families (order of the ratios) & Anchor & $\mathrm{HV}_{\mathrm{norm}}$ & Difference to none (p) & MaxMin end / published & Median time (s) \\
+\midrule
+CDP, n $\leq$ 150 (60) & SOM-a / GKD-b$_{50}$ / GKD-b$_{150}$ & none & 0.717 & -- & 0.736 / 0.935 / 0.929 & 3.5 \\
+ &  & tabu & 0.736 & +0.019 (0.015) & 1.000 / 0.997 / 0.984 & 5.6 \\
+ &  & SBTS & 0.729 & +0.012 (0.14) & 0.958 / 1.000 / 0.996 & 5.4 \\
+ &  & combined & 0.737 & +0.020 (0.022) & 0.994 / 1.000 / 0.994 & 4.3 \\
+CDP, n = 500 (40) & GKD-c / MDG-b & none & 0.719 & -- & 0.865 / 0.473 & 103.1 \\
+ &  & tabu & 0.792 & +0.073 (3.1e-10) & 0.972 / 0.697 & 122.0 \\
+ &  & SBTS & 0.753 & +0.034 (0.00094) & 0.994 / 0.895 & 230.9 \\
+ &  & combined & 0.799 & +0.080 (5.6e-10) & 0.990 / 0.851 & 165.3 \\
+GDP, n $\leq$ 150 (120) & -- & none & 0.756 & -- & -- & 3.9 \\
+ &  & tabu & 0.790 & +0.033 (0.00091) & -- & 4.8 \\
+ &  & SBTS & 0.787 & +0.030 (0.014) & -- & 4.2 \\
+ &  & combined & 0.790 & +0.034 (0.00026) & -- & 4.0 \\
+GDP, n = 500 (80) & GKD-c / MDG-b & none & 0.667 & -- & 0.975 / 0.592 & 116.9 \\
+ &  & tabu & 0.720 & +0.052 (2.6e-07) & 1.094 / 0.917 & 137.9 \\
+ &  & combined & 0.764 & +0.097 (7.7e-12) & 1.140 / 1.174 & 131.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig3_extreme_maxmin_vs_published.pdf}
+\caption{MaxMin of the front's extreme point relative to the best published CDP value (mean over instances, both demand factors, three replicates; Uniform selection, with and without the anchoring step). The dashed line is the best published value; budgets as in the text.}\label{fig:4}
+\end{figure}
+
+\emph{A stronger anchor.} The solution-based variant of Section 4.5 closes most of what remains on the CDP at n = 500 (40 instances, three replicates). With the SBTS-style search alone the MaxMin end reaches 0.994 (GKD-c) and 0.895 (MDG-b) of the best published value, against 0.972 and 0.697 for the tabu anchor, and 0.999 and 0.990 of the published 300-s SBTS mean (0.905 of the best 300-s mean among the three published solvers on MDG-b; eight of 20 GKD-c instances reach the best published value, none of MDG-b). The hypervolume tells a different story: the SBTS-style search alone is worse than the tabu anchor (0.753 against 0.792, p = 0.0002), because it does not add the intermediate points the tabu anchor contributes, whereas the combined anchor gives the best $\mathrm{HV}_{\mathrm{norm}}$ (0.799; +0.007 over the tabu anchor, p = 0.37) with MaxMin ends of 0.990 and 0.851. The cost is substantial at n = 500: median run times of 103 s without anchor, 122 s with the tabu anchor, 165 s with the combined anchor and 231 s with the SBTS-style search alone. For n $\leq$ 150 (60 CDP instances) the combined anchor reaches 0.994 (GKD-b, n = 150), 1.000 (GKD-b, n = 50) and 0.994 (SOM-a) of the best published value, with the same $\mathrm{HV}_{\mathrm{norm}}$ as the tabu anchor (difference +0.001, p = 0.88) and no additional cost to speak of. On the GDP the combined anchor is better than the tabu anchor where the budget binds hardest: at n = 500 (80 instances) $\mathrm{HV}_{\mathrm{norm}}$ is 0.764 against 0.720 (+0.045, p = 7$\cdot$10$^{-5}$) and the MaxMin end reaches 1.140 (GKD-c; 33 of 40 instances at or above the published value) and 1.174 (MDG-b; 31 of 40) of the value published for the benchmark's 60-s VNS, at a median run time of 131 s (117 s without anchor); for n $\leq$ 150 (120 instances) the two anchors are indistinguishable. Using GTS-HV instead of uniform selection with the combined anchor gives the same gains (CDP n $\leq$ 150: +0.018, p = 0.039; GDP n $\leq$ 150: +0.035, p < 0.0001; both against uniform selection without anchor). The remaining gap to the best published values is the MDG-b family of the CDP (0.85--0.90).
+
+\subsection{Robustness of the comparison to the evaluation protocol}\label{sec:robustness_of_the_comparison}
+
+\emph{Budget fairness: baselines at equal wall-clock time.} Generation- and iteration-based budgets favour methods that are cheap per step, so we repeated the comparison with equal wall-clock time (Table 9). For every (instance, replicate) the normalised MOEA/D-Uniform was run first in a worker process and its elapsed time T measured; NSGA-II, VNS-Pareto (without early stopping), VNS-Tchebycheff and the two GRASP variants were then run in the same process with a time limit of T (their initialisation time is not counted, which favours them). The sample is every instance with n $\leq$ 150 (CDP: 60; GDP: 120) and a subset of the n = 500 instances (CDP: 20, half with each demand factor; GDP: 40, half with the tightest and half with the loosest combination of demand and cost factors, 0.2/0.2 and 0.3/0.3), with three replicates. The median limits are 2.3 s and 67 s on CDP and 3.4 s and 92 s on GDP (the n $\leq$ 150 group mixes n = 50 and n = 150, so its limits are short). Extra time improves every baseline over its default budget (by +0.01 to +0.12 $\mathrm{HV}_{\mathrm{norm}}$) but, with one exception, does not close the gap: NSGA-II, the two VNS variants and, on GDP and at n = 500, GRASP-MO and GRASP-PR remain significantly behind MOEA/D-Uniform (Holm p < 10$^{-5}$ in all those cases). The exception is CDP with n $\leq$ 150, where GRASP-PR and GRASP-MO at equal time are statistically tied with MOEA/D-Uniform ($\mathrm{HV}_{\mathrm{norm}}$ 0.705 and 0.693 against 0.711; $\hat{A}_{12}$ 0.43 and 0.40; $p_{\mathrm{Holm}}$ = 0.61 and 0.29 over 60 instances). The superiority of MOEA/D over GRASP on CDP is therefore established at n = 500 but not for short runs on small instances. An earlier pilot in the raw regime with six CDP instances and budgets scaled to the recorded MOEA/D time gave the same picture for NSGA-II and VNS (ranks 10--12 of 12 before and after). Extra VNS budget helps little because the limit is the search design: three greedy neighbourhoods around archive members.
+
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\caption{Baselines at equal wall-clock time (normalised regime, three replicates): mean $\mathrm{HV}_{\mathrm{norm}}$; in brackets, difference to MOEA/D-Uniform and Holm-adjusted Wilcoxon p (paired over instances)}\label{tab:9}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+Problem, size (N instances; time limit per run) & MOEA/D-Uniform & GRASP-PR & GRASP-MO & NSGA-II & VNS-Pareto & VNS-Tcheb. \\
+\midrule
+CDP n<=150 (N=60; 2 s) & 0.711 & 0.705 ($-$0.006; p=0.61) & 0.693 ($-$0.018; p=0.29) & 0.456 ($-$0.255; p=8.1e-11) & 0.351 ($-$0.360; p=8.1e-11) & 0.379 ($-$0.332; p=8.1e-11) \\
+CDP n=500 (N=20; 67 s) & 0.721 & 0.430 ($-$0.291; p=9.5e-06) & 0.432 ($-$0.288; p=9.5e-06) & 0.285 ($-$0.435; p=9.5e-06) & 0.156 ($-$0.565; p=9.5e-06) & 0.161 ($-$0.559; p=9.5e-06) \\
+GDP n<=150 (N=120; 3 s) & 0.771 & 0.489 ($-$0.282; p=2.4e-12) & 0.485 ($-$0.286; p=2.4e-12) & 0.559 ($-$0.213; p=5e-20) & 0.443 ($-$0.329; p=9.9e-21) & 0.436 ($-$0.336; p=9.9e-21) \\
+GDP n=500 (N=40; 92 s) & 0.681 & 0.321 ($-$0.360; p=9.1e-12) & 0.299 ($-$0.382; p=9.1e-12) & 0.221 ($-$0.461; p=9.1e-12) & 0.154 ($-$0.528; p=9.1e-12) & 0.188 ($-$0.493; p=9.1e-12) \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+\emph{Reference front.} Ranking with a front pooled over the methods compared, or with the fixed union reference, is practically identical (Kendall $\tau$ = 1.00 on GDP, 0.88 on CDP; differences confined to the top group).
+
+\subsection{Robustness to the quality indicator}\label{sec:robustness_to_the_quality_in}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\caption{Robustness to the quality indicator (full catalogue): Kendall's $\tau$ between the average-rank vectors, and top group per indicator}\label{tab:10}
+\begin{tabularx}{\linewidth}{lcccXXX}
+\toprule
+Problem & $\tau$($\mathrm{HV}_{\mathrm{norm}}$, IGD$^{+}$) & $\tau$($\mathrm{HV}_{\mathrm{norm}}$, $\varepsilon^{+}$) & $\tau$(IGD$^{+}$, $\varepsilon^{+}$) & Top group $\mathrm{HV}_{\mathrm{norm}}$ & Top group IGD$^{+}$ & Top group $\varepsilon^{+}$ \\
+\midrule
+CDP & 0.94 & 0.79 & 0.73 & MOEA/D-GTS-Scal, MOEA/D-UCB-HV, MOEA/D-TS-HV, MOEA/D-GTS-HV, MOEA/D-Uniform & MOEA/D-Uniform, MOEA/D-UCB-HV, MOEA/D-GTS-HV, MOEA/D-GTS-Scal & MOEA/D-UCB-HV, MOEA/D-TS-HV, MOEA/D-GTS-HV, MOEA/D-GTS-Scal, MOEA/D-Uniform \\
+GDP & 1.00 & 0.97 & 0.97 & MOEA/D-GTS-HV, MOEA/D-UCB-HV, MOEA/D-TS-HV, MOEA/D-GTS-Scal, MOEA/D-Uniform & MOEA/D-GTS-HV, MOEA/D-UCB-HV, MOEA/D-TS-HV, MOEA/D-GTS-Scal, MOEA/D-Uniform & MOEA/D-GTS-HV, MOEA/D-UCB-HV, MOEA/D-TS-HV, MOEA/D-GTS-Scal, MOEA/D-Uniform \\
+MDP & 0.91 & 0.85 & 0.88 & MOEA/D-GTS-HV, MOEA/D-UCB-HV, MOEA/D-GTS-Scal, MOEA/D-Uniform & MOEA/D-UCB-HV, MOEA/D-TS-HV, MOEA/D-GTS-HV, MOEA/D-GTS-Scal, MOEA/D-Uniform & MOEA/D-Uniform, MOEA/D-UCB-HV, MOEA/D-TS-HV, MOEA/D-GTS-HV, MOEA/D-GTS-Scal \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+$\mathrm{HV}_{\mathrm{norm}}$, IGD$^{+}$ and $\varepsilon$$^{+}$ produce closely related rankings (Kendall's $\tau$ between 0.73 and 1.00, Table 10). The top groups coincide up to the membership of marginal variants (TS-HV on the CDP, TS-Scal on the MDP), which enter or leave depending on the indicator. On the CDP data with n $\leq$ 150 and five replicates, $\varepsilon$$^{+}$ --- a worst-case measure sensitive to the ends of the front --- also admitted GRASP-PR into the top group; this does not occur on the full catalogue with three replicates. The conclusions that the MOEA/D family is ahead of the baselines and that no adaptive selector beats uniform selection do not depend on the indicator.
+
+\subsection{Why GRASP behaves differently on CDP and GDP}\label{sec:why_grasp_behaves_differentl}
+
+On the raw-objective catalogue, GRASP-MO/PR were tied with MOEA/D on CDP but fell to the middle tier on GDP, and NSGA-II moved in the opposite direction; with normalised objectives the GRASP variants are behind MOEA/D on both problems (Table 1), but the CDP/GDP contrast in how far behind persists (CDP: GRASP-PR 7.75; GDP: 8.91) and so does the contrast for NSGA-II (CDP 10.52; GDP 9.39). To test whether the GDP budget constraint explains it, we re-ran all twelve methods in the normalised regime with the budget relaxed to infinity (leaving only the capacity constraint) on the 120 GDP instances with n $\leq$ 150 and on twenty instances with n = 500 (ten with the tightest and ten with the loosest combination of demand and cost factors), three replicates each and the same seeds as the original runs, and compared the ranks of the twelve methods within each regime (each regime has its own reference front, because relaxed solutions may violate the original budget). Relaxing the budget improves GRASP-PR (average rank 8.93 $\rightarrow$ 7.57) and GRASP-MO (9.32 $\rightarrow$ 8.29) significantly (Wilcoxon on per-instance ranks, Holm p < 0.0001), worsens NSGA-II (9.20 $\rightarrow$ 10.29) and VNS-Pareto (10.55 $\rightarrow$ 11.56) significantly (p < 0.0001), and moves the MOEA/D variants by less than 0.8 ranks (UCB-Scal improves by 0.76, p = 0.010; none of the others is significant, the largest change being GTS-HV +0.58, p = 0.11). The budget constraint is therefore a major driver of how GRASP and NSGA-II compare with the MOEA/D family on GDP, but the reversal is partial: relaxed GRASP-PR (7.57) remains four ranks behind the best method (3.48; CD = 1.52). On the twenty n = 500 instances no change is significant (little power at N = 20; GRASP-PR 8.60 $\rightarrow$ 8.40, NSGA-II 9.55 $\rightarrow$ 9.75); the one notable movement is that GTS-HV loses 1.90 ranks when the cost budget is relaxed (2.65 $\rightarrow$ 4.55, $p_{\mathrm{Holm}}$ = 0.065), which fits the finding of Section 6.11 that its advantage over uniform selection is tied to the tight cost budget.
+
+\subsection{Larger instances: a scalability sample}\label{sec:larger_instances_a_scalabili}
+
+The main comparison stops at n = 500 (CDP, GDP) and n = 1,000 (MDP). To see whether the findings extend to larger instances we ran a small sample: three MDG-b instances with n = 2,000 (m = 200) and two MDG-c instances with n = 3,000 (m = 400), with three replicates and six methods (MOEA/D with uniform selection, with UCB1 and with the Gaussian sampler under the HV reward, NSGA-II, GRASP-PR and VNS-Tchebycheff), in the normalised regime and with the largest budget of Appendix A (100 weight vectors, 600 generations). Five instances support no inference; the results are descriptive, and the reference front of each instance is the union of the runs of this sample.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Scalability sample (MDP, normalised regime, three replicates; reference front per instance = union of all runs of the sample): $\mathrm{HV}_{\mathrm{norm}}$ per instance (mean of three replicates); last rows: median run time over instances and average front size}\label{tab:11}
+\begin{tabular}{lcccccc}
+\toprule
+Instance & MOEA/D-Uniform & MOEA/D-UCB-HV & MOEA/D-GTS-HV & NSGA-II & GRASP-PR & VNS-Tcheb. \\
+\midrule
+MDG-b\_21\_n2000\_m200 & 0.697 & 0.880 & 0.858 & 0.052 & 0.274 & 0.008 \\
+MDG-b\_31\_n2000\_m200 & 0.720 & 0.898 & 0.868 & 0.060 & 0.156 & 0.005 \\
+MDG-b\_40\_n2000\_m200 & 0.688 & 0.787 & 0.803 & 0.061 & 0.103 & 0.011 \\
+$^{*}$median time per run (s), all five instances$^{*}$ & 848 & 981 & 945 & 54 & 1438 & 30 \\
+$^{*}$average front size, all five instances$^{*}$ & 45.7 & 56.7 & 53.7 & 6.1 & 6.7 & 3.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{MDG-c, n = 3000 (two instances): the front is a single point with MaxMin = 0 for every method in every run but one GRASP-PR replicate, so $\mathrm{HV}_{\mathrm{norm}}$ is not informative; best MaxSum found (mean of three replicates, in millions; mean over the two instances):}
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{}\label{tab:12}
+\begin{tabular}{lcccccc}
+\toprule
+ & MOEA/D-Uniform & MOEA/D-UCB-HV & MOEA/D-GTS-HV & NSGA-II & GRASP-PR & VNS-Tcheb. \\
+\midrule
+MaxSum ($\times$10$^{6}$) & 43.19 & 43.21 & 43.22 & 42.91 & 42.73 & 42.65 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On MDG-b with n = 2,000 the baselines are far behind (Table 11), as at smaller sizes: NSGA-II reaches $\mathrm{HV}_{\mathrm{norm}}$ 0.05--0.06, GRASP-PR 0.10--0.27 and VNS-Tchebycheff at most 0.01, against 0.69--0.90 for MOEA/D. \textbf{The comparison among MOEA/D variants differs from Sections 6.3--6.5.} On all three instances the two HV-reward selectors beat uniform selection (0.88, 0.90 and 0.79 for UCB1 and 0.86, 0.87 and 0.80 for the Gaussian sampler, against 0.70, 0.72 and 0.69), and each is above the uniform replicate of the same index in eight of the nine (instance, replicate) cells. The gain comes from the MaxMin end of the front (mean best MaxMin 18.4 for UCB1 against 14.8 for uniform selection over the nine runs, with MaxSum unchanged within 0.2\%). The selectors behave unlike the near-uniform HV selectors of Section 6.3: they concentrate on BiObjBestSwap (0.32--0.39 of the selections) and MaxMinSwap (0.35--0.40) and give SubsetCrossover 0.07--0.15, which is what one would expect if the HV reward does not saturate because the search is far from converged --- 600 generations over 2,000 elements. Section 6.11 tests the explanation that adaptive selection helps when the search is far from convergence. Run times are about 850 s for uniform selection and 950--980 s for the two adaptive variants, 54 s for NSGA-II, 1,440 s for GRASP-PR and 30 s for VNS-Tchebycheff, on a shared laptop.
+
+On MDG-c with n = 3,000 the bi-objective problem is degenerate: the integer distances include a few thousand exact zeros, almost every subset has MaxMin = 0, and the front of every method in every run is a single point with MaxMin = 0, except one GRASP-PR replicate that also found a point with MaxMin = 7 at 5\% lower MaxSum than its other point. $\mathrm{HV}_{\mathrm{norm}}$ is therefore not informative there, and the comparison reduces to MaxSum: the three MOEA/D variants reach 43.1--43.3 million (indistinguishable), NSGA-II about 0.7\% lower, GRASP-PR about 1.1\% lower and VNS-Tchebycheff about 1.3\% lower. The MaxMin anchor does not apply to the MDP (fixed cardinality), so the MaxMin end of the MDG-c front is not covered by any method.
+
+\subsection{When adaptive selection helps: instance size, constraint tightness and budget}\label{sec:when_adaptive_selection_help}
+
+The averages of Section 6.3 pool instances of all sizes. Splitting the per-instance difference between each HV-reward selector and uniform selection by size (Figure 5; fixed reference front, mean over three replicates, descriptive 95\% bootstrap intervals over instances) reveals a size effect.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/fig5_adaptive_selection_vs_size.pdf}
+\caption{Difference in $\mathrm{HV}_{\mathrm{norm}}$ between the HV-reward selectors and uniform selection, by problem and instance size (mean over instances of the mean over three replicates; bars: 95\% bootstrap intervals over instances; fixed reference fronts, except n = 2,000, whose reference is the union of the scalability and budget-regime runs). MDP: no difference up to 200 elements, a growing advantage beyond. GDP: advantage only with n = 500 and the tight cost budget. CDP: none.}\label{fig:5}
+\end{figure}
+
+In the MDP the difference is zero up to 200 elements (n $\leq$ 50: UCB-HV +0.001, GTS-HV +0.003, N = 24; 51--200: $-$0.009 and $-$0.002, N = 80), positive at 201--500 elements (+0.020 and +0.025, N = 34; Wilcoxon p = 0.075 and 0.009, uncorrected), larger at 501--1,000 (+0.031 and +0.049, N = 5, MGPO only) and largest at 2,000 (MDG-b, N = 10: +0.149 and +0.129). In the CDP it stays at zero up to n = 500 ($-$0.004 and +0.001, N = 40). In the GDP it is $\leq$ 0 up to n = 150 and positive at n = 500 only on the 40 instances with the tight cost budget (factor 0.2: +0.028 and +0.054, p = 0.075 and 0.0009 uncorrected), not on the 40 with the loose one (factor 0.3: $-$0.015 and +0.001). The p-values in this paragraph are uncorrected for the number of size groups and are exploratory; the experiment below is the confirmatory test.
+
+\emph{Budget.} If the effect comes from searches that are far from convergence, it should grow as the generation budget shrinks. We changed the number of generations while holding the instances fixed (three replicates, the same seeds as the 1$\times$ runs): \textonequarter{}, \textonehalf{} and 1$\times$ the generations of Appendix A on the 40 CDP, the 40 tight-budget GDP and the 40 loose-budget GDP instances with n = 500, and 1$\times$ on ten MDG-b instances with n = 2,000 plus 4$\times$ on three of them (Table 12). On the tight-budget GDP the advantage of the HV-reward selectors is monotone in the budget: UCB-HV +0.059, +0.035 and +0.028 and GTS-HV +0.067, +0.059 and +0.054 at \textonequarter{}, \textonehalf{} and 1$\times$ (Holm p $\leq$ 0.024 for five of the six comparisons; IGD$^{+}$ gives the same ordering). On the loose-budget GDP and on the CDP there is no effect at any budget (the largest difference is +0.025, GTS-HV on the CDP at \textonequarter{}; no comparison is significant), although the selectors there concentrate on the same two operators as elsewhere (0.66--0.68 of the selections at \textonequarter{}): concentration alone does not pay. On MDG-b with n = 2,000 both selectors beat uniform selection on all ten instances at the standard budget ($p_{\mathrm{Holm}}$ = 0.004, the smallest value the test allows with ten instances; IGD$^{+}$: +0.057 and +0.050, ten of ten) and the advantage shrinks but does not vanish with four times the generations (three instances: UCB-HV +0.139 $\rightarrow$ +0.112, GTS-HV +0.129 $\rightarrow$ +0.084).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{HV-reward adaptive selection against uniform selection at the same budget (instances with n = 500 or n = 2,000; three replicates; budget = fraction or multiple of the generations of Appendix A): $\mathrm{HV}_{\mathrm{norm}}$ of uniform selection, and difference to it (Holm-adjusted Wilcoxon p, paired over instances) for UCB1-HV and GTS-HV}\label{tab:13}
+\begin{tabularx}{\linewidth}{lccccX}
+\toprule
+Setting (N instances) & Budget & Uniform & UCB-HV $-$ Uniform (p) & GTS-HV $-$ Uniform (p) & Share of BiObjBestSwap + MaxMinSwap: UCB-HV \\
+\midrule
+CDP n=500 (N=40) & x1/4 & 0.661 & +0.014 (0.675) & +0.025 (0.134) & 0.68 \\
+CDP n=500 (N=40) & x1/2 & 0.695 & +0.003 (1) & +0.012 (1) & 0.58 \\
+CDP n=500 (N=40) & x1 & 0.719 & $-$0.004 (1) & +0.001 (1) & 0.49 \\
+GDP n=500, k02 (tight cost budget) (N=40) & x1/4 & 0.505 & +0.059 (0.000308) & +0.067 (2.96e-05) & 0.48 \\
+GDP n=500, k02 (tight cost budget) (N=40) & x1/2 & 0.587 & +0.035 (0.024) & +0.059 (0.000191) & 0.44 \\
+GDP n=500, k02 (tight cost budget) (N=40) & x1 & 0.644 & +0.028 (0.0747) & +0.054 (0.00267) & 0.39 \\
+GDP n=500, k03 (N=40) & x1/4 & 0.622 & +0.005 (1) & +0.019 (1) & 0.68 \\
+GDP n=500, k03 (N=40) & x1/2 & 0.659 & $-$0.006 (1) & +0.010 (1) & 0.58 \\
+GDP n=500, k03 (N=40) & x1 & 0.691 & $-$0.015 (1) & +0.001 (1) & 0.50 \\
+MDP MDG-b n=2000 (N=10) & x1 & 0.679 & +0.149 (0.00391) & +0.129 (0.00391) & 0.74 \\
+MDG-b n = 2000, three instances (N=3) & x1 & 0.643 & +0.139 (n/a) & +0.129 (n/a) & 0.76 \\
+MDG-b n = 2000, three instances (N=3) & x4 & 0.754 & +0.112 (n/a) & +0.084 (n/a) & 0.51 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\emph{Why the tight cost budget matters.} Our first hypothesis was that, with a tight budget, the repair step discards many children of the operators that ignore the cost, so that the success rates of the operators differ more than with a loose budget and there is more to learn. We tested it by re-running 540 standard-budget runs (ten instances in each of three groups at n = 500, and in three at n = 150; same seeds, identical fronts) with per-operator counters (Supplement S3). The first half of the hypothesis holds: on the tight-budget GDP 34\% of all children are infeasible before the repair at n = 500 (45\% at n = 150), against 0.3\% on the loose-budget GDP and 0.7\% on the CDP, and the six cost-blind operators produce between 34\% and 60\% infeasible children. The second half does not: BiObjBestSwap and MaxMinSwap insert 0.07--0.11 children per application into the archive and the other six at most 0.02 in every group, and the dispersion of the insertion rates across operators is not larger under the tight budget (standard deviation 0.037, against 0.035 on the loose GDP and 0.038 on the CDP). What differs is how far the search is from convergence at the standard budget: uniform selection gains 0.139 in $\mathrm{HV}_{\mathrm{norm}}$ when its budget grows from a quarter to the standard one on the tight GDP, against 0.068 on the loose GDP and 0.058 on the CDP (n = 500, 40 instances each). A plausible chain is therefore that the tight budget makes a third of the children need repair, progress per generation slows, the search is far from convergence at the standard budget, and moving effort from the six weak operators to the two productive ones pays --- which is what the HV-reward selectors do (0.57 of the selections of UCB-HV on the tight GDP, against 0.47 and 0.51). The evidence is at the level of the three instance groups: across instances within a group the advantage of the selectors is not correlated with the convergence slope (|$\rho$| $\leq$ 0.22, p $\geq$ 0.16) and across the 120 instances the correlation is weak ($\rho$ = +0.14, p = 0.13 for GTS-HV), so the mechanism is established for groups and open for individual instances.
+
+\emph{Reading.} Adaptive selection with the HV reward gains where the search is short of convergence and the instance is either large (MDG-b with 2,000 elements) or has a tight constraint to repair (GDP with the 0.2 cost factor); it does not where the reward saturates early (CDP at the sizes tested, every problem below 200 elements) or where the constraint is loose. Budget scarcity explains the dose--response on the tight GDP and the shrinkage at n = 2,000 but not, by itself, the absence of an effect on the CDP with a quarter of the generations, nor on the loose GDP, whose convergence slopes are similar to the CDP's; the measured slope on the tight GDP is twice as large. The verdict of Section 6.3 stands for the regime in which the earlier benchmarks of this literature live (n $\leq$ 200) and for the CDP; it does not extend to large or tightly constrained instances.
+
+\subsection{Tuned baselines and the trajectory methods of Colmenar et al. (RQ1)}\label{sec:tuned_baselines_and_the_traj}
+
+The baselines of Sections 6.2 and 6.7 run with fixed budgets and without tuning, whereas Colmenar et al. tuned every method with irace. Section 4.7 describes the protocol that gives every method --- NSGA-II, SMS-EMOA, GRASP, a tabu search and a VNS in the style of Colmenar et al., and the uniform-pool MOEA/D --- a tuning of the same size on held-out instances; Tables 13 and 14 report six cells (CDP, GDP and MDP; n $\leq$ 150 and n = 500) with the wall-clock time of the default MOEA/D-Uniform on the same instance and replicate (initialisation included; the median measured time of every method was within 1\% of its limit) and, for part of the instances, five times that time.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Tuned baselines and the tabu search and VNS of Colmenar et al. against the default MOEA/D-Uniform (normalised regime; $\mathrm{HV}_{\mathrm{norm}}$ against the frozen reference, mean over held-out test instances and replicates; in brackets the paired difference to MOEA/D-Uniform with the default setting, an asterisk marks Holm-adjusted Wilcoxon p < 0.05; N = test instances). All methods run with the wall-clock time of the default MOEA/D-Uniform on the same instance and replicate (initialisation included); the last block gives five times that time (first replicate only)}\label{tab:14}
+\begin{tabular}{lcccccc}
+\toprule
+Method & CDP n $\leq$ 150 & CDP n = 500 & GDP n $\leq$ 150 & GDP n = 500 & MDP n $\leq$ 150 & MDP n = 500 \\
+\midrule
+$^{*}$MOEA/D-Uniform, default setting (reference)$^{*}$ & 0.705 (N=52) & 0.721 (N=20) & 0.766 (N=111) & 0.684 (N=32) & 0.831 (N=52) & 0.885 (N=22) \\
+MOEA/D-Uniform, tuned & 0.736 (+0.031)$^{*}$ & 0.749 (+0.029)$^{*}$ & 0.752 ($-$0.014) & 0.707 (+0.024) & 0.840 (+0.010) & 0.900 (+0.015) \\
+NSGA-II, default & 0.454 ($-$0.251)$^{*}$ & 0.285 ($-$0.435)$^{*}$ & 0.547 ($-$0.219)$^{*}$ & 0.222 ($-$0.462)$^{*}$ & 0.464 ($-$0.367)$^{*}$ & 0.471 ($-$0.414)$^{*}$ \\
+NSGA-II, tuned & 0.509 ($-$0.196)$^{*}$ & 0.367 ($-$0.353)$^{*}$ & 0.640 ($-$0.125)$^{*}$ & 0.401 ($-$0.283)$^{*}$ & 0.531 ($-$0.299)$^{*}$ & 0.726 ($-$0.159)$^{*}$ \\
+SMS-EMOA, default & 0.443 ($-$0.262)$^{*}$ & 0.279 ($-$0.442)$^{*}$ & 0.523 ($-$0.243)$^{*}$ & 0.217 ($-$0.467)$^{*}$ & 0.511 ($-$0.320)$^{*}$ & 0.416 ($-$0.469)$^{*}$ \\
+SMS-EMOA, tuned & 0.547 ($-$0.158)$^{*}$ & 0.379 ($-$0.342)$^{*}$ & 0.640 ($-$0.125)$^{*}$ & 0.388 ($-$0.296)$^{*}$ & 0.468 ($-$0.363)$^{*}$ & 0.670 ($-$0.215)$^{*}$ \\
+GRASP-PR, default & 0.704 ($-$0.001) & 0.430 ($-$0.291)$^{*}$ & 0.496 ($-$0.270)$^{*}$ & 0.324 ($-$0.359)$^{*}$ & 0.880 (+0.050) & 0.582 ($-$0.303)$^{*}$ \\
+GRASP, tuned & 0.692 ($-$0.013) & 0.441 ($-$0.280)$^{*}$ & 0.519 ($-$0.247)$^{*}$ & 0.410 ($-$0.274)$^{*}$ & 0.951 (+0.121)$^{*}$ & 0.662 ($-$0.223)$^{*}$ \\
+Tabu search (Colmenar et al.), their irace setting & 0.508 ($-$0.197)$^{*}$ & 0.458 ($-$0.262)$^{*}$ & 0.432 ($-$0.334)$^{*}$ & 0.315 ($-$0.368)$^{*}$ & 0.924 (+0.093)$^{*}$ & 0.971 (+0.086)$^{*}$ \\
+Tabu search, tuned & 0.591 ($-$0.114)$^{*}$ & 0.603 ($-$0.117)$^{*}$ & 0.659 ($-$0.107)$^{*}$ & 0.600 ($-$0.084)$^{*}$ & 0.941 (+0.111)$^{*}$ & 0.988 (+0.104)$^{*}$ \\
+VNS (Colmenar et al.), their irace setting & 0.577 ($-$0.128)$^{*}$ & 0.295 ($-$0.425)$^{*}$ & 0.646 ($-$0.120)$^{*}$ & 0.273 ($-$0.410)$^{*}$ & 0.977 (+0.146)$^{*}$ & 0.985 (+0.100)$^{*}$ \\
+VNS, tuned & 0.697 ($-$0.008) & 0.454 ($-$0.267)$^{*}$ & 0.656 ($-$0.110)$^{*}$ & 0.378 ($-$0.306)$^{*}$ & 0.977 (+0.147)$^{*}$ & 0.996 (+0.111)$^{*}$ \\
+$^{*}$At five times the time --- MOEA/D-Uniform, default at time T (reference, same instances)$^{*}$ & 0.684 (N=52) & 0.686 (N=10) & 0.774 (N=111) & 0.685 (N=16) & 0.833 (N=52) & 0.889 (N=11) \\
+MOEA/D-Uniform, tuned, 5T & 0.767 (+0.083)$^{*}$ & 0.746 (+0.060) & 0.818 (+0.044)$^{*}$ & 0.728 (+0.043) & 0.827 ($-$0.006) & 0.937 (+0.048)$^{*}$ \\
+NSGA-II, tuned, 5T & 0.525 ($-$0.159)$^{*}$ & 0.438 ($-$0.248)$^{*}$ & 0.710 ($-$0.064) & 0.417 ($-$0.268)$^{*}$ & 0.557 ($-$0.276)$^{*}$ & 0.811 ($-$0.078)$^{*}$ \\
+SMS-EMOA, tuned, 5T & 0.560 ($-$0.125)$^{*}$ & 0.414 ($-$0.271)$^{*}$ & 0.701 ($-$0.073) & 0.392 ($-$0.293)$^{*}$ & 0.545 ($-$0.288)$^{*}$ & 0.803 ($-$0.086)$^{*}$ \\
+GRASP, tuned, 5T & 0.773 (+0.088)$^{*}$ & 0.579 ($-$0.106) & 0.556 ($-$0.219)$^{*}$ & 0.527 ($-$0.158)$^{*}$ & 0.970 (+0.137)$^{*}$ & 0.738 ($-$0.151)$^{*}$ \\
+Tabu search, tuned, 5T & 0.711 (+0.026) & 0.707 (+0.021) & 0.759 ($-$0.015) & 0.662 ($-$0.022) & 0.964 (+0.131)$^{*}$ & 1.013 (+0.124)$^{*}$ \\
+VNS, tuned, 5T & 0.777 (+0.092)$^{*}$ & 0.472 ($-$0.214)$^{*}$ & 0.727 ($-$0.047)$^{*}$ & 0.413 ($-$0.272)$^{*}$ & 0.998 (+0.165)$^{*}$ & 1.007 (+0.118)$^{*}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Tuned baselines against the tuned MOEA/D-Uniform with the same time and the same tuning protocol ($\mathrm{HV}_{\mathrm{norm}}$; in brackets the paired difference to tuned MOEA/D-Uniform; an asterisk marks Holm-adjusted p < 0.05)}\label{tab:15}
+\begin{tabular}{lcccccc}
+\toprule
+Method & CDP n $\leq$ 150 & CDP n = 500 & GDP n $\leq$ 150 & GDP n = 500 & MDP n $\leq$ 150 & MDP n = 500 \\
+\midrule
+$^{*}$MOEA/D-Uniform, tuned (reference), time T$^{*}$ & 0.736 (N=52) & 0.749 (N=20) & 0.752 (N=111) & 0.707 (N=32) & 0.840 (N=52) & 0.900 (N=22) \\
+NSGA-II, tuned & 0.509 ($-$0.228)$^{*}$ & 0.367 ($-$0.382)$^{*}$ & 0.640 ($-$0.112)$^{*}$ & 0.401 ($-$0.306)$^{*}$ & 0.531 ($-$0.309)$^{*}$ & 0.726 ($-$0.173)$^{*}$ \\
+SMS-EMOA, tuned & 0.547 ($-$0.189)$^{*}$ & 0.379 ($-$0.370)$^{*}$ & 0.640 ($-$0.112)$^{*}$ & 0.388 ($-$0.319)$^{*}$ & 0.468 ($-$0.373)$^{*}$ & 0.670 ($-$0.230)$^{*}$ \\
+GRASP, tuned & 0.692 ($-$0.044)$^{*}$ & 0.441 ($-$0.309)$^{*}$ & 0.519 ($-$0.233)$^{*}$ & 0.410 ($-$0.297)$^{*}$ & 0.951 (+0.111)$^{*}$ & 0.662 ($-$0.238)$^{*}$ \\
+Tabu search, tuned & 0.591 ($-$0.146)$^{*}$ & 0.603 ($-$0.146)$^{*}$ & 0.659 ($-$0.093)$^{*}$ & 0.600 ($-$0.107)$^{*}$ & 0.941 (+0.101)$^{*}$ & 0.988 (+0.089)$^{*}$ \\
+VNS, tuned & 0.697 ($-$0.040)$^{*}$ & 0.454 ($-$0.296)$^{*}$ & 0.656 ($-$0.096)$^{*}$ & 0.378 ($-$0.329)$^{*}$ & 0.977 (+0.137)$^{*}$ & 0.996 (+0.096)$^{*}$ \\
+Tabu search (Colmenar et al.), their irace setting & 0.508 ($-$0.229)$^{*}$ & 0.458 ($-$0.291)$^{*}$ & 0.432 ($-$0.320)$^{*}$ & 0.315 ($-$0.392)$^{*}$ & 0.924 (+0.084)$^{*}$ & 0.971 (+0.072)$^{*}$ \\
+VNS (Colmenar et al.), their irace setting & 0.577 ($-$0.159)$^{*}$ & 0.295 ($-$0.454)$^{*}$ & 0.646 ($-$0.106)$^{*}$ & 0.273 ($-$0.434)$^{*}$ & 0.977 (+0.137)$^{*}$ & 0.985 (+0.085)$^{*}$ \\
+$^{*}$MOEA/D-Uniform, tuned (reference), time 5T$^{*}$ & 0.767 (N=52) & 0.746 (N=10) & 0.818 (N=111) & 0.728 (N=16) & 0.827 (N=52) & 0.937 (N=11) \\
+NSGA-II, tuned, 5T & 0.525 ($-$0.242)$^{*}$ & 0.438 ($-$0.308)$^{*}$ & 0.710 ($-$0.108)$^{*}$ & 0.417 ($-$0.311)$^{*}$ & 0.557 ($-$0.270)$^{*}$ & 0.811 ($-$0.126)$^{*}$ \\
+SMS-EMOA, tuned, 5T & 0.560 ($-$0.207)$^{*}$ & 0.414 ($-$0.332)$^{*}$ & 0.701 ($-$0.117)$^{*}$ & 0.392 ($-$0.336)$^{*}$ & 0.545 ($-$0.282)$^{*}$ & 0.803 ($-$0.134)$^{*}$ \\
+GRASP, tuned, 5T & 0.773 (+0.006) & 0.579 ($-$0.166)$^{*}$ & 0.556 ($-$0.263)$^{*}$ & 0.527 ($-$0.201)$^{*}$ & 0.970 (+0.143)$^{*}$ & 0.738 ($-$0.199)$^{*}$ \\
+Tabu search, tuned, 5T & 0.711 ($-$0.056)$^{*}$ & 0.707 ($-$0.039) & 0.759 ($-$0.059)$^{*}$ & 0.662 ($-$0.066)$^{*}$ & 0.964 (+0.137)$^{*}$ & 1.013 (+0.076)$^{*}$ \\
+VNS, tuned, 5T & 0.777 (+0.010) & 0.472 ($-$0.274)$^{*}$ & 0.727 ($-$0.091)$^{*}$ & 0.413 ($-$0.315)$^{*}$ & 0.998 (+0.171)$^{*}$ & 1.007 (+0.070)$^{*}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\emph{Tuning matters far more for the baselines than for MOEA/D.} It raises the $\mathrm{HV}_{\mathrm{norm}}$ of MOEA/D-Uniform by 0.03 on the CDP (uncorrected paired Wilcoxon: p = 0.003 for n $\leq$ 150, 0.04 for n = 500), by 0.02 on the GDP with n = 500 (p = 0.07) and not detectably on the GDP with n $\leq$ 150 ($-$0.014, p = 0.09) or on the MDP (+0.01, p $\geq$ 0.12). Starting from the settings of Colmenar et al., the tabu search gains 0.08 and 0.15 on the CDP (n $\leq$ 150, n = 500) and 0.23 and 0.29 on the GDP, the VNS 0.12 and 0.16 on the CDP, 0.01 and 0.11 on the GDP, NSGA-II 0.05--0.26, SMS-EMOA 0.10--0.25 (except $-$0.04, not significant, on the small MDP instances) and the GRASP at most 0.09 (on the MDP the tabu search and the VNS gain at most 0.02). Those settings, which Colmenar et al. obtained with irace on GKD instances, carry over to the MDP --- with them the tabu search and the VNS already beat the default MOEA/D by 0.09--0.15 (Holm p < 0.0001) --- but not to the CDP and GDP, where they stay below it ($\mathrm{HV}_{\mathrm{norm}}$ 0.27--0.65 against 0.68--0.77, Holm p < 0.0001).
+
+\emph{GDP.} MOEA/D-Uniform is ahead of every tuned baseline at equal time (n $\leq$ 150, 111 instances: 0.752 for the tuned MOEA/D against 0.659 for the tabu search, 0.656 for the VNS, 0.640 for NSGA-II and 0.519 for the GRASP; n = 500, 32 instances: 0.707 against 0.600, 0.378, 0.401 and 0.410; Holm p $\leq$ 0.006 in all eight comparisons) and with five times the time (n $\leq$ 150: 0.818 against 0.759 for the tabu search, the best baseline, p < 10$^{-4}$; n = 500, 16 instances: 0.728 against 0.662, p = 0.04). IGD$^{+}$ gives the same verdict.
+
+\emph{CDP.} At equal time the tuned MOEA/D-Uniform is again ahead of every tuned baseline in $\mathrm{HV}_{\mathrm{norm}}$ (n $\leq$ 150, 52 instances: 0.736 against 0.697 for the VNS, 0.692 for the GRASP, 0.591 for the tabu search and 0.509 for NSGA-II, Holm p $\leq$ 0.007; n = 500, 20 instances: 0.749 against 0.603 for the tabu search, the best, and at most 0.454 for the others, p < 10$^{-4}$), although under IGD$^{+}$ the tuned VNS and GRASP are not significantly different from it at n $\leq$ 150 (p = 0.24 and 0.10). With five times the time the gap closes: at n $\leq$ 150 the tuned GRASP (0.773) and VNS (0.777) are on a par with the tuned MOEA/D (0.767; p $\geq$ 0.7), and at n = 500 (10 instances) the tabu search is not significantly behind (0.707 against 0.746, p = 0.43). The tie of the GRASP at equal time in Section 6.7 therefore extends, with tuning, to the VNS and, with more time, to the tabu search.
+
+\emph{SMS-EMOA.} The hypervolume-based MOEA does not change the picture. Tuned, it ends between 0.11 and 0.37 below the tuned MOEA/D-Uniform at time T in every cell ($\mathrm{HV}_{\mathrm{norm}}$ 0.547, 0.379, 0.640, 0.388, 0.468 and 0.670 in the order of Table 14; Holm p $\leq$ 0.011) and also with five times the time (0.12 to 0.34 below; p $\leq$ 0.018); it is on a par with the tuned NSGA-II (differences between +0.04 on the CDP with n $\leq$ 150 and $-$0.06 on the MDP).
+
+\emph{MDP.} Here the order reverses. On the 52 instances with 100 $\leq$ n $\leq$ 150 the tuned VNS (0.977), GRASP (0.951) and tabu search (0.941) are above the tuned MOEA/D-Uniform (0.840) by 0.10--0.14 ($\hat{A}_{12}$ 0.81--0.90, p < 10$^{-4}$), and MOEA/D does not improve with five times the time (0.827, while the tuned VNS reaches 0.998). At n = 500 (22 instances) the tabu search (0.988) and the VNS (0.996) lead the tuned MOEA/D (0.900) by 0.09--0.10 (p $\leq$ 0.0004); with five times the time (11 instances) the lead over the then better MOEA/D (0.937) is 0.07 (p = 0.04). NSGA-II (0.53 and 0.73) and, at n = 500, the GRASP (0.66) stay far behind. IGD$^{+}$ gives the same verdict on the MDP. The fronts of the small MDP instances are short (median 3.0 points for the tuned MOEA/D, 3.3--3.7 for the tuned trajectory methods), so the hypervolume is decided by the two ends. Measured against the extremes of the frozen reference front, the tuned MOEA/D reaches on average 0.991 of the best MaxSum (the reference value on 10\% of the instances) and 0.904 of the best MaxMin (16\%), whereas the tuned VNS, tabu search and GRASP reach 0.999 of the best MaxSum (65--79\% of the instances) and 0.941--0.976 of the best MaxMin; on the large instances the figures are 0.996 and 0.939 for MOEA/D against 1.001 and 0.993--0.994 for the tuned tabu search and VNS. MOEA/D therefore falls short at both ends, by a small relative amount in MaxSum that the hypervolume magnifies. A local search applied to the final archive did not close the gap in a preliminary test ($\mathrm{HV}_{\mathrm{norm}}$ 0.816 $\rightarrow$ 0.822 on the small instances), which suggests that what MOEA/D lacks is the global search for the extremes that the shake-and-local-search cycles of the VNS and the restarts of the tabu search provide; we have not tested a hybrid.
+
+\emph{Reading.} RQ1 has a problem-dependent answer. In the capacity-driven regime of the CDP and the GDP the MOEA/D family is ahead of the tuned classical methods at equal time --- clearly on the GDP, and on the CDP by a margin that more time erodes --- whereas on the unconstrained MDP the trajectory methods in the style of Colmenar et al. are better and MOEA/D should not be preferred. The ranking of Section 6.2, in which NSGA-II, GRASP and VNS are four to six ranks behind on all three problems, describes baselines with fixed budgets and overstates the advantage of MOEA/D, most of all on the MDP. Caveats: the tuning (about 56 runs per method and cell, eight training instances) is of the order of the budget of Colmenar et al. only when summed over the six cells, and the same for every method; the tabu search and the VNS are our reimplementations from the description of Colmenar et al., not their code, and on the CDP and GDP they lack insertion moves (Section 6.13); the budget is the wall-clock time of the default MOEA/D in Python, so the comparison also reflects the speed of each implementation and is not a comparison at equal numbers of evaluations.
+
+\subsection{The size of the set as a hidden dimension (CDP and GDP)}\label{sec:the_size_of_the_set_as_a_hid}
+
+Section 3 noted that f$_{1}$ never decreases when an element is added. To measure what the capacity-driven regime leaves unexplored we ran the tuned tabu search of Section 6.12 with one more move in its MaxSum local search --- insert an element that does not lower MaxMin and fits the budget --- on 12 test instances of each of the four CDP and GDP cells, with the same time limit. On the CDP with n $\leq$ 150 the insertions raise $\mathrm{HV}_{\mathrm{norm}}$ from 0.54 to 1.35 (better on 12 of 12 instances), the largest MaxSum found from 0.68 to 5.5 times that of the reference front, and the median size of the archive solutions from 17 to 28 elements. On the GDP with n $\leq$ 150 the gain is smaller (0.71 to 0.84; better on 7 of 12) and the sizes hardly change (18 to 19 elements) because the cost budget binds. With n = 500 the move changes the hypervolume little (CDP 0.69 and 0.68, GDP 0.61 and 0.62), presumably because within the time limit the search does not reach the region where growth pays, although on the CDP the largest MaxSum rises to eight times the reference value and some solutions contain all 500 elements (for which MaxMin is the smallest distance of the instance). The fronts, the reference fronts and the $\mathrm{HV}_{\mathrm{norm}}$ of Sections 6.1--6.12 therefore refer to the size regime that the capacity requirement induces, not to the full Pareto front of the problem as stated: rankings among methods that work in that regime should be unaffected, but the absolute values are not fractions of the true front, and a decision maker who cares about larger sets would face an essentially unbounded front. A formulation with a cardinality bound, or with the average instead of the sum of distances, would be a different problem; we leave it open.

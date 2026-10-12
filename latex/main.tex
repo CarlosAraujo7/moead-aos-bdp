@@ -1,0 +1,177 @@
+\documentclass[final,3p,times,11pt,authoryear]{elsarticle}
+
+% Preambulo, autores, afiliacoes e declaracoes: template do EJOR fornecido pelos autores (Novo_LCPP_EJOR).
+% Este arquivo e o MODELO usado por make_latex.py; main.tex e GERADO (nao edite main.tex: edite o modelo ou o manuscrito).
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{comment}
+\usepackage{url}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\floatstyle{ruled}
+\restylefloat{algorithm}
+% \usepackage{cuted}  % do template; nao usado aqui e ausente desta instalacao do MiKTeX
+\usepackage{tabularx}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{enumitem}
+\setlist{nosep,topsep=2pt,itemsep=1pt,parsep=0pt,leftmargin=*}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
+\usepackage{xcolor}
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
+\emergencystretch=3em
+
+\usepackage{seqsplit}
+
+\newcommand{\code}[1]{\texttt{\seqsplit{#1}}}
+
+%% Theorem-like environments
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO #1]}}}
+\newcommand{\pending}[1]{\textcolor{orange}{\textit{[PENDING #1]}}}
+
+\journal{European Journal of Operational Research}
+
+\begin{document}
+\begin{frontmatter}
+
+\title{Objective scaling, operator pools and adaptive selection in MOEA/D for bi-objective dispersion problems}
+
+%% Authors
+\author[uece]{Bonfim Amaro Junior\corref{cor1}}
+\ead{bonfim.amaro@uece.br}
+\cortext[cor1]{Corresponding author}
+\author[ufmg]{Marcio Costa Santos}
+\ead{marciocs@dcc.ufmg.br}
+\author[uece]{Guilherme Nepomuceno de Carvalho}
+\ead{nepomuceno.carvalho@aluno.uece.br}
+\author[unifor]{Plácido Rogério Pinheiro}
+\ead{placido@unifor.br}
+\author[uece]{Carlos Vinicio Dantas Araújo}
+\ead{carlos.vinicio@aluno.uece.br}
+
+%% Affiliations
+\affiliation[uece]{organization={Universidade Estadual do Ceará (UECE)},
+            addressline={Av. Dr. Silas Munguba, 1700},
+            city={Fortaleza},
+            postcode={60714-903},
+            state={Ceará},
+            country={Brazil}}
+\affiliation[ufmg]{organization={Universidade Federal de Minas Gerais (UFMG), Departamento de Ciência da Computação},
+            addressline={Av. Pres. Antônio Carlos, 6627},
+            city={Belo Horizonte},
+            postcode={31270-901},
+            state={Minas Gerais},
+            country={Brazil}}
+\affiliation[unifor]{organization={Universidade de Fortaleza (UNIFOR)},
+            addressline={Av. Washington Soares, 1321},
+            city={Fortaleza},
+            postcode={60811-341},
+            state={Ceará},
+            country={Brazil}}
+
+\begin{highlights}
+\item Bi-objective dispersion benchmarked on 443 MDP, CDP and GDP instances
+\item Scaling objectives inside the Tchebycheff function is the key MOEA/D design choice
+\item Adaptive operator selection pays off only on large or tightly constrained cases
+\item MOEA/D leads tuned baselines on constrained problems, not on the plain MDP
+\item A short MaxMin anchoring step brings the front's extreme near published values
+\end{highlights}
+
+\begin{abstract}
+Dispersion problems ask for a subset of elements that is as spread out as possible. We study the bi-objective (MaxSum + MaxMin) maximum diversity problem (MDP) and two constrained variants, the capacitated (CDP) and generalised (GDP) dispersion problems, comparing a MOEA/D with a pool of eight operators against NSGA-II, SMS-EMOA, GRASP, variable neighbourhood search (VNS) and tabu search on 443 instances. Scaling the objectives inside the Tchebycheff function is decisive (+0.11 to +0.61 normalised hypervolume). Against baselines with fixed budgets MOEA/D is significantly ahead; when every method is tuned with the same protocol and given the same wall-clock time, it stays ahead on the GDP and, at equal time, on the CDP, but is clearly behind a tabu search, a VNS and a tuned GRASP on the MDP. No adaptive operator selection beats uniform selection from the same pool on instances of up to about 200 elements or on the CDP, whatever the selector (UCB1, Thompson sampling, the published DYTS, FRRMAB), reward, budget or context; with the hypervolume reward the selectors win on 2,000-element instances and on GDP instances with a tight cost budget. A short MaxMin intensification brings the MaxMin end of the front within about 1\% of the best published CDP values on four of five instance families and improves the hypervolume. In the CDP and GDP the MaxSum objective grows with the size of the set, so all methods work in the size regime induced by the capacity constraint, which we quantify.
+\end{abstract}
+
+\begin{keyword}
+Metaheuristics \sep
+Evolutionary computations \sep
+Multiple objective programming \sep
+Combinatorial optimization \sep
+Dispersion problems
+\end{keyword}
+
+\end{frontmatter}
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/problems}
+\input{sections/methods}
+\input{sections/experimental_design}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusions}
+\input{sections/app_budgets_identical_for_all_re}
+\input{sections/app_reproducibility_checklist}
+
+%%
+%% Sections required by EJOR
+%%
+\begingroup
+\small
+\begin{spacing}{1.0}
+
+\section*{CRediT authorship contribution statement}
+% Papeis copiados do template (artigo de corte a laser): os autores devem conferir e ajustar a este trabalho.
+\textbf{Bonfim Amaro Junior} (Conceptualization, Methodology, Software, Writing original draft).
+\textbf{Marcio Costa Santos} (Methodology, Formal analysis, Writing review and editing).
+\textbf{Guilherme Nepomuceno de Carvalho} (Software, Validation, Investigation).
+\textbf{Carlos Vinicio Dantas Araújo} (Software, Validation, Investigation, Data curation, Writing review and editing).
+\textbf{Plácido Rogério Pinheiro} (Supervision, Writing review and editing, Funding acquisition).
+
+\section*{Declaration of Competing Interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+
+\section*{Declaration of Generative AI and AI-Assisted Technologies in the Writing Process}
+During the preparation of this work the authors used Claude (Anthropic) to assist with writing and debugging the analysis code, running and organising the experiments, and drafting and editing the text and the tables of the manuscript. After using this tool, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.
+
+\section*{Data and Code Availability}
+All instances are public: the MDPLIB~2.0 library \citep{marti2021a}, the CDP benchmark of \citet{peiro2021} and the GDP benchmark of \citet{lozanoosorio2022} (Zenodo record 18233882, CC-BY 4.0). The source code, the run files (one JSON file per instance, method and replicate, with seed, configuration hash and Pareto front), the frozen reference fronts and the scripts that regenerate every table and figure are available in the public repository \url{https://github.com/CarlosAraujo7/moead-aos-bdp} (code under the MIT licence; data and results under CC-BY 4.0). The file \texttt{README\_REPLICATION.md} of the repository lists the commands that regenerate each table and figure, and \texttt{regression\_check.py} re-executes stored runs from their seeds and checks bit-for-bit equality. Third-party material (the benchmark instances and the published solutions used for the comparison in Section~\ref{sec:anchor_lit}) is credited in the repository README. \todo{archive a release of the repository on Zenodo and add its DOI here}
+
+\section*{Funding}
+This work was supported by FAPEMIG-APQ-03509-26, CNPq 448503/2025-5, CNPq 442977/2023-9, CNPq 444528/2024-5, CNPq 421005/2025-4 and by CNPq, PRPq, UFMG via PIBIC fellowship.
+
+\section*{Acknowledgements}
+The authors thank the institutions Universidade Estadual do Ceará (UECE), Universidade Federal de Minas Gerais (UFMG), and Universidade de Fortaleza (UNIFOR) for institutional support during the
+development of this work.
+
+\end{spacing}
+\endgroup
+
+%%
+%% References (author-date style via natbib/elsarticle-harv)
+%%
+\begingroup
+\scriptsize
+\setlength{\bibsep}{0pt}
+\begin{spacing}{0.87}
+\bibliographystyle{elsarticle-harv}
+\bibliography{referencias}
+\end{spacing}
+\endgroup
+
+\end{document}

@@ -1,0 +1,1788 @@
+
+$$$ analyze_replicated.py --problem CDP --min-n 0 --max-n 500 --reps 3 --metric hv_norm
+CDP 0<=n<=500  metrica=hv_norm  N=100 instancias x 12 metodos x 3 replicas
+Friedman chi2=829.6 p=8.4e-171 | CD Nemenyi=1.67
+
+metodo           rank medio   hv_norm medio   CV entre replicas
+dyts_scalar          3.59       0.7161        8.2%
+dyts_hv              3.61       0.7154        9.2%
+random               3.62       0.7141        9.6%
+hypervolume          3.78       0.7105        9.1%
+thompson_hv          4.01       0.7037        9.7%
+thompson_scalar      5.10       0.6877       10.1%
+scalar               5.31       0.6835        8.9%
+grasp_pr             7.76       0.5327       19.3%
+grasp                8.22       0.5177       15.4%
+nsga2               10.52       0.2750       22.4%
+vns_pareto          11.00       0.2336       21.0%
+vns_tchebycheff     11.48       0.2235       14.0%
+
+pares significativos: Wilcoxon-Holm 55/66 | Nemenyi 44/66
+grupo do topo (nao distinguiveis do 1o, dyts_scalar): dyts_scalar, hypervolume, thompson_hv, dyts_hv, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0035  A12=0.49  p_holm=1.0000
+   thompson_hv      dif media -0.0104  A12=0.48  p_holm=0.2951
+   dyts_hv          dif media +0.0014  A12=0.50  p_holm=1.0000
+   scalar           dif media -0.0306  A12=0.39  p_holm=0.0000 *
+   thompson_scalar  dif media -0.0264  A12=0.39  p_holm=0.0001 *
+   dyts_scalar      dif media +0.0021  A12=0.52  p_holm=1.0000
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_CDP_norm_n0-500_reps3_hv_norm.json
+--- exit 0 em 0.7 min
+
+$$$ analyze_replicated.py --problem CDP --min-n 0 --max-n 500 --reps 3 --metric igd_plus
+CDP 0<=n<=500  metrica=igd_plus  N=100 instancias x 12 metodos x 3 replicas
+Friedman chi2=824.9 p=8.4e-170 | CD Nemenyi=1.67
+
+metodo           rank medio   igd_plus medio   CV entre replicas
+random               3.22       0.1116       35.2%
+dyts_scalar          3.35       0.1127       30.3%
+dyts_hv              3.75       0.1165       33.1%
+hypervolume          4.01       0.1202       31.6%
+thompson_hv          4.12       0.1220       32.8%
+thompson_scalar      5.18       0.1320       28.6%
+scalar               5.56       0.1331       29.0%
+grasp_pr             7.68       0.2254       17.4%
+grasp                8.20       0.2364       15.1%
+nsga2               10.80       0.4514       11.6%
+vns_pareto          10.90       0.4486       10.5%
+vns_tchebycheff     11.23       0.4976        6.6%
+
+pares significativos: Wilcoxon-Holm 55/66 | Nemenyi 46/66
+grupo do topo (nao distinguiveis do 1o, random): random, hypervolume, dyts_hv, dyts_scalar
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0085  A12=0.47  p_holm=0.1361
+   thompson_hv      dif media -0.0104  A12=0.47  p_holm=0.0062 *
+   dyts_hv          dif media -0.0049  A12=0.48  p_holm=0.2167
+   scalar           dif media -0.0215  A12=0.40  p_holm=0.0000 *
+   thompson_scalar  dif media -0.0204  A12=0.42  p_holm=0.0000 *
+   dyts_scalar      dif media -0.0011  A12=0.51  p_holm=0.9370
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_CDP_norm_n0-500_reps3_igd_plus.json
+--- exit 0 em 0.7 min
+
+$$$ analyze_replicated.py --problem CDP --min-n 0 --max-n 500 --reps 3 --metric eps_plus
+CDP 0<=n<=500  metrica=eps_plus  N=100 instancias x 12 metodos x 3 replicas
+Friedman chi2=702.2 p=1.8e-143 | CD Nemenyi=1.67
+
+metodo           rank medio   eps_plus medio   CV entre replicas
+hypervolume          4.00       0.3212       16.7%
+dyts_hv              4.09       0.3155       16.2%
+dyts_scalar          4.18       0.3199       13.7%
+thompson_hv          4.21       0.3216       16.0%
+random               4.33       0.3209       15.1%
+scalar               5.26       0.3361       14.1%
+thompson_scalar      5.38       0.3356       17.0%
+grasp_pr             6.48       0.4063       14.9%
+grasp                7.16       0.4148       12.3%
+nsga2               10.80       0.6694        8.8%
+vns_tchebycheff     11.04       0.6889        5.4%
+vns_pareto          11.06       0.6860        8.1%
+
+pares significativos: Wilcoxon-Holm 47/66 | Nemenyi 39/66
+grupo do topo (nao distinguiveis do 1o, hypervolume): hypervolume, thompson_hv, dyts_hv, dyts_scalar, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0002  A12=0.50  p_holm=1.0000
+   thompson_hv      dif media -0.0007  A12=0.51  p_holm=1.0000
+   dyts_hv          dif media +0.0055  A12=0.51  p_holm=0.7451
+   scalar           dif media -0.0151  A12=0.46  p_holm=0.0297 *
+   thompson_scalar  dif media -0.0147  A12=0.46  p_holm=0.0476 *
+   dyts_scalar      dif media +0.0010  A12=0.52  p_holm=0.7451
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_CDP_norm_n0-500_reps3_eps_plus.json
+--- exit 0 em 0.7 min
+
+$$$ analyze_replicated.py --problem GDP --min-n 0 --max-n 500 --reps 3 --metric hv_norm
+GDP 0<=n<=500  metrica=hv_norm  N=200 instancias x 12 metodos x 3 replicas
+Friedman chi2=1593.3 p=0 | CD Nemenyi=1.18
+
+metodo           rank medio   hv_norm medio   CV entre replicas
+dyts_hv              3.25       0.7367       13.3%
+random               3.53       0.7298       12.3%
+dyts_scalar          3.54       0.7261       11.5%
+hypervolume          3.65       0.7205       14.9%
+thompson_hv          3.71       0.7210       12.6%
+thompson_scalar      5.25       0.6758       13.7%
+scalar               6.04       0.6482       12.5%
+grasp_pr             8.90       0.3452       13.6%
+grasp                9.27       0.3342       15.5%
+nsga2                9.39       0.3808       18.2%
+vns_pareto          10.67       0.2775       22.8%
+vns_tchebycheff     10.79       0.2575       15.9%
+
+pares significativos: Wilcoxon-Holm 53/66 | Nemenyi 51/66
+grupo do topo (nao distinguiveis do 1o, dyts_hv): dyts_hv, hypervolume, thompson_hv, dyts_scalar, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0092  A12=0.49  p_holm=1.0000
+   thompson_hv      dif media -0.0088  A12=0.49  p_holm=1.0000
+   dyts_hv          dif media +0.0069  A12=0.51  p_holm=0.9342
+   scalar           dif media -0.0815  A12=0.32  p_holm=0.0000 *
+   thompson_scalar  dif media -0.0540  A12=0.37  p_holm=0.0000 *
+   dyts_scalar      dif media -0.0037  A12=0.50  p_holm=1.0000
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_GDP_norm_n0-500_reps3_hv_norm.json
+--- exit 0 em 0.4 min
+
+$$$ analyze_replicated.py --problem GDP --min-n 0 --max-n 500 --reps 3 --metric igd_plus
+GDP 0<=n<=500  metrica=igd_plus  N=200 instancias x 12 metodos x 3 replicas
+Friedman chi2=1565.2 p=0 | CD Nemenyi=1.18
+
+metodo           rank medio   igd_plus medio   CV entre replicas
+dyts_hv              3.35       0.1086       35.6%
+random               3.46       0.1082       32.4%
+dyts_scalar          3.52       0.1112       35.2%
+hypervolume          3.61       0.1151       35.2%
+thompson_hv          3.80       0.1181       33.5%
+thompson_scalar      5.36       0.1420       32.8%
+scalar               6.17       0.1568       30.2%
+grasp_pr             8.81       0.4140        9.9%
+grasp                9.00       0.4192       10.7%
+nsga2                9.36       0.3227       15.1%
+vns_pareto          10.63       0.4257       14.7%
+vns_tchebycheff     10.94       0.4621        9.1%
+
+pares significativos: Wilcoxon-Holm 51/66 | Nemenyi 51/66
+grupo do topo (nao distinguiveis do 1o, dyts_hv): dyts_hv, hypervolume, thompson_hv, dyts_scalar, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0069  A12=0.49  p_holm=0.6868
+   thompson_hv      dif media -0.0099  A12=0.48  p_holm=0.2733
+   dyts_hv          dif media -0.0003  A12=0.50  p_holm=1.0000
+   scalar           dif media -0.0486  A12=0.32  p_holm=0.0000 *
+   thompson_scalar  dif media -0.0338  A12=0.39  p_holm=0.0000 *
+   dyts_scalar      dif media -0.0030  A12=0.50  p_holm=1.0000
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_GDP_norm_n0-500_reps3_igd_plus.json
+--- exit 0 em 0.4 min
+
+$$$ analyze_replicated.py --problem GDP --min-n 0 --max-n 500 --reps 3 --metric eps_plus
+GDP 0<=n<=500  metrica=eps_plus  N=200 instancias x 12 metodos x 3 replicas
+Friedman chi2=1419.3 p=8.3e-298 | CD Nemenyi=1.18
+
+metodo           rank medio   eps_plus medio   CV entre replicas
+dyts_hv              3.35       0.3118       25.2%
+random               3.77       0.3188       21.3%
+dyts_scalar          3.91       0.3253       24.9%
+hypervolume          3.92       0.3276       24.0%
+thompson_hv          3.93       0.3275       26.1%
+thompson_scalar      5.29       0.3607       22.8%
+scalar               5.67       0.3729       21.1%
+grasp_pr             8.52       0.6073        7.7%
+grasp                8.99       0.6217        7.9%
+nsga2                9.67       0.6030       10.2%
+vns_tchebycheff     10.32       0.6787        7.2%
+vns_pareto          10.65       0.6664       10.7%
+
+pares significativos: Wilcoxon-Holm 52/66 | Nemenyi 49/66
+grupo do topo (nao distinguiveis do 1o, dyts_hv): dyts_hv, hypervolume, thompson_hv, dyts_scalar, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0088  A12=0.49  p_holm=1.0000
+   thompson_hv      dif media -0.0087  A12=0.48  p_holm=1.0000
+   dyts_hv          dif media +0.0070  A12=0.51  p_holm=0.7055
+   scalar           dif media -0.0541  A12=0.38  p_holm=0.0000 *
+   thompson_scalar  dif media -0.0419  A12=0.40  p_holm=0.0000 *
+   dyts_scalar      dif media -0.0065  A12=0.49  p_holm=1.0000
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_GDP_norm_n0-500_reps3_eps_plus.json
+--- exit 0 em 0.4 min
+
+$$$ analyze_replicated.py --problem MDP --min-n 0 --max-n 1000 --reps 3 --metric hv_norm
+MDP 0<=n<=1000  metrica=hv_norm  N=143 instancias x 12 metodos x 3 replicas
+Friedman chi2=642.9 p=9.1e-131 | CD Nemenyi=1.39
+
+metodo           rank medio   hv_norm medio   CV entre replicas
+dyts_hv              4.20       0.8783        8.1%
+hypervolume          4.25       0.8724        8.9%
+random               4.50       0.8715        7.7%
+dyts_scalar          4.76       0.8662        9.0%
+thompson_hv          5.01       0.8635        8.0%
+thompson_scalar      5.31       0.8494       10.3%
+scalar               5.71       0.8378       10.1%
+vns_tchebycheff      7.39       0.6206       11.0%
+grasp                8.53       0.5831       20.8%
+grasp_pr             8.59       0.5901       19.5%
+vns_pareto           9.16       0.5346       30.4%
+nsga2               10.59       0.4306       29.4%
+
+pares significativos: Wilcoxon-Holm 51/66 | Nemenyi 42/66
+grupo do topo (nao distinguiveis do 1o, dyts_hv): dyts_hv, hypervolume, dyts_scalar, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media +0.0009  A12=0.49  p_holm=1.0000
+   thompson_hv      dif media -0.0080  A12=0.48  p_holm=0.6393
+   dyts_hv          dif media +0.0068  A12=0.51  p_holm=0.6393
+   scalar           dif media -0.0337  A12=0.43  p_holm=0.0005 *
+   thompson_scalar  dif media -0.0221  A12=0.44  p_holm=0.0009 *
+   dyts_scalar      dif media -0.0053  A12=0.48  p_holm=1.0000
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_MDP_norm_n0-1000_reps3_hv_norm.json
+--- exit 0 em 0.2 min
+
+$$$ analyze_replicated.py --problem MDP --min-n 0 --max-n 1000 --reps 3 --metric igd_plus
+MDP 0<=n<=1000  metrica=igd_plus  N=143 instancias x 12 metodos x 3 replicas
+Friedman chi2=595.1 p=1.6e-120 | CD Nemenyi=1.39
+
+metodo           rank medio   igd_plus medio   CV entre replicas
+hypervolume          4.29       0.0798       63.1%
+dyts_hv              4.34       0.0770       58.7%
+random               4.72       0.0792       57.6%
+dyts_scalar          4.78       0.0823       61.5%
+thompson_hv          5.09       0.0875       56.3%
+thompson_scalar      5.29       0.0961       59.0%
+scalar               5.77       0.1029       59.2%
+vns_tchebycheff      7.17       0.2194       37.8%
+grasp_pr             8.51       0.2856       30.0%
+vns_pareto           8.69       0.2790       49.7%
+grasp                8.73       0.2950       28.7%
+nsga2               10.60       0.3908       23.4%
+
+pares significativos: Wilcoxon-Holm 48/66 | Nemenyi 43/66
+grupo do topo (nao distinguiveis do 1o, hypervolume): hypervolume, thompson_hv, dyts_hv, dyts_scalar, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0006  A12=0.50  p_holm=0.7747
+   thompson_hv      dif media -0.0083  A12=0.49  p_holm=0.7747
+   dyts_hv          dif media +0.0022  A12=0.52  p_holm=0.7747
+   scalar           dif media -0.0237  A12=0.42  p_holm=0.0009 *
+   thompson_scalar  dif media -0.0169  A12=0.44  p_holm=0.0018 *
+   dyts_scalar      dif media -0.0031  A12=0.50  p_holm=0.9245
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_MDP_norm_n0-1000_reps3_igd_plus.json
+--- exit 0 em 0.2 min
+
+$$$ analyze_replicated.py --problem MDP --min-n 0 --max-n 1000 --reps 3 --metric eps_plus
+MDP 0<=n<=1000  metrica=eps_plus  N=143 instancias x 12 metodos x 3 replicas
+Friedman chi2=617.4 p=2.6e-125 | CD Nemenyi=1.39
+
+metodo           rank medio   eps_plus medio   CV entre replicas
+random               4.48       0.1274       42.5%
+hypervolume          4.49       0.1295       50.8%
+dyts_hv              4.50       0.1229       43.6%
+dyts_scalar          4.73       0.1334       47.0%
+thompson_scalar      5.02       0.1423       48.3%
+thompson_hv          5.06       0.1372       43.9%
+scalar               5.76       0.1520       45.9%
+vns_tchebycheff      7.55       0.3861       31.7%
+grasp_pr             8.12       0.3373       24.3%
+grasp                8.39       0.3458       23.8%
+vns_pareto           9.32       0.4724       38.1%
+nsga2               10.59       0.5304       19.3%
+
+pares significativos: Wilcoxon-Holm 47/66 | Nemenyi 39/66
+grupo do topo (nao distinguiveis do 1o, random): random, hypervolume, thompson_hv, dyts_hv, dyts_scalar
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0022  A12=0.49  p_holm=0.9763
+   thompson_hv      dif media -0.0099  A12=0.48  p_holm=0.4889
+   dyts_hv          dif media +0.0044  A12=0.51  p_holm=0.9375
+   scalar           dif media -0.0246  A12=0.44  p_holm=0.0003 *
+   thompson_scalar  dif media -0.0150  A12=0.45  p_holm=0.0091 *
+   dyts_scalar      dif media -0.0060  A12=0.48  p_holm=0.6286
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_MDP_norm_n0-1000_reps3_eps_plus.json
+--- exit 0 em 0.2 min
+
+$$$ analyze_replicated.py --problem CDP --min-n 0 --max-n 150 --reps 5 --metric hv_norm
+CDP 0<=n<=150  metrica=hv_norm  N=60 instancias x 12 metodos x 5 replicas
+Friedman chi2=491.8 p=1.8e-98 | CD Nemenyi=2.15
+
+metodo           rank medio   hv_norm medio   CV entre replicas
+random               3.45       0.7121       10.0%
+hypervolume          3.58       0.7106        9.4%
+dyts_scalar          3.77       0.7118        9.6%
+dyts_hv              3.87       0.7101       10.2%
+thompson_hv          3.98       0.7033       10.2%
+thompson_scalar      5.02       0.6899       10.6%
+scalar               5.63       0.6812       10.9%
+grasp_pr             7.35       0.6095        8.6%
+grasp                8.35       0.5914        7.7%
+nsga2               10.68       0.3510       24.2%
+vns_tchebycheff     11.13       0.3164       17.1%
+vns_pareto          11.18       0.3059       28.9%
+
+pares significativos: Wilcoxon-Holm 51/66 | Nemenyi 41/66
+grupo do topo (nao distinguiveis do 1o, random): random, hypervolume, thompson_hv, dyts_hv, dyts_scalar
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0015  A12=0.49  p_holm=1.0000
+   thompson_hv      dif media -0.0088  A12=0.49  p_holm=0.3042
+   dyts_hv          dif media -0.0020  A12=0.47  p_holm=0.8673
+   scalar           dif media -0.0309  A12=0.38  p_holm=0.0001 *
+   thompson_scalar  dif media -0.0222  A12=0.39  p_holm=0.0140 *
+   dyts_scalar      dif media -0.0003  A12=0.52  p_holm=1.0000
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_CDP_norm_n0-150_reps5_hv_norm.json
+--- exit 0 em 1.1 min
+
+$$$ analyze_replicated.py --problem CDP --min-n 500 --max-n 500 --reps 3 --metric hv_norm
+CDP 500<=n<=500  metrica=hv_norm  N=40 instancias x 12 metodos x 3 replicas
+Friedman chi2=357.1 p=7.6e-70 | CD Nemenyi=2.63
+
+metodo           rank medio   hv_norm medio   CV entre replicas
+dyts_scalar          3.38       0.7259        7.0%
+random               3.58       0.7191        8.3%
+dyts_hv              3.60       0.7206        8.3%
+hypervolume          3.80       0.7150        8.6%
+thompson_hv          4.03       0.7096        8.4%
+scalar               4.75       0.6922        7.9%
+thompson_scalar      4.88       0.6886        9.4%
+grasp_pr             8.47       0.4183       35.5%
+grasp                8.53       0.4082       27.0%
+nsga2               10.30       0.1621       19.6%
+vns_pareto          10.75       0.1275       20.3%
+vns_tchebycheff     11.95       0.0837       12.4%
+
+pares significativos: Wilcoxon-Holm 46/66 | Nemenyi 37/66
+grupo do topo (nao distinguiveis do 1o, dyts_scalar): dyts_scalar, hypervolume, thompson_hv, dyts_hv, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0041  A12=0.48  p_holm=1.0000
+   thompson_hv      dif media -0.0096  A12=0.45  p_holm=1.0000
+   dyts_hv          dif media +0.0014  A12=0.50  p_holm=1.0000
+   scalar           dif media -0.0270  A12=0.41  p_holm=0.0413 *
+   thompson_scalar  dif media -0.0306  A12=0.37  p_holm=0.0166 *
+   dyts_scalar      dif media +0.0067  A12=0.52  p_holm=1.0000
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_CDP_norm_n500-500_reps3_hv_norm.json
+--- exit 0 em 0.0 min
+
+$$$ analyze_replicated.py --problem GDP --min-n 0 --max-n 150 --reps 5 --metric hv_norm
+GDP 0<=n<=150  metrica=hv_norm  N=120 instancias x 12 metodos x 5 replicas
+Friedman chi2=926.6 p=1.2e-191 | CD Nemenyi=1.52
+
+metodo           rank medio   hv_norm medio   CV entre replicas
+hypervolume          3.41       0.7633       14.9%
+random               3.42       0.7655       13.0%
+dyts_scalar          3.55       0.7638       13.2%
+dyts_hv              3.62       0.7608       15.0%
+thompson_hv          3.76       0.7564       15.3%
+thompson_scalar      5.49       0.7153       14.9%
+scalar               6.04       0.6910       13.8%
+grasp_pr             8.84       0.4089        7.5%
+grasp                9.22       0.4008        7.9%
+nsga2                9.36       0.4775       22.5%
+vns_pareto          10.59       0.3735       28.1%
+vns_tchebycheff     10.70       0.3491       21.0%
+
+pares significativos: Wilcoxon-Holm 51/66 | Nemenyi 47/66
+grupo do topo (nao distinguiveis do 1o, hypervolume): hypervolume, thompson_hv, dyts_hv, dyts_scalar, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media -0.0022  A12=0.49  p_holm=1.0000
+   thompson_hv      dif media -0.0091  A12=0.49  p_holm=0.7267
+   dyts_hv          dif media -0.0046  A12=0.49  p_holm=1.0000
+   scalar           dif media -0.0745  A12=0.31  p_holm=0.0000 *
+   thompson_scalar  dif media -0.0502  A12=0.36  p_holm=0.0000 *
+   dyts_scalar      dif media -0.0017  A12=0.51  p_holm=1.0000
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_GDP_norm_n0-150_reps5_hv_norm.json
+--- exit 0 em 0.6 min
+
+$$$ analyze_replicated.py --problem GDP --min-n 500 --max-n 500 --reps 3 --metric hv_norm
+GDP 500<=n<=500  metrica=hv_norm  N=80 instancias x 12 metodos x 3 replicas
+Friedman chi2=701.2 p=3e-143 | CD Nemenyi=1.86
+
+metodo           rank medio   hv_norm medio   CV entre replicas
+dyts_hv              2.89       0.6955       13.2%
+hypervolume          3.46       0.6741       14.2%
+dyts_scalar          3.52       0.6703       13.2%
+thompson_hv          3.54       0.6738       10.8%
+random               3.75       0.6675       13.3%
+thompson_scalar      5.19       0.6195       12.9%
+scalar               5.67       0.5951       13.4%
+grasp_pr             9.06       0.2513       24.3%
+grasp                9.46       0.2335       26.8%
+nsga2                9.65       0.2342       16.8%
+vns_pareto          10.82       0.1246       24.1%
+vns_tchebycheff     10.97       0.1198       16.2%
+
+pares significativos: Wilcoxon-Holm 52/66 | Nemenyi 42/66
+grupo do topo (nao distinguiveis do 1o, dyts_hv): dyts_hv, hypervolume, thompson_hv, dyts_scalar, random
+
+AOS vs random (Wilcoxon-Holm entre as 6 comparacoes; A12 = P(AOS melhor que random)):
+   hypervolume      dif media +0.0066  A12=0.53  p_holm=0.9484
+   thompson_hv      dif media +0.0063  A12=0.50  p_holm=1.0000
+   dyts_hv          dif media +0.0280  A12=0.56  p_holm=0.0519
+   scalar           dif media -0.0724  A12=0.32  p_holm=0.0000 *
+   thompson_scalar  dif media -0.0480  A12=0.35  p_holm=0.0000 *
+   dyts_scalar      dif media +0.0028  A12=0.50  p_holm=1.0000
+
+salvo: C:\Pesquisas\moead-aos-bdp\results\analysis\stats_GDP_norm_n500-500_reps3_hv_norm.json
+--- exit 0 em 0.1 min
+
+$$$ analyze_by_family.py --problem MDP --reps 3
+MDP: 143 instancias, 3 replicas
+GKD-c                  N= 10  melhor AOS UCB-HV     2.40 | melhor baseline NSGA-II    8.00 | Uniform  2.70
+MDG-a                  N= 10  melhor AOS TS-HV      4.70 | melhor baseline VNS-Tch    3.80 | Uniform  5.60
+MDG-b                  N= 40  melhor AOS GTS-HV     3.38 | melhor baseline VNS-Tch    7.51 | Uniform  4.42
+MGPO                   N=  5  melhor AOS GTS-HV     2.00 | melhor baseline GRASP-PR   8.40 | Uniform  5.20
+SOM-a                  N= 50  melhor AOS Uniform    4.58 | melhor baseline VNS-Tch    6.04 | Uniform  4.58
+SOM-b                  N= 12  melhor AOS UCB-Scal   3.62 | melhor baseline VNS-Tch    7.29 | Uniform  4.58
+real_facility          N=  4  melhor AOS TS-Scal    2.75 | melhor baseline GRASP-MO   8.25 | Uniform  4.00
+real_portfolio         N=  4  melhor AOS TS-Scal    4.75 | melhor baseline GRASP-PR   6.12 | Uniform  5.88
+real_sensor            N=  4  melhor AOS GTS-HV     2.25 | melhor baseline GRASP-MO   8.50 | Uniform  5.25
+real_team              N=  4  melhor AOS GTS-HV     2.25 | melhor baseline GRASP-PR   8.50 | Uniform  3.25
+--- exit 0 em 0.2 min
+
+$$$ analyze_by_family.py --problem CDP --reps 3
+CDP: 100 instancias, 3 replicas
+GKD-b n=150            N= 20  melhor AOS GTS-Scal   2.80 | melhor baseline GRASP-PR   8.20 | Uniform  3.60
+GKD-b n=50             N= 20  melhor AOS Uniform    3.15 | melhor baseline GRASP-PR   7.40 | Uniform  3.15
+GKD-c n=500            N= 20  melhor AOS GTS-Scal   2.95 | melhor baseline GRASP-PR   8.35 | Uniform  3.70
+MDG-b n=500            N= 20  melhor AOS GTS-HV     3.35 | melhor baseline GRASP-MO   8.40 | Uniform  3.45
+SOM-a n=50             N= 20  melhor AOS GTS-HV     3.80 | melhor baseline GRASP-PR   6.25 | Uniform  4.20
+--- exit 0 em 0.7 min
+
+$$$ analyze_by_family.py --problem GDP --reps 3
+GDP: 200 instancias, 3 replicas
+GKD-b n=150            N= 40  melhor AOS Uniform    2.90 | melhor baseline NSGA-II    8.43 | Uniform  2.90
+GKD-b n=50             N= 40  melhor AOS Uniform    2.98 | melhor baseline NSGA-II    8.95 | Uniform  2.98
+GKD-c n=500            N= 40  melhor AOS GTS-HV     2.73 | melhor baseline GRASP-PR   9.05 | Uniform  3.52
+MDG-b n=500            N= 40  melhor AOS GTS-HV     3.05 | melhor baseline GRASP-PR   9.07 | Uniform  3.98
+SOM-a n=50             N= 40  melhor AOS GTS-HV     3.73 | melhor baseline GRASP-MO   7.64 | Uniform  4.26
+--- exit 0 em 0.4 min
+
+$$$ analyze_e4.py
+
+=== CDP n<=150: N=60 instancias x 3 replicas; tempo mediano do MOEA/D-Uniform (= limite dos baselines a tempo igual) 2.3s
+    tempo mediano dos baselines no orcamento padrao (capacitated_norm; cargas diferentes, so indicativo): nsga2 1.3s, vns_pareto 0.1s, vns_tchebycheff 0.3s, grasp 0.9s, grasp_pr 0.8s
+  GRASP-PR (equal time)      rank  1.88  hv_norm 0.7046  | vs Uniform: -0.0061  A12=0.43  p_holm=0.606  | ganho do tempo extra: +0.0957
+  MOEA/D-Uniform             rank  2.08  hv_norm 0.7107
+  GRASP-MO (equal time)      rank  2.23  hv_norm 0.6929  | vs Uniform: -0.0178  A12=0.40  p_holm=0.29  | ganho do tempo extra: +0.1021
+  GRASP-PR (default)         rank  4.32  hv_norm 0.6089
+  GRASP-MO (default)         rank  4.78  hv_norm 0.5907
+  NSGA-II (equal time)       rank  6.58  hv_norm 0.4561  | vs Uniform: -0.2546  A12=0.07  p_holm=8.15e-11  | ganho do tempo extra: +0.1059
+  VNS-Tcheb. (equal time)    rank  7.97  hv_norm 0.3786  | vs Uniform: -0.3321  A12=0.03  p_holm=8.15e-11  | ganho do tempo extra: +0.0620
+  VNS-Pareto (equal time)    rank  8.38  hv_norm 0.3508  | vs Uniform: -0.3599  A12=0.03  p_holm=8.15e-11  | ganho do tempo extra: +0.0464
+  NSGA-II (default)          rank  8.55  hv_norm 0.3502
+  VNS-Tcheb. (default)       rank  9.53  hv_norm 0.3167
+  VNS-Pareto (default)       rank  9.69  hv_norm 0.3044
+
+=== CDP n=500: N=20 instancias x 3 replicas; tempo mediano do MOEA/D-Uniform (= limite dos baselines a tempo igual) 66.5s
+    tempo mediano dos baselines no orcamento padrao (capacitated_norm; cargas diferentes, so indicativo): nsga2 13.0s, vns_pareto 2.0s, vns_tchebycheff 3.9s, grasp 88.9s, grasp_pr 79.5s
+  MOEA/D-Uniform             rank  1.00  hv_norm 0.7206
+  GRASP-PR (equal time)      rank  3.40  hv_norm 0.4300  | vs Uniform: -0.2906  A12=0.10  p_holm=9.54e-06  | ganho do tempo extra: +0.0098
+  GRASP-MO (equal time)      rank  3.45  hv_norm 0.4321  | vs Uniform: -0.2885  A12=0.06  p_holm=9.54e-06  | ganho do tempo extra: +0.0202
+  GRASP-PR (default)         rank  3.70  hv_norm 0.4202
+  GRASP-MO (default)         rank  3.80  hv_norm 0.4119
+  NSGA-II (equal time)       rank  5.70  hv_norm 0.2852  | vs Uniform: -0.4354  A12=0.00  p_holm=9.54e-06  | ganho do tempo extra: +0.1204
+  VNS-Tcheb. (equal time)    rank  7.65  hv_norm 0.1613  | vs Uniform: -0.5593  A12=0.00  p_holm=9.54e-06  | ganho do tempo extra: +0.0727
+  VNS-Pareto (equal time)    rank  8.15  hv_norm 0.1559  | vs Uniform: -0.5648  A12=0.00  p_holm=9.54e-06  | ganho do tempo extra: +0.0238
+  NSGA-II (default)          rank  8.60  hv_norm 0.1648
+  VNS-Pareto (default)       rank  9.55  hv_norm 0.1321
+  VNS-Tcheb. (default)       rank 11.00  hv_norm 0.0885
+
+=== GDP n<=150: N=120 instancias x 3 replicas; tempo mediano do MOEA/D-Uniform (= limite dos baselines a tempo igual) 3.4s
+    tempo mediano dos baselines no orcamento padrao (capacitated_norm; cargas diferentes, so indicativo): nsga2 1.5s, vns_pareto 0.1s, vns_tchebycheff 0.3s, grasp 0.8s, grasp_pr 0.8s
+  MOEA/D-Uniform             rank  1.68  hv_norm 0.7713
+  GRASP-PR (equal time)      rank  4.28  hv_norm 0.4889  | vs Uniform: -0.2824  A12=0.14  p_holm=2.41e-12  | ganho do tempo extra: +0.0810
+  GRASP-MO (equal time)      rank  4.54  hv_norm 0.4850  | vs Uniform: -0.2863  A12=0.14  p_holm=2.42e-12  | ganho do tempo extra: +0.0836
+  NSGA-II (equal time)       rank  4.60  hv_norm 0.5588  | vs Uniform: -0.2125  A12=0.24  p_holm=5.02e-20  | ganho do tempo extra: +0.0802
+  VNS-Tcheb. (equal time)    rank  6.49  hv_norm 0.4358  | vs Uniform: -0.3355  A12=0.07  p_holm=9.89e-21  | ganho do tempo extra: +0.0865
+  GRASP-PR (default)         rank  6.57  hv_norm 0.4079
+  NSGA-II (default)          rank  6.64  hv_norm 0.4785
+  VNS-Pareto (equal time)    rank  6.86  hv_norm 0.4425  | vs Uniform: -0.3288  A12=0.10  p_holm=9.86e-21  | ganho do tempo extra: +0.0631
+  GRASP-MO (default)         rank  6.95  hv_norm 0.4014
+  VNS-Pareto (default)       rank  8.63  hv_norm 0.3794
+  VNS-Tcheb. (default)       rank  8.75  hv_norm 0.3493
+
+=== GDP n=500: N=40 instancias x 3 replicas; tempo mediano do MOEA/D-Uniform (= limite dos baselines a tempo igual) 91.7s
+    tempo mediano dos baselines no orcamento padrao (capacitated_norm; cargas diferentes, so indicativo): nsga2 15.6s, vns_pareto 1.8s, vns_tchebycheff 4.1s, grasp 74.0s, grasp_pr 75.5s
+  MOEA/D-Uniform             rank  1.00  hv_norm 0.6815
+  GRASP-PR (equal time)      rank  2.77  hv_norm 0.3214  | vs Uniform: -0.3601  A12=0.02  p_holm=9.09e-12  | ganho do tempo extra: +0.0333
+  GRASP-MO (equal time)      rank  3.67  hv_norm 0.2991  | vs Uniform: -0.3824  A12=0.02  p_holm=9.09e-12  | ganho do tempo extra: +0.0294
+  GRASP-PR (default)         rank  3.85  hv_norm 0.2881
+  GRASP-MO (default)         rank  4.83  hv_norm 0.2697
+  NSGA-II (equal time)       rank  6.40  hv_norm 0.2208  | vs Uniform: -0.4607  A12=0.01  p_holm=9.09e-12  | ganho do tempo extra: +0.0332
+  VNS-Tcheb. (equal time)    rank  6.58  hv_norm 0.1884  | vs Uniform: -0.4930  A12=0.00  p_holm=9.09e-12  | ganho do tempo extra: +0.0550
+  NSGA-II (default)          rank  8.20  hv_norm 0.1875
+  VNS-Pareto (equal time)    rank  8.47  hv_norm 0.1540  | vs Uniform: -0.5275  A12=0.00  p_holm=9.09e-12  | ganho do tempo extra: +0.0277
+  VNS-Tcheb. (default)       rank 10.00  hv_norm 0.1334
+  VNS-Pareto (default)       rank 10.22  hv_norm 0.1263
+--- exit 0 em 1.0 min
+
+$$$ analyze_e5.py
+
+=== GDP n<=150: N=120 instancias, 3 replicas; rank medio (de 12) original -> relaxado (negativo = melhora); Wilcoxon sobre ranks, Holm x12
+  Uniform      3.41 ->  3.48 (+0.06)  p_holm=1.0000
+  GTS-HV       3.43 ->  4.01 (+0.58)  p_holm=0.1140
+  GTS-Scal     3.51 ->  3.58 (+0.08)  p_holm=1.0000
+  TS-HV        3.76 ->  3.95 (+0.19)  p_holm=1.0000
+  UCB-HV       3.78 ->  3.92 (+0.14)  p_holm=1.0000
+  TS-Scal      5.27 ->  5.40 (+0.13)  p_holm=1.0000
+  UCB-Scal     6.16 ->  5.40 (-0.76)  p_holm=0.0100 *
+  GRASP-PR     8.93 ->  7.57 (-1.37)  p_holm=0.0000 *
+  NSGA-II      9.20 -> 10.29 (+1.09)  p_holm=0.0000 *
+  GRASP-MO     9.32 ->  8.29 (-1.03)  p_holm=0.0000 *
+  VNS-Pareto  10.55 -> 11.56 (+1.01)  p_holm=0.0000 *
+  VNS-Tcheb.  10.67 -> 10.56 (-0.11)  p_holm=1.0000
+  melhor rank medio: original 3.41; relaxado 3.48
+
+=== GDP n=500: N=20 instancias, 3 replicas; rank medio (de 12) original -> relaxado (negativo = melhora); Wilcoxon sobre ranks, Holm x12
+  GTS-HV       2.65 ->  4.55 (+1.90)  p_holm=0.0646
+  GTS-Scal     2.90 ->  2.50 (-0.40)  p_holm=1.0000
+  Uniform      3.45 ->  3.20 (-0.25)  p_holm=1.0000
+  TS-HV        3.75 ->  4.35 (+0.60)  p_holm=1.0000
+  UCB-HV       3.80 ->  3.90 (+0.10)  p_holm=1.0000
+  UCB-Scal     5.60 ->  4.75 (-0.85)  p_holm=1.0000
+  TS-Scal      5.85 ->  4.85 (-1.00)  p_holm=1.0000
+  GRASP-PR     8.60 ->  8.40 (-0.20)  p_holm=1.0000
+  GRASP-MO     9.15 ->  8.95 (-0.20)  p_holm=1.0000
+  NSGA-II      9.55 ->  9.75 (+0.20)  p_holm=1.0000
+  VNS-Tcheb.  11.25 -> 11.20 (-0.05)  p_holm=1.0000
+  VNS-Pareto  11.45 -> 11.60 (+0.15)  p_holm=1.0000
+  melhor rank medio: original 2.65; relaxado 2.50
+--- exit 0 em 0.1 min
+
+$$$ analyze_e6.py
+5 instancias completas de 5 com algum run: ['MDG-b_21_n2000_m200', 'MDG-b_31_n2000_m200', 'MDG-b_40_n2000_m200', 'MDG-c_10_n3000_m400', 'MDG-c_9_n3000_m400']
+
+hv_norm (media das 3 replicas) por instancia
+instancia                   Uniform     UCB-HV     GTS-HV    NSGA-II   GRASP-PR VNS-Tcheb.
+MDG-b_21_n2000_m200           0.697      0.880      0.858      0.052      0.274      0.008
+MDG-b_31_n2000_m200           0.720      0.898      0.868      0.060      0.156      0.005
+MDG-b_40_n2000_m200           0.688      0.787      0.803      0.061      0.103      0.011
+MDG-c_10_n3000_m400           0.913      0.917      0.951      0.411      0.165      0.026
+MDG-c_9_n3000_m400            0.492      0.497      0.497      0.443      0.569      0.390
+
+rank medio (de 6) / hv_norm medio / tempo mediano por run (s) / |frente| medio
+  GTS-HV      rank 1.60  hv_norm 0.795  tempo      945  |PF| 53.7
+  UCB-HV      rank 1.80  hv_norm 0.796  tempo      981  |PF| 56.7
+  Uniform     rank 3.20  hv_norm 0.702  tempo      848  |PF| 45.7
+  GRASP-PR    rank 3.60  hv_norm 0.254  tempo     1438  |PF| 6.7
+  NSGA-II     rank 4.80  hv_norm 0.205  tempo       54  |PF| 6.1
+  VNS-Tcheb.  rank 6.00  hv_norm 0.088  tempo       30  |PF| 3.0
+--- exit 0 em 0.0 min
+
+$$$ analyze_e10.py
+
+=== CDP n=500 [hv_norm]: N=40 instancias completas, 3 replicas
+  x1/4     Uniform 0.661 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.675 (dif +0.014, A12 0.54, melhor em 25/40, p_Holm 0.675; sel. 0.68) | GTS-HV 0.686 (dif +0.025, A12 0.57, melhor em 25/40, p_Holm 0.134; sel. 0.66)
+  x1/2     Uniform 0.695 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.697 (dif +0.003, A12 0.51, melhor em 20/40, p_Holm 1.000; sel. 0.58) | GTS-HV 0.706 (dif +0.012, A12 0.52, melhor em 23/40, p_Holm 1.000; sel. 0.56)
+  x1       Uniform 0.719 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.715 (dif -0.004, A12 0.48, melhor em 21/40, p_Holm 1.000; sel. 0.49) | GTS-HV 0.721 (dif +0.001, A12 0.50, melhor em 20/40, p_Holm 1.000; sel. 0.47)
+
+=== GDP n=500, k02 (tight cost budget) [hv_norm]: N=40 instancias completas, 3 replicas
+  x1/4     Uniform 0.505 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.565 (dif +0.059, A12 0.63, melhor em 32/40, p_Holm 0.000; sel. 0.48) | GTS-HV 0.572 (dif +0.067, A12 0.63, melhor em 33/40, p_Holm 0.000; sel. 0.47)
+  x1/2     Uniform 0.587 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.622 (dif +0.035, A12 0.60, melhor em 28/40, p_Holm 0.024; sel. 0.44) | GTS-HV 0.645 (dif +0.059, A12 0.64, melhor em 33/40, p_Holm 0.000; sel. 0.42)
+  x1       Uniform 0.644 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.673 (dif +0.028, A12 0.59, melhor em 24/40, p_Holm 0.075; sel. 0.39) | GTS-HV 0.699 (dif +0.054, A12 0.62, melhor em 32/40, p_Holm 0.003; sel. 0.38)
+
+=== GDP n=500, k03 [hv_norm]: N=40 instancias completas, 3 replicas
+  x1/4     Uniform 0.622 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.627 (dif +0.005, A12 0.50, melhor em 23/40, p_Holm 1.000; sel. 0.68) | GTS-HV 0.642 (dif +0.019, A12 0.52, melhor em 21/40, p_Holm 1.000; sel. 0.67)
+  x1/2     Uniform 0.659 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.653 (dif -0.006, A12 0.49, melhor em 20/40, p_Holm 1.000; sel. 0.58) | GTS-HV 0.670 (dif +0.010, A12 0.50, melhor em 18/40, p_Holm 1.000; sel. 0.58)
+  x1       Uniform 0.691 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.676 (dif -0.015, A12 0.47, melhor em 20/40, p_Holm 1.000; sel. 0.50) | GTS-HV 0.692 (dif +0.001, A12 0.50, melhor em 22/40, p_Holm 1.000; sel. 0.50)
+
+=== MDP MDG-b n=2000 (x1) [hv_norm]: N=10 instancias completas, 3 replicas
+  x1       Uniform 0.679 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.827 (dif +0.149, A12 1.00, melhor em 10/10, p_Holm 0.004; sel. 0.74) | GTS-HV 0.807 (dif +0.129, A12 0.99, melhor em 10/10, p_Holm 0.004; sel. 0.72)
+
+=== MDP MDG-b n=2000 (x1 e x4, 3 instancias) [hv_norm]: N=3 instancias completas, 3 replicas
+  x1       Uniform 0.643 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.783 (dif +0.139, A12 1.00, melhor em 3/3, p_Holm 1.000; sel. 0.76) | GTS-HV 0.772 (dif +0.129, A12 1.00, melhor em 3/3, p_Holm 1.000; sel. 0.69)
+  x4       Uniform 0.754 (sel. BiObj+MaxMin 0.25) | UCB-HV 0.866 (dif +0.112, A12 1.00, melhor em 3/3, p_Holm 1.000; sel. 0.51) | GTS-HV 0.838 (dif +0.084, A12 1.00, melhor em 3/3, p_Holm 1.000; sel. 0.48)
+--- exit 0 em 0.1 min
+
+$$$ analyze_e10.py --metric igd_plus
+
+=== CDP n=500 [igd_plus]: N=40 instancias completas, 3 replicas
+  x1/4     Uniform -0.166 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.166 (dif +0.000, A12 0.50, melhor em 22/40, p_Holm 1.000; sel. 0.68) | GTS-HV -0.159 (dif +0.007, A12 0.57, melhor em 21/40, p_Holm 0.744; sel. 0.66)
+  x1/2     Uniform -0.141 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.152 (dif -0.011, A12 0.41, melhor em 14/40, p_Holm 0.341; sel. 0.58) | GTS-HV -0.145 (dif -0.004, A12 0.47, melhor em 19/40, p_Holm 1.000; sel. 0.56)
+  x1       Uniform -0.127 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.141 (dif -0.015, A12 0.40, melhor em 13/40, p_Holm 0.125; sel. 0.49) | GTS-HV -0.137 (dif -0.010, A12 0.42, melhor em 16/40, p_Holm 0.460; sel. 0.47)
+
+=== GDP n=500, k02 (tight cost budget) [igd_plus]: N=40 instancias completas, 3 replicas
+  x1/4     Uniform -0.237 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.207 (dif +0.029, A12 0.67, melhor em 30/40, p_Holm 0.000; sel. 0.48) | GTS-HV -0.215 (dif +0.021, A12 0.60, melhor em 30/40, p_Holm 0.005; sel. 0.47)
+  x1/2     Uniform -0.176 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.164 (dif +0.012, A12 0.59, melhor em 27/40, p_Holm 0.117; sel. 0.44) | GTS-HV -0.160 (dif +0.016, A12 0.60, melhor em 30/40, p_Holm 0.029; sel. 0.42)
+  x1       Uniform -0.136 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.129 (dif +0.007, A12 0.54, melhor em 24/40, p_Holm 0.327; sel. 0.39) | GTS-HV -0.122 (dif +0.014, A12 0.60, melhor em 29/40, p_Holm 0.067; sel. 0.38)
+
+=== GDP n=500, k03 [igd_plus]: N=40 instancias completas, 3 replicas
+  x1/4     Uniform -0.179 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.182 (dif -0.003, A12 0.49, melhor em 20/40, p_Holm 0.856; sel. 0.68) | GTS-HV -0.182 (dif -0.003, A12 0.47, melhor em 16/40, p_Holm 0.856; sel. 0.67)
+  x1/2     Uniform -0.156 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.166 (dif -0.010, A12 0.43, melhor em 18/40, p_Holm 0.711; sel. 0.58) | GTS-HV -0.164 (dif -0.007, A12 0.42, melhor em 13/40, p_Holm 0.647; sel. 0.58)
+  x1       Uniform -0.139 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.152 (dif -0.014, A12 0.40, melhor em 17/40, p_Holm 0.559; sel. 0.50) | GTS-HV -0.149 (dif -0.010, A12 0.40, melhor em 15/40, p_Holm 0.520; sel. 0.50)
+
+=== MDP MDG-b n=2000 (x1) [igd_plus]: N=10 instancias completas, 3 replicas
+  x1       Uniform -0.126 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.069 (dif +0.057, A12 0.97, melhor em 10/10, p_Holm 0.004; sel. 0.74) | GTS-HV -0.076 (dif +0.050, A12 0.94, melhor em 10/10, p_Holm 0.004; sel. 0.72)
+
+=== MDP MDG-b n=2000 (x1 e x4, 3 instancias) [igd_plus]: N=3 instancias completas, 3 replicas
+  x1       Uniform -0.146 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.094 (dif +0.052, A12 1.00, melhor em 3/3, p_Holm 1.000; sel. 0.76) | GTS-HV -0.092 (dif +0.054, A12 1.00, melhor em 3/3, p_Holm 1.000; sel. 0.69)
+  x4       Uniform -0.084 (sel. BiObj+MaxMin 0.25) | UCB-HV -0.053 (dif +0.031, A12 0.89, melhor em 2/3, p_Holm 1.000; sel. 0.51) | GTS-HV -0.055 (dif +0.029, A12 0.89, melhor em 2/3, p_Holm 1.000; sel. 0.48)
+--- exit 0 em 0.1 min
+
+$$$ analyze_e11.py
+
+=== CDP-S at_T [hv_norm]: N=52; referencia MOEA/D-Uniform (default) 0.705
+   MOEA/D-Uniform (tuned)       0.736  dif +0.031  A12 0.59  melhor em  34/52  p_Holm 0.0141
+   NSGA-II (default)            0.454  dif -0.251  A12 0.07  melhor em   0/52  p_Holm 0.0000
+   GRASP-MO (default)           0.692  dif -0.013  A12 0.41  melhor em  22/52  p_Holm 1.0000
+   GRASP-PR (default)           0.704  dif -0.001  A12 0.45  melhor em  26/52  p_Holm 1.0000
+   Tabu (Colmenar irace)        0.508  dif -0.197  A12 0.07  melhor em   0/52  p_Holm 0.0000
+   VNS (Colmenar irace)         0.577  dif -0.128  A12 0.17  melhor em   3/52  p_Holm 0.0000
+   SMS-EMOA (default)           0.443  dif -0.262  A12 0.05  melhor em   0/52  p_Holm 0.0000
+   NSGA-II (tuned)              0.509  dif -0.196  A12 0.22  melhor em   5/52  p_Holm 0.0000
+   GRASP (tuned)                0.692  dif -0.013  A12 0.42  melhor em  23/52  p_Holm 1.0000
+   Tabu (tuned)                 0.591  dif -0.114  A12 0.22  melhor em   8/52  p_Holm 0.0000
+   VNS (tuned)                  0.697  dif -0.008  A12 0.50  melhor em  25/52  p_Holm 1.0000
+   SMS-EMOA (tuned)             0.547  dif -0.158  A12 0.22  melhor em   5/52  p_Holm 0.0000
+
+=== CDP-S at_T_vs_tm [hv_norm]: N=52; referencia MOEA/D-Uniform (tuned) 0.736
+   NSGA-II (tuned)              0.509  dif -0.228  A12 0.18  melhor em   1/52  p_Holm 0.0000
+   GRASP (tuned)                0.692  dif -0.044  A12 0.33  melhor em  15/52  p_Holm 0.0065
+   Tabu (tuned)                 0.591  dif -0.146  A12 0.18  melhor em   2/52  p_Holm 0.0000
+   VNS (tuned)                  0.697  dif -0.040  A12 0.42  melhor em  17/52  p_Holm 0.0065
+   SMS-EMOA (tuned)             0.547  dif -0.189  A12 0.18  melhor em   1/52  p_Holm 0.0000
+   Tabu (Colmenar irace)        0.508  dif -0.229  A12 0.06  melhor em   0/52  p_Holm 0.0000
+   VNS (Colmenar irace)         0.577  dif -0.159  A12 0.13  melhor em   4/52  p_Holm 0.0000
+
+=== CDP-S at_5T [hv_norm]: N=52; referencia MOEA/D-Uniform (default) 0.684
+   MOEA/D-Uniform (tuned, 5T)   0.767  dif +0.083  A12 0.70  melhor em  42/52  p_Holm 0.0000
+   NSGA-II (tuned, 5T)          0.525  dif -0.159  A12 0.35  melhor em  15/52  p_Holm 0.0005
+   GRASP (tuned, 5T)            0.773  dif +0.088  A12 0.69  melhor em  36/52  p_Holm 0.0005
+   Tabu (tuned, 5T)             0.711  dif +0.026  A12 0.57  melhor em  29/52  p_Holm 0.2769
+   VNS (tuned, 5T)              0.777  dif +0.092  A12 0.73  melhor em  40/52  p_Holm 0.0001
+   SMS-EMOA (tuned, 5T)         0.560  dif -0.125  A12 0.32  melhor em  14/52  p_Holm 0.0001
+
+=== CDP-S at_5T_vs_tm [hv_norm]: N=52; referencia MOEA/D-Uniform (tuned, 5T) 0.767
+   NSGA-II (tuned, 5T)          0.525  dif -0.242  A12 0.22  melhor em   7/52  p_Holm 0.0000
+   GRASP (tuned, 5T)            0.773  dif +0.006  A12 0.49  melhor em  24/52  p_Holm 0.8770
+   Tabu (tuned, 5T)             0.711  dif -0.056  A12 0.40  melhor em  19/52  p_Holm 0.0397
+   VNS (tuned, 5T)              0.777  dif +0.010  A12 0.55  melhor em  30/52  p_Holm 0.6965
+   SMS-EMOA (tuned, 5T)         0.560  dif -0.207  A12 0.17  melhor em   2/52  p_Holm 0.0000
+
+   [CDP-S] ganho do ajuste: {'t_moead': '0.705->0.736 (p=0.0028)', 't_nsga2': '0.454->0.509 (p=0.0055)', 't_grasp': '0.704->0.692 (p=0.23)', 't_ts': '0.508->0.591 (p=1.1e-05)', 't_vns': '0.577->0.697 (p=3.4e-08)', 't_sms': '0.443->0.547 (p=1.5e-05)'}
+
+[GDP-S] instancias excluidas (referencia degenerada, hv_norm > 5): ['SOM-a_11_n50_b03_m5_k02']
+
+=== GDP-S at_T [hv_norm]: N=111; referencia MOEA/D-Uniform (default) 0.766
+   MOEA/D-Uniform (tuned)       0.752  dif -0.014  A12 0.44  melhor em  47/111  p_Holm 0.0946
+   NSGA-II (default)            0.547  dif -0.219  A12 0.24  melhor em   5/111  p_Holm 0.0000
+   GRASP-MO (default)           0.493  dif -0.273  A12 0.16  melhor em  25/111  p_Holm 0.0000
+   GRASP-PR (default)           0.496  dif -0.270  A12 0.16  melhor em  28/111  p_Holm 0.0000
+   Tabu (Colmenar irace)        0.432  dif -0.334  A12 0.06  melhor em   8/111  p_Holm 0.0000
+   VNS (Colmenar irace)         0.646  dif -0.120  A12 0.26  melhor em  26/111  p_Holm 0.0000
+   SMS-EMOA (default)           0.523  dif -0.243  A12 0.21  melhor em   3/111  p_Holm 0.0000
+   NSGA-II (tuned)              0.640  dif -0.125  A12 0.43  melhor em  36/111  p_Holm 0.0000
+   GRASP (tuned)                0.519  dif -0.247  A12 0.22  melhor em  29/111  p_Holm 0.0000
+   Tabu (tuned)                 0.659  dif -0.107  A12 0.25  melhor em  21/111  p_Holm 0.0000
+   VNS (tuned)                  0.656  dif -0.110  A12 0.26  melhor em  24/111  p_Holm 0.0000
+   SMS-EMOA (tuned)             0.640  dif -0.125  A12 0.45  melhor em  33/111  p_Holm 0.0000
+
+=== GDP-S at_T_vs_tm [hv_norm]: N=111; referencia MOEA/D-Uniform (tuned) 0.752
+   NSGA-II (tuned)              0.640  dif -0.112  A12 0.47  melhor em  49/111  p_Holm 0.0113
+   GRASP (tuned)                0.519  dif -0.233  A12 0.25  melhor em  24/111  p_Holm 0.0000
+   Tabu (tuned)                 0.659  dif -0.093  A12 0.28  melhor em  23/111  p_Holm 0.0000
+   VNS (tuned)                  0.656  dif -0.096  A12 0.28  melhor em  23/111  p_Holm 0.0000
+   SMS-EMOA (tuned)             0.640  dif -0.112  A12 0.49  melhor em  50/111  p_Holm 0.0113
+   Tabu (Colmenar irace)        0.432  dif -0.320  A12 0.05  melhor em   5/111  p_Holm 0.0000
+   VNS (Colmenar irace)         0.646  dif -0.106  A12 0.26  melhor em  22/111  p_Holm 0.0000
+
+=== GDP-S at_5T [hv_norm]: N=111; referencia MOEA/D-Uniform (default) 0.774
+   MOEA/D-Uniform (tuned, 5T)   0.818  dif +0.044  A12 0.62  melhor em  75/111  p_Holm 0.0001
+   NSGA-II (tuned, 5T)          0.710  dif -0.064  A12 0.55  melhor em  56/111  p_Holm 0.6573
+   GRASP (tuned, 5T)            0.556  dif -0.219  A12 0.29  melhor em  35/111  p_Holm 0.0000
+   Tabu (tuned, 5T)             0.759  dif -0.015  A12 0.45  melhor em  51/111  p_Holm 0.6573
+   VNS (tuned, 5T)              0.727  dif -0.047  A12 0.37  melhor em  36/111  p_Holm 0.0050
+   SMS-EMOA (tuned, 5T)         0.701  dif -0.073  A12 0.54  melhor em  54/111  p_Holm 0.6573
+
+=== GDP-S at_5T_vs_tm [hv_norm]: N=111; referencia MOEA/D-Uniform (tuned, 5T) 0.818
+   NSGA-II (tuned, 5T)          0.710  dif -0.108  A12 0.46  melhor em  42/111  p_Holm 0.0020
+   GRASP (tuned, 5T)            0.556  dif -0.263  A12 0.21  melhor em  26/111  p_Holm 0.0000
+   Tabu (tuned, 5T)             0.759  dif -0.059  A12 0.33  melhor em  38/111  p_Holm 0.0001
+   VNS (tuned, 5T)              0.727  dif -0.091  A12 0.27  melhor em  28/111  p_Holm 0.0000
+   SMS-EMOA (tuned, 5T)         0.701  dif -0.117  A12 0.45  melhor em  40/111  p_Holm 0.0007
+
+   [GDP-S] ganho do ajuste: {'t_moead': '0.766->0.752 (p=0.095)', 't_nsga2': '0.547->0.640 (p=2.9e-10)', 't_grasp': '0.496->0.519 (p=0.0039)', 't_ts': '0.432->0.659 (p=1.6e-17)', 't_vns': '0.646->0.656 (p=0.18)', 't_sms': '0.523->0.640 (p=1.3e-13)'}
+
+=== MDP-S at_T [hv_norm]: N=52; referencia MOEA/D-Uniform (default) 0.831
+   MOEA/D-Uniform (tuned)       0.840  dif +0.010  A12 0.50  melhor em  23/52  p_Holm 0.8462
+   NSGA-II (default)            0.464  dif -0.367  A12 0.05  melhor em   0/52  p_Holm 0.0000
+   GRASP-MO (default)           0.871  dif +0.041  A12 0.61  melhor em  33/52  p_Holm 0.1070
+   GRASP-PR (default)           0.880  dif +0.050  A12 0.64  melhor em  37/52  p_Holm 0.0564
+   Tabu (Colmenar irace)        0.924  dif +0.093  A12 0.73  melhor em  39/52  p_Holm 0.0000
+   VNS (Colmenar irace)         0.977  dif +0.146  A12 0.87  melhor em  47/52  p_Holm 0.0000
+   SMS-EMOA (default)           0.511  dif -0.320  A12 0.08  melhor em   1/52  p_Holm 0.0000
+   NSGA-II (tuned)              0.531  dif -0.299  A12 0.11  melhor em   0/52  p_Holm 0.0000
+   GRASP (tuned)                0.951  dif +0.121  A12 0.81  melhor em  41/52  p_Holm 0.0000
+   Tabu (tuned)                 0.941  dif +0.111  A12 0.78  melhor em  44/52  p_Holm 0.0000
+   VNS (tuned)                  0.977  dif +0.147  A12 0.87  melhor em  45/52  p_Holm 0.0000
+   SMS-EMOA (tuned)             0.468  dif -0.363  A12 0.03  melhor em   0/52  p_Holm 0.0000
+
+=== MDP-S at_T_vs_tm [hv_norm]: N=52; referencia MOEA/D-Uniform (tuned) 0.840
+   NSGA-II (tuned)              0.531  dif -0.309  A12 0.09  melhor em   0/52  p_Holm 0.0000
+   GRASP (tuned)                0.951  dif +0.111  A12 0.84  melhor em  45/52  p_Holm 0.0000
+   Tabu (tuned)                 0.941  dif +0.101  A12 0.81  melhor em  46/52  p_Holm 0.0000
+   VNS (tuned)                  0.977  dif +0.137  A12 0.90  melhor em  48/52  p_Holm 0.0000
+   SMS-EMOA (tuned)             0.468  dif -0.373  A12 0.01  melhor em   0/52  p_Holm 0.0000
+   Tabu (Colmenar irace)        0.924  dif +0.084  A12 0.75  melhor em  43/52  p_Holm 0.0000
+   VNS (Colmenar irace)         0.977  dif +0.137  A12 0.90  melhor em  49/52  p_Holm 0.0000
+
+=== MDP-S at_5T [hv_norm]: N=52; referencia MOEA/D-Uniform (default) 0.833
+   MOEA/D-Uniform (tuned, 5T)   0.827  dif -0.006  A12 0.49  melhor em  28/52  p_Holm 0.8170
+   NSGA-II (tuned, 5T)          0.557  dif -0.276  A12 0.16  melhor em   1/52  p_Holm 0.0000
+   GRASP (tuned, 5T)            0.970  dif +0.137  A12 0.83  melhor em  43/52  p_Holm 0.0000
+   Tabu (tuned, 5T)             0.964  dif +0.131  A12 0.82  melhor em  44/52  p_Holm 0.0000
+   VNS (tuned, 5T)              0.998  dif +0.165  A12 0.92  melhor em  45/52  p_Holm 0.0000
+   SMS-EMOA (tuned, 5T)         0.545  dif -0.288  A12 0.14  melhor em   6/52  p_Holm 0.0000
+
+=== MDP-S at_5T_vs_tm [hv_norm]: N=52; referencia MOEA/D-Uniform (tuned, 5T) 0.827
+   NSGA-II (tuned, 5T)          0.557  dif -0.270  A12 0.17  melhor em   4/52  p_Holm 0.0000
+   GRASP (tuned, 5T)            0.970  dif +0.143  A12 0.84  melhor em  43/52  p_Holm 0.0000
+   Tabu (tuned, 5T)             0.964  dif +0.137  A12 0.83  melhor em  43/52  p_Holm 0.0000
+   VNS (tuned, 5T)              0.998  dif +0.171  A12 0.93  melhor em  46/52  p_Holm 0.0000
+   SMS-EMOA (tuned, 5T)         0.545  dif -0.282  A12 0.15  melhor em   2/52  p_Holm 0.0000
+
+   [MDP-S] ganho do ajuste: {'t_moead': '0.831->0.840 (p=0.85)', 't_nsga2': '0.464->0.531 (p=4.4e-05)', 't_grasp': '0.880->0.951 (p=3.6e-07)', 't_ts': '0.924->0.941 (p=0.11)', 't_vns': '0.977->0.977 (p=0.52)', 't_sms': '0.511->0.468 (p=0.36)'}
+
+=== CDP-L at_T [hv_norm]: N=20; referencia MOEA/D-Uniform (default) 0.721
+   MOEA/D-Uniform (tuned)       0.749  dif +0.029  A12 0.63  melhor em  14/20  p_Holm 0.0400
+   NSGA-II (default)            0.285  dif -0.435  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   GRASP-MO (default)           0.432  dif -0.288  A12 0.06  melhor em   0/20  p_Holm 0.0000
+   GRASP-PR (default)           0.430  dif -0.291  A12 0.10  melhor em   0/20  p_Holm 0.0000
+   Tabu (Colmenar irace)        0.458  dif -0.262  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   VNS (Colmenar irace)         0.295  dif -0.425  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   SMS-EMOA (default)           0.279  dif -0.442  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   NSGA-II (tuned)              0.367  dif -0.353  A12 0.03  melhor em   0/20  p_Holm 0.0000
+   GRASP (tuned)                0.441  dif -0.280  A12 0.09  melhor em   0/20  p_Holm 0.0000
+   Tabu (tuned)                 0.603  dif -0.117  A12 0.20  melhor em   2/20  p_Holm 0.0000
+   VNS (tuned)                  0.454  dif -0.267  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   SMS-EMOA (tuned)             0.379  dif -0.342  A12 0.08  melhor em   0/20  p_Holm 0.0000
+
+=== CDP-L at_T_vs_tm [hv_norm]: N=20; referencia MOEA/D-Uniform (tuned) 0.749
+   NSGA-II (tuned)              0.367  dif -0.382  A12 0.03  melhor em   0/20  p_Holm 0.0000
+   GRASP (tuned)                0.441  dif -0.309  A12 0.08  melhor em   0/20  p_Holm 0.0000
+   Tabu (tuned)                 0.603  dif -0.146  A12 0.16  melhor em   0/20  p_Holm 0.0000
+   VNS (tuned)                  0.454  dif -0.296  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   SMS-EMOA (tuned)             0.379  dif -0.370  A12 0.07  melhor em   0/20  p_Holm 0.0000
+   Tabu (Colmenar irace)        0.458  dif -0.291  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   VNS (Colmenar irace)         0.295  dif -0.454  A12 0.00  melhor em   0/20  p_Holm 0.0000
+
+=== CDP-L at_5T [hv_norm]: N=10; referencia MOEA/D-Uniform (default) 0.686
+   MOEA/D-Uniform (tuned, 5T)   0.746  dif +0.060  A12 0.63  melhor em   7/10  p_Holm 0.3203
+   NSGA-II (tuned, 5T)          0.438  dif -0.248  A12 0.04  melhor em   0/10  p_Holm 0.0117
+   GRASP (tuned, 5T)            0.579  dif -0.106  A12 0.36  melhor em   4/10  p_Holm 0.2520
+   Tabu (tuned, 5T)             0.707  dif +0.021  A12 0.46  melhor em   4/10  p_Holm 0.8457
+   VNS (tuned, 5T)              0.472  dif -0.214  A12 0.04  melhor em   0/10  p_Holm 0.0117
+   SMS-EMOA (tuned, 5T)         0.414  dif -0.271  A12 0.22  melhor em   2/10  p_Holm 0.0391
+
+=== CDP-L at_5T_vs_tm [hv_norm]: N=10; referencia MOEA/D-Uniform (tuned, 5T) 0.746
+   NSGA-II (tuned, 5T)          0.438  dif -0.308  A12 0.02  melhor em   0/10  p_Holm 0.0098
+   GRASP (tuned, 5T)            0.579  dif -0.166  A12 0.22  melhor em   1/10  p_Holm 0.0176
+   Tabu (tuned, 5T)             0.707  dif -0.039  A12 0.36  melhor em   3/10  p_Holm 0.4316
+   VNS (tuned, 5T)              0.472  dif -0.274  A12 0.04  melhor em   0/10  p_Holm 0.0098
+   SMS-EMOA (tuned, 5T)         0.414  dif -0.332  A12 0.15  melhor em   1/10  p_Holm 0.0176
+
+   [CDP-L] ganho do ajuste: {'t_moead': '0.721->0.749 (p=0.04)', 't_nsga2': '0.285->0.367 (p=3.8e-06)', 't_grasp': '0.430->0.441 (p=0.93)', 't_ts': '0.458->0.603 (p=5.7e-06)', 't_vns': '0.295->0.454 (p=3.8e-06)', 't_sms': '0.279->0.379 (p=5.7e-06)'}
+
+=== GDP-L at_T [hv_norm]: N=32; referencia MOEA/D-Uniform (default) 0.684
+   MOEA/D-Uniform (tuned)       0.707  dif +0.024  A12 0.57  melhor em  22/32  p_Holm 0.0678
+   NSGA-II (default)            0.222  dif -0.462  A12 0.01  melhor em   0/32  p_Holm 0.0000
+   GRASP-MO (default)           0.308  dif -0.376  A12 0.02  melhor em   0/32  p_Holm 0.0000
+   GRASP-PR (default)           0.324  dif -0.359  A12 0.03  melhor em   0/32  p_Holm 0.0000
+   Tabu (Colmenar irace)        0.315  dif -0.368  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   VNS (Colmenar irace)         0.273  dif -0.410  A12 0.01  melhor em   0/32  p_Holm 0.0000
+   SMS-EMOA (default)           0.217  dif -0.467  A12 0.01  melhor em   0/32  p_Holm 0.0000
+   NSGA-II (tuned)              0.401  dif -0.283  A12 0.21  melhor em   4/32  p_Holm 0.0000
+   GRASP (tuned)                0.410  dif -0.274  A12 0.07  melhor em   0/32  p_Holm 0.0000
+   Tabu (tuned)                 0.600  dif -0.084  A12 0.22  melhor em   4/32  p_Holm 0.0000
+   VNS (tuned)                  0.378  dif -0.306  A12 0.01  melhor em   0/32  p_Holm 0.0000
+   SMS-EMOA (tuned)             0.388  dif -0.296  A12 0.20  melhor em   3/32  p_Holm 0.0000
+
+=== GDP-L at_T_vs_tm [hv_norm]: N=32; referencia MOEA/D-Uniform (tuned) 0.707
+   NSGA-II (tuned)              0.401  dif -0.306  A12 0.17  melhor em   3/32  p_Holm 0.0000
+   GRASP (tuned)                0.410  dif -0.297  A12 0.05  melhor em   0/32  p_Holm 0.0000
+   Tabu (tuned)                 0.600  dif -0.107  A12 0.17  melhor em   1/32  p_Holm 0.0000
+   VNS (tuned)                  0.378  dif -0.329  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   SMS-EMOA (tuned)             0.388  dif -0.319  A12 0.16  melhor em   1/32  p_Holm 0.0000
+   Tabu (Colmenar irace)        0.315  dif -0.392  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   VNS (Colmenar irace)         0.273  dif -0.434  A12 0.00  melhor em   0/32  p_Holm 0.0000
+
+=== GDP-L at_5T [hv_norm]: N=16; referencia MOEA/D-Uniform (default) 0.685
+   MOEA/D-Uniform (tuned, 5T)   0.728  dif +0.043  A12 0.60  melhor em  10/16  p_Holm 0.5957
+   NSGA-II (tuned, 5T)          0.417  dif -0.268  A12 0.23  melhor em   3/16  p_Holm 0.0064
+   GRASP (tuned, 5T)            0.527  dif -0.158  A12 0.20  melhor em   2/16  p_Holm 0.0012
+   Tabu (tuned, 5T)             0.662  dif -0.022  A12 0.39  melhor em   5/16  p_Holm 0.5957
+   VNS (tuned, 5T)              0.413  dif -0.272  A12 0.09  melhor em   0/16  p_Holm 0.0002
+   SMS-EMOA (tuned, 5T)         0.392  dif -0.293  A12 0.19  melhor em   1/16  p_Holm 0.0008
+
+=== GDP-L at_5T_vs_tm [hv_norm]: N=16; referencia MOEA/D-Uniform (tuned, 5T) 0.728
+   NSGA-II (tuned, 5T)          0.417  dif -0.311  A12 0.17  melhor em   4/16  p_Holm 0.0067
+   GRASP (tuned, 5T)            0.527  dif -0.201  A12 0.09  melhor em   0/16  p_Holm 0.0002
+   Tabu (tuned, 5T)             0.662  dif -0.066  A12 0.29  melhor em   5/16  p_Holm 0.0386
+   VNS (tuned, 5T)              0.413  dif -0.315  A12 0.01  melhor em   0/16  p_Holm 0.0002
+   SMS-EMOA (tuned, 5T)         0.392  dif -0.336  A12 0.15  melhor em   2/16  p_Holm 0.0030
+
+   [GDP-L] ganho do ajuste: {'t_moead': '0.684->0.707 (p=0.068)', 't_nsga2': '0.222->0.401 (p=4.7e-10)', 't_grasp': '0.324->0.410 (p=2.7e-06)', 't_ts': '0.315->0.600 (p=4.7e-10)', 't_vns': '0.273->0.378 (p=3e-07)', 't_sms': '0.217->0.388 (p=4.7e-10)'}
+
+=== MDP-L at_T [hv_norm]: N=22; referencia MOEA/D-Uniform (default) 0.885
+   MOEA/D-Uniform (tuned)       0.900  dif +0.015  A12 0.58  melhor em  13/22  p_Holm 0.1207
+   NSGA-II (default)            0.471  dif -0.414  A12 0.01  melhor em   0/22  p_Holm 0.0000
+   GRASP-MO (default)           0.579  dif -0.306  A12 0.03  melhor em   0/22  p_Holm 0.0000
+   GRASP-PR (default)           0.582  dif -0.303  A12 0.02  melhor em   0/22  p_Holm 0.0000
+   Tabu (Colmenar irace)        0.971  dif +0.086  A12 0.83  melhor em  22/22  p_Holm 0.0000
+   VNS (Colmenar irace)         0.985  dif +0.100  A12 0.88  melhor em  22/22  p_Holm 0.0000
+   SMS-EMOA (default)           0.416  dif -0.469  A12 0.00  melhor em   0/22  p_Holm 0.0000
+   NSGA-II (tuned)              0.726  dif -0.159  A12 0.20  melhor em   0/22  p_Holm 0.0000
+   GRASP (tuned)                0.662  dif -0.223  A12 0.20  melhor em   1/22  p_Holm 0.0000
+   Tabu (tuned)                 0.988  dif +0.104  A12 0.87  melhor em  21/22  p_Holm 0.0000
+   VNS (tuned)                  0.996  dif +0.111  A12 0.92  melhor em  21/22  p_Holm 0.0000
+   SMS-EMOA (tuned)             0.670  dif -0.215  A12 0.20  melhor em   0/22  p_Holm 0.0000
+
+=== MDP-L at_T_vs_tm [hv_norm]: N=22; referencia MOEA/D-Uniform (tuned) 0.900
+   NSGA-II (tuned)              0.726  dif -0.173  A12 0.19  melhor em   0/22  p_Holm 0.0000
+   GRASP (tuned)                0.662  dif -0.238  A12 0.15  melhor em   0/22  p_Holm 0.0000
+   Tabu (tuned)                 0.988  dif +0.089  A12 0.87  melhor em  21/22  p_Holm 0.0002
+   VNS (tuned)                  0.996  dif +0.096  A12 0.91  melhor em  21/22  p_Holm 0.0001
+   SMS-EMOA (tuned)             0.670  dif -0.230  A12 0.17  melhor em   0/22  p_Holm 0.0000
+   Tabu (Colmenar irace)        0.971  dif +0.072  A12 0.80  melhor em  20/22  p_Holm 0.0002
+   VNS (Colmenar irace)         0.985  dif +0.085  A12 0.86  melhor em  21/22  p_Holm 0.0000
+
+=== MDP-L at_5T [hv_norm]: N=11; referencia MOEA/D-Uniform (default) 0.889
+   MOEA/D-Uniform (tuned, 5T)   0.937  dif +0.048  A12 0.69  melhor em  10/11  p_Holm 0.0410
+   NSGA-II (tuned, 5T)          0.811  dif -0.078  A12 0.28  melhor em   2/11  p_Holm 0.0410
+   GRASP (tuned, 5T)            0.738  dif -0.151  A12 0.22  melhor em   0/11  p_Holm 0.0059
+   Tabu (tuned, 5T)             1.013  dif +0.124  A12 0.89  melhor em  10/11  p_Holm 0.0410
+   VNS (tuned, 5T)              1.007  dif +0.118  A12 0.93  melhor em  10/11  p_Holm 0.0391
+   SMS-EMOA (tuned, 5T)         0.803  dif -0.086  A12 0.22  melhor em   1/11  p_Holm 0.0146
+
+=== MDP-L at_5T_vs_tm [hv_norm]: N=11; referencia MOEA/D-Uniform (tuned, 5T) 0.937
+   NSGA-II (tuned, 5T)          0.811  dif -0.126  A12 0.21  melhor em   0/11  p_Holm 0.0049
+   GRASP (tuned, 5T)            0.738  dif -0.199  A12 0.09  melhor em   0/11  p_Holm 0.0049
+   Tabu (tuned, 5T)             1.013  dif +0.076  A12 0.88  melhor em  10/11  p_Holm 0.0371
+   VNS (tuned, 5T)              1.007  dif +0.070  A12 0.89  melhor em  10/11  p_Holm 0.0371
+   SMS-EMOA (tuned, 5T)         0.803  dif -0.134  A12 0.20  melhor em   0/11  p_Holm 0.0049
+
+   [MDP-L] ganho do ajuste: {'t_moead': '0.885->0.900 (p=0.12)', 't_nsga2': '0.471->0.726 (p=4.8e-07)', 't_grasp': '0.582->0.662 (p=4.8e-07)', 't_ts': '0.971->0.988 (p=0.042)', 't_vns': '0.985->0.996 (p=0.046)', 't_sms': '0.416->0.670 (p=4.8e-07)'}
+--- exit 0 em 3.9 min
+
+$$$ analyze_e11.py --metric igd_plus
+
+=== CDP-S at_T [igd_plus]: N=52; referencia MOEA/D-Uniform (default) -0.103
+   MOEA/D-Uniform (tuned)       -0.103  dif -0.000  A12 0.51  melhor em  25/52  p_Holm 0.9927
+   NSGA-II (default)            -0.252  dif -0.150  A12 0.18  melhor em   0/52  p_Holm 0.0000
+   GRASP-MO (default)           -0.128  dif -0.026  A12 0.33  melhor em  17/52  p_Holm 0.1127
+   GRASP-PR (default)           -0.130  dif -0.027  A12 0.33  melhor em  17/52  p_Holm 0.0790
+   Tabu (Colmenar irace)        -0.220  dif -0.117  A12 0.18  melhor em   0/52  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.173  dif -0.070  A12 0.27  melhor em   4/52  p_Holm 0.0000
+   SMS-EMOA (default)           -0.255  dif -0.152  A12 0.17  melhor em   0/52  p_Holm 0.0000
+   NSGA-II (tuned)              -0.239  dif -0.136  A12 0.26  melhor em   0/52  p_Holm 0.0000
+   GRASP (tuned)                -0.122  dif -0.019  A12 0.37  melhor em  17/52  p_Holm 0.1296
+   Tabu (tuned)                 -0.157  dif -0.054  A12 0.34  melhor em  13/52  p_Holm 0.0000
+   VNS (tuned)                  -0.113  dif -0.010  A12 0.50  melhor em  25/52  p_Holm 0.7154
+   SMS-EMOA (tuned)             -0.201  dif -0.098  A12 0.24  melhor em   1/52  p_Holm 0.0000
+
+=== CDP-S at_T_vs_tm [igd_plus]: N=52; referencia MOEA/D-Uniform (tuned) -0.103
+   NSGA-II (tuned)              -0.239  dif -0.136  A12 0.25  melhor em   1/52  p_Holm 0.0000
+   GRASP (tuned)                -0.122  dif -0.019  A12 0.36  melhor em  17/52  p_Holm 0.1026
+   Tabu (tuned)                 -0.157  dif -0.054  A12 0.33  melhor em  12/52  p_Holm 0.0000
+   VNS (tuned)                  -0.113  dif -0.010  A12 0.48  melhor em  26/52  p_Holm 0.2401
+   SMS-EMOA (tuned)             -0.201  dif -0.098  A12 0.23  melhor em   1/52  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.220  dif -0.117  A12 0.19  melhor em   1/52  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.173  dif -0.070  A12 0.27  melhor em   6/52  p_Holm 0.0000
+
+=== CDP-S at_5T [igd_plus]: N=52; referencia MOEA/D-Uniform (default) -0.105
+   MOEA/D-Uniform (tuned, 5T)   -0.086  dif +0.019  A12 0.59  melhor em  41/52  p_Holm 0.0009
+   NSGA-II (tuned, 5T)          -0.234  dif -0.130  A12 0.32  melhor em   9/52  p_Holm 0.0000
+   GRASP (tuned, 5T)            -0.084  dif +0.021  A12 0.51  melhor em  26/52  p_Holm 0.5621
+   Tabu (tuned, 5T)             -0.103  dif +0.001  A12 0.54  melhor em  32/52  p_Holm 0.5621
+   VNS (tuned, 5T)              -0.082  dif +0.022  A12 0.60  melhor em  36/52  p_Holm 0.0194
+   SMS-EMOA (tuned, 5T)         -0.185  dif -0.080  A12 0.30  melhor em   9/52  p_Holm 0.0000
+
+=== CDP-S at_5T_vs_tm [igd_plus]: N=52; referencia MOEA/D-Uniform (tuned, 5T) -0.086
+   NSGA-II (tuned, 5T)          -0.234  dif -0.148  A12 0.26  melhor em   2/52  p_Holm 0.0000
+   GRASP (tuned, 5T)            -0.084  dif +0.003  A12 0.42  melhor em  16/52  p_Holm 0.4988
+   Tabu (tuned, 5T)             -0.103  dif -0.017  A12 0.46  melhor em  24/52  p_Holm 0.4988
+   VNS (tuned, 5T)              -0.082  dif +0.004  A12 0.52  melhor em  28/52  p_Holm 0.7225
+   SMS-EMOA (tuned, 5T)         -0.185  dif -0.098  A12 0.24  melhor em   3/52  p_Holm 0.0000
+
+   [CDP-S] ganho do ajuste: {'t_moead': '-0.103->-0.103 (p=0.99)', 't_nsga2': '-0.252->-0.239 (p=0.05)', 't_grasp': '-0.130->-0.122 (p=0.0085)', 't_ts': '-0.220->-0.157 (p=1e-07)', 't_vns': '-0.173->-0.113 (p=2.9e-09)', 't_sms': '-0.255->-0.201 (p=7.1e-06)'}
+
+[GDP-S] instancias excluidas (referencia degenerada, hv_norm > 5): ['SOM-a_11_n50_b03_m5_k02']
+
+=== GDP-S at_T [igd_plus]: N=111; referencia MOEA/D-Uniform (default) -0.092
+   MOEA/D-Uniform (tuned)       -0.102  dif -0.011  A12 0.44  melhor em  43/111  p_Holm 0.0294
+   NSGA-II (default)            -0.243  dif -0.151  A12 0.24  melhor em   9/111  p_Holm 0.0000
+   GRASP-MO (default)           -0.313  dif -0.221  A12 0.19  melhor em  25/111  p_Holm 0.0000
+   GRASP-PR (default)           -0.313  dif -0.221  A12 0.19  melhor em  24/111  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.319  dif -0.227  A12 0.11  melhor em   9/111  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.157  dif -0.065  A12 0.28  melhor em  24/111  p_Holm 0.0000
+   SMS-EMOA (default)           -0.251  dif -0.160  A12 0.22  melhor em   7/111  p_Holm 0.0000
+   NSGA-II (tuned)              -0.205  dif -0.113  A12 0.33  melhor em  17/111  p_Holm 0.0000
+   GRASP (tuned)                -0.306  dif -0.215  A12 0.24  melhor em  27/111  p_Holm 0.0000
+   Tabu (tuned)                 -0.154  dif -0.062  A12 0.31  melhor em  29/111  p_Holm 0.0000
+   VNS (tuned)                  -0.158  dif -0.066  A12 0.29  melhor em  26/111  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.208  dif -0.117  A12 0.33  melhor em  18/111  p_Holm 0.0000
+
+=== GDP-S at_T_vs_tm [igd_plus]: N=111; referencia MOEA/D-Uniform (tuned) -0.102
+   NSGA-II (tuned)              -0.205  dif -0.102  A12 0.38  melhor em  29/111  p_Holm 0.0000
+   GRASP (tuned)                -0.306  dif -0.204  A12 0.30  melhor em  24/111  p_Holm 0.0000
+   Tabu (tuned)                 -0.154  dif -0.051  A12 0.36  melhor em  36/111  p_Holm 0.0000
+   VNS (tuned)                  -0.158  dif -0.056  A12 0.34  melhor em  23/111  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.208  dif -0.106  A12 0.38  melhor em  31/111  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.319  dif -0.217  A12 0.13  melhor em   9/111  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.157  dif -0.055  A12 0.33  melhor em  26/111  p_Holm 0.0000
+
+=== GDP-S at_5T [igd_plus]: N=111; referencia MOEA/D-Uniform (default) -0.085
+   MOEA/D-Uniform (tuned, 5T)   -0.071  dif +0.015  A12 0.59  melhor em  73/111  p_Holm 0.0013
+   NSGA-II (tuned, 5T)          -0.169  dif -0.084  A12 0.45  melhor em  40/111  p_Holm 0.0000
+   GRASP (tuned, 5T)            -0.290  dif -0.204  A12 0.29  melhor em  30/111  p_Holm 0.0000
+   Tabu (tuned, 5T)             -0.105  dif -0.020  A12 0.45  melhor em  52/111  p_Holm 0.1395
+   VNS (tuned, 5T)              -0.112  dif -0.026  A12 0.39  melhor em  38/111  p_Holm 0.0012
+   SMS-EMOA (tuned, 5T)         -0.178  dif -0.093  A12 0.43  melhor em  39/111  p_Holm 0.0000
+
+=== GDP-S at_5T_vs_tm [igd_plus]: N=111; referencia MOEA/D-Uniform (tuned, 5T) -0.071
+   NSGA-II (tuned, 5T)          -0.169  dif -0.098  A12 0.38  melhor em  29/111  p_Holm 0.0000
+   GRASP (tuned, 5T)            -0.290  dif -0.219  A12 0.23  melhor em  29/111  p_Holm 0.0000
+   Tabu (tuned, 5T)             -0.105  dif -0.034  A12 0.37  melhor em  44/111  p_Holm 0.0003
+   VNS (tuned, 5T)              -0.112  dif -0.041  A12 0.32  melhor em  30/111  p_Holm 0.0000
+   SMS-EMOA (tuned, 5T)         -0.178  dif -0.107  A12 0.36  melhor em  18/111  p_Holm 0.0000
+
+   [GDP-S] ganho do ajuste: {'t_moead': '-0.092->-0.102 (p=0.029)', 't_nsga2': '-0.243->-0.205 (p=1.9e-09)', 't_grasp': '-0.313->-0.306 (p=0.0076)', 't_ts': '-0.319->-0.154 (p=1.3e-17)', 't_vns': '-0.157->-0.158 (p=0.56)', 't_sms': '-0.251->-0.208 (p=1.7e-10)'}
+
+=== MDP-S at_T [igd_plus]: N=52; referencia MOEA/D-Uniform (default) -0.117
+   MOEA/D-Uniform (tuned)       -0.111  dif +0.005  A12 0.51  melhor em  22/52  p_Holm 0.8384
+   NSGA-II (default)            -0.416  dif -0.299  A12 0.06  melhor em   0/52  p_Holm 0.0000
+   GRASP-MO (default)           -0.113  dif +0.004  A12 0.56  melhor em  32/52  p_Holm 0.6965
+   GRASP-PR (default)           -0.101  dif +0.016  A12 0.59  melhor em  35/52  p_Holm 0.3209
+   Tabu (Colmenar irace)        -0.055  dif +0.062  A12 0.71  melhor em  39/52  p_Holm 0.0001
+   VNS (Colmenar irace)         -0.015  dif +0.102  A12 0.86  melhor em  47/52  p_Holm 0.0000
+   SMS-EMOA (default)           -0.362  dif -0.245  A12 0.09  melhor em   1/52  p_Holm 0.0000
+   NSGA-II (tuned)              -0.345  dif -0.228  A12 0.12  melhor em   0/52  p_Holm 0.0000
+   GRASP (tuned)                -0.038  dif +0.079  A12 0.76  melhor em  40/52  p_Holm 0.0000
+   Tabu (tuned)                 -0.039  dif +0.078  A12 0.76  melhor em  43/52  p_Holm 0.0000
+   VNS (tuned)                  -0.019  dif +0.098  A12 0.84  melhor em  44/52  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.426  dif -0.310  A12 0.04  melhor em   1/52  p_Holm 0.0000
+
+=== MDP-S at_T_vs_tm [igd_plus]: N=52; referencia MOEA/D-Uniform (tuned) -0.111
+   NSGA-II (tuned)              -0.345  dif -0.234  A12 0.10  melhor em   0/52  p_Holm 0.0000
+   GRASP (tuned)                -0.038  dif +0.073  A12 0.81  melhor em  45/52  p_Holm 0.0000
+   Tabu (tuned)                 -0.039  dif +0.073  A12 0.80  melhor em  46/52  p_Holm 0.0000
+   VNS (tuned)                  -0.019  dif +0.093  A12 0.88  melhor em  48/52  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.426  dif -0.315  A12 0.02  melhor em   0/52  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.055  dif +0.057  A12 0.74  melhor em  43/52  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.015  dif +0.096  A12 0.90  melhor em  49/52  p_Holm 0.0000
+
+=== MDP-S at_5T [igd_plus]: N=52; referencia MOEA/D-Uniform (default) -0.118
+   MOEA/D-Uniform (tuned, 5T)   -0.125  dif -0.007  A12 0.49  melhor em  23/52  p_Holm 0.8794
+   NSGA-II (tuned, 5T)          -0.316  dif -0.199  A12 0.17  melhor em   1/52  p_Holm 0.0000
+   GRASP (tuned, 5T)            -0.025  dif +0.093  A12 0.80  melhor em  43/52  p_Holm 0.0000
+   Tabu (tuned, 5T)             -0.018  dif +0.100  A12 0.82  melhor em  45/52  p_Holm 0.0000
+   VNS (tuned, 5T)              -0.003  dif +0.114  A12 0.89  melhor em  46/52  p_Holm 0.0000
+   SMS-EMOA (tuned, 5T)         -0.351  dif -0.234  A12 0.15  melhor em   7/52  p_Holm 0.0000
+
+=== MDP-S at_5T_vs_tm [igd_plus]: N=52; referencia MOEA/D-Uniform (tuned, 5T) -0.125
+   NSGA-II (tuned, 5T)          -0.316  dif -0.192  A12 0.19  melhor em   5/52  p_Holm 0.0000
+   GRASP (tuned, 5T)            -0.025  dif +0.100  A12 0.81  melhor em  43/52  p_Holm 0.0000
+   Tabu (tuned, 5T)             -0.018  dif +0.107  A12 0.84  melhor em  45/52  p_Holm 0.0000
+   VNS (tuned, 5T)              -0.003  dif +0.121  A12 0.90  melhor em  47/52  p_Holm 0.0000
+   SMS-EMOA (tuned, 5T)         -0.351  dif -0.226  A12 0.16  melhor em   3/52  p_Holm 0.0000
+
+   [MDP-S] ganho do ajuste: {'t_moead': '-0.117->-0.111 (p=0.84)', 't_nsga2': '-0.416->-0.345 (p=0.00012)', 't_grasp': '-0.101->-0.038 (p=1.3e-07)', 't_ts': '-0.055->-0.039 (p=0.0092)', 't_vns': '-0.015->-0.019 (p=0.19)', 't_sms': '-0.362->-0.426 (p=0.15)'}
+
+=== CDP-L at_T [igd_plus]: N=20; referencia MOEA/D-Uniform (default) -0.127
+   MOEA/D-Uniform (tuned)       -0.118  dif +0.009  A12 0.58  melhor em  13/20  p_Holm 0.1769
+   NSGA-II (default)            -0.473  dif -0.347  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   GRASP-MO (default)           -0.304  dif -0.177  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   GRASP-PR (default)           -0.301  dif -0.174  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.334  dif -0.207  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.386  dif -0.259  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   SMS-EMOA (default)           -0.478  dif -0.351  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   NSGA-II (tuned)              -0.346  dif -0.219  A12 0.01  melhor em   0/20  p_Holm 0.0000
+   GRASP (tuned)                -0.296  dif -0.170  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   Tabu (tuned)                 -0.241  dif -0.114  A12 0.06  melhor em   1/20  p_Holm 0.0001
+   VNS (tuned)                  -0.332  dif -0.205  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.326  dif -0.199  A12 0.00  melhor em   0/20  p_Holm 0.0000
+
+=== CDP-L at_T_vs_tm [igd_plus]: N=20; referencia MOEA/D-Uniform (tuned) -0.118
+   NSGA-II (tuned)              -0.346  dif -0.228  A12 0.01  melhor em   0/20  p_Holm 0.0000
+   GRASP (tuned)                -0.296  dif -0.179  A12 0.01  melhor em   0/20  p_Holm 0.0000
+   Tabu (tuned)                 -0.241  dif -0.123  A12 0.04  melhor em   1/20  p_Holm 0.0000
+   VNS (tuned)                  -0.332  dif -0.214  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.326  dif -0.208  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.334  dif -0.216  A12 0.00  melhor em   0/20  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.386  dif -0.268  A12 0.00  melhor em   0/20  p_Holm 0.0000
+
+=== CDP-L at_5T [igd_plus]: N=10; referencia MOEA/D-Uniform (default) -0.139
+   MOEA/D-Uniform (tuned, 5T)   -0.116  dif +0.023  A12 0.61  melhor em   6/10  p_Holm 0.7500
+   NSGA-II (tuned, 5T)          -0.284  dif -0.145  A12 0.00  melhor em   0/10  p_Holm 0.0117
+   GRASP (tuned, 5T)            -0.210  dif -0.071  A12 0.14  melhor em   3/10  p_Holm 0.0820
+   Tabu (tuned, 5T)             -0.169  dif -0.030  A12 0.39  melhor em   4/10  p_Holm 0.7500
+   VNS (tuned, 5T)              -0.312  dif -0.173  A12 0.00  melhor em   0/10  p_Holm 0.0117
+   SMS-EMOA (tuned, 5T)         -0.290  dif -0.150  A12 0.14  melhor em   2/10  p_Holm 0.0781
+
+=== CDP-L at_5T_vs_tm [igd_plus]: N=10; referencia MOEA/D-Uniform (tuned, 5T) -0.116
+   NSGA-II (tuned, 5T)          -0.284  dif -0.168  A12 0.03  melhor em   0/10  p_Holm 0.0098
+   GRASP (tuned, 5T)            -0.210  dif -0.094  A12 0.10  melhor em   1/10  p_Holm 0.0176
+   Tabu (tuned, 5T)             -0.169  dif -0.052  A12 0.31  melhor em   2/10  p_Holm 0.2324
+   VNS (tuned, 5T)              -0.312  dif -0.196  A12 0.01  melhor em   0/10  p_Holm 0.0098
+   SMS-EMOA (tuned, 5T)         -0.290  dif -0.173  A12 0.12  melhor em   2/10  p_Holm 0.0273
+
+   [CDP-L] ganho do ajuste: {'t_moead': '-0.127->-0.118 (p=0.18)', 't_nsga2': '-0.473->-0.346 (p=1.9e-06)', 't_grasp': '-0.301->-0.296 (p=0.9)', 't_ts': '-0.334->-0.241 (p=5.7e-06)', 't_vns': '-0.386->-0.332 (p=0.0049)', 't_sms': '-0.478->-0.326 (p=1.9e-06)'}
+
+=== GDP-L at_T [igd_plus]: N=32; referencia MOEA/D-Uniform (default) -0.130
+   MOEA/D-Uniform (tuned)       -0.126  dif +0.004  A12 0.55  melhor em  17/32  p_Holm 0.3403
+   NSGA-II (default)            -0.405  dif -0.275  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   GRASP-MO (default)           -0.380  dif -0.250  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   GRASP-PR (default)           -0.364  dif -0.234  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.408  dif -0.279  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.391  dif -0.261  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   SMS-EMOA (default)           -0.413  dif -0.283  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   NSGA-II (tuned)              -0.285  dif -0.155  A12 0.02  melhor em   2/32  p_Holm 0.0000
+   GRASP (tuned)                -0.326  dif -0.196  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   Tabu (tuned)                 -0.238  dif -0.108  A12 0.01  melhor em   0/32  p_Holm 0.0000
+   VNS (tuned)                  -0.352  dif -0.222  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.284  dif -0.154  A12 0.02  melhor em   2/32  p_Holm 0.0000
+
+=== GDP-L at_T_vs_tm [igd_plus]: N=32; referencia MOEA/D-Uniform (tuned) -0.126
+   NSGA-II (tuned)              -0.285  dif -0.159  A12 0.01  melhor em   1/32  p_Holm 0.0000
+   GRASP (tuned)                -0.326  dif -0.199  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   Tabu (tuned)                 -0.238  dif -0.111  A12 0.01  melhor em   0/32  p_Holm 0.0000
+   VNS (tuned)                  -0.352  dif -0.226  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.284  dif -0.157  A12 0.02  melhor em   0/32  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.408  dif -0.282  A12 0.00  melhor em   0/32  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.391  dif -0.265  A12 0.00  melhor em   0/32  p_Holm 0.0000
+
+=== GDP-L at_5T [igd_plus]: N=16; referencia MOEA/D-Uniform (default) -0.133
+   MOEA/D-Uniform (tuned, 5T)   -0.108  dif +0.025  A12 0.66  melhor em  11/16  p_Holm 0.2114
+   NSGA-II (tuned, 5T)          -0.285  dif -0.152  A12 0.06  melhor em   1/16  p_Holm 0.0004
+   GRASP (tuned, 5T)            -0.266  dif -0.133  A12 0.02  melhor em   0/16  p_Holm 0.0002
+   Tabu (tuned, 5T)             -0.199  dif -0.066  A12 0.16  melhor em   2/16  p_Holm 0.0012
+   VNS (tuned, 5T)              -0.320  dif -0.187  A12 0.00  melhor em   0/16  p_Holm 0.0002
+   SMS-EMOA (tuned, 5T)         -0.290  dif -0.157  A12 0.07  melhor em   1/16  p_Holm 0.0004
+
+=== GDP-L at_5T_vs_tm [igd_plus]: N=16; referencia MOEA/D-Uniform (tuned, 5T) -0.108
+   NSGA-II (tuned, 5T)          -0.285  dif -0.177  A12 0.04  melhor em   1/16  p_Holm 0.0002
+   GRASP (tuned, 5T)            -0.266  dif -0.158  A12 0.01  melhor em   0/16  p_Holm 0.0002
+   Tabu (tuned, 5T)             -0.199  dif -0.091  A12 0.09  melhor em   1/16  p_Holm 0.0002
+   VNS (tuned, 5T)              -0.320  dif -0.212  A12 0.00  melhor em   0/16  p_Holm 0.0002
+   SMS-EMOA (tuned, 5T)         -0.290  dif -0.182  A12 0.04  melhor em   0/16  p_Holm 0.0002
+
+   [GDP-L] ganho do ajuste: {'t_moead': '-0.130->-0.126 (p=0.34)', 't_nsga2': '-0.405->-0.285 (p=9.3e-10)', 't_grasp': '-0.364->-0.326 (p=5.2e-06)', 't_ts': '-0.408->-0.238 (p=4.7e-10)', 't_vns': '-0.391->-0.352 (p=3.1e-06)', 't_sms': '-0.413->-0.284 (p=4.7e-10)'}
+
+=== MDP-L at_T [igd_plus]: N=22; referencia MOEA/D-Uniform (default) -0.053
+   MOEA/D-Uniform (tuned)       -0.047  dif +0.006  A12 0.58  melhor em  13/22  p_Holm 0.3053
+   NSGA-II (default)            -0.269  dif -0.216  A12 0.14  melhor em   0/22  p_Holm 0.0000
+   GRASP-MO (default)           -0.236  dif -0.183  A12 0.01  melhor em   0/22  p_Holm 0.0000
+   GRASP-PR (default)           -0.232  dif -0.179  A12 0.01  melhor em   0/22  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.021  dif +0.032  A12 0.76  melhor em  22/22  p_Holm 0.0000
+   VNS (Colmenar irace)         -0.014  dif +0.039  A12 0.76  melhor em  20/22  p_Holm 0.0000
+   SMS-EMOA (default)           -0.306  dif -0.253  A12 0.03  melhor em   0/22  p_Holm 0.0000
+   NSGA-II (tuned)              -0.125  dif -0.072  A12 0.23  melhor em   0/22  p_Holm 0.0000
+   GRASP (tuned)                -0.182  dif -0.129  A12 0.16  melhor em   0/22  p_Holm 0.0000
+   Tabu (tuned)                 -0.014  dif +0.039  A12 0.78  melhor em  21/22  p_Holm 0.0000
+   VNS (tuned)                  -0.012  dif +0.041  A12 0.78  melhor em  20/22  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.142  dif -0.089  A12 0.23  melhor em   0/22  p_Holm 0.0000
+
+=== MDP-L at_T_vs_tm [igd_plus]: N=22; referencia MOEA/D-Uniform (tuned) -0.047
+   NSGA-II (tuned)              -0.125  dif -0.078  A12 0.22  melhor em   0/22  p_Holm 0.0000
+   GRASP (tuned)                -0.182  dif -0.135  A12 0.11  melhor em   0/22  p_Holm 0.0000
+   Tabu (tuned)                 -0.014  dif +0.034  A12 0.76  melhor em  21/22  p_Holm 0.0000
+   VNS (tuned)                  -0.012  dif +0.036  A12 0.75  melhor em  20/22  p_Holm 0.0000
+   SMS-EMOA (tuned)             -0.142  dif -0.095  A12 0.22  melhor em   0/22  p_Holm 0.0000
+   Tabu (Colmenar irace)        -0.021  dif +0.026  A12 0.74  melhor em  20/22  p_Holm 0.0001
+   VNS (Colmenar irace)         -0.014  dif +0.033  A12 0.74  melhor em  19/22  p_Holm 0.0001
+
+=== MDP-L at_5T [igd_plus]: N=11; referencia MOEA/D-Uniform (default) -0.047
+   MOEA/D-Uniform (tuned, 5T)   -0.027  dif +0.020  A12 0.66  melhor em  10/11  p_Holm 0.0117
+   NSGA-II (tuned, 5T)          -0.084  dif -0.037  A12 0.28  melhor em   1/11  p_Holm 0.0098
+   GRASP (tuned, 5T)            -0.137  dif -0.090  A12 0.17  melhor em   0/11  p_Holm 0.0059
+   Tabu (tuned, 5T)             -0.007  dif +0.040  A12 0.79  melhor em  10/11  p_Holm 0.0205
+   VNS (tuned, 5T)              -0.007  dif +0.040  A12 0.80  melhor em  10/11  p_Holm 0.0205
+   SMS-EMOA (tuned, 5T)         -0.075  dif -0.029  A12 0.27  melhor em   1/11  p_Holm 0.0205
+
+=== MDP-L at_5T_vs_tm [igd_plus]: N=11; referencia MOEA/D-Uniform (tuned, 5T) -0.027
+   NSGA-II (tuned, 5T)          -0.084  dif -0.057  A12 0.22  melhor em   0/11  p_Holm 0.0049
+   GRASP (tuned, 5T)            -0.137  dif -0.110  A12 0.03  melhor em   0/11  p_Holm 0.0049
+   Tabu (tuned, 5T)             -0.007  dif +0.020  A12 0.76  melhor em  10/11  p_Holm 0.0195
+   VNS (tuned, 5T)              -0.007  dif +0.020  A12 0.76  melhor em  10/11  p_Holm 0.0195
+   SMS-EMOA (tuned, 5T)         -0.075  dif -0.048  A12 0.22  melhor em   0/11  p_Holm 0.0049
+
+   [MDP-L] ganho do ajuste: {'t_moead': '-0.053->-0.047 (p=0.31)', 't_nsga2': '-0.269->-0.125 (p=4.8e-07)', 't_grasp': '-0.232->-0.182 (p=4.8e-07)', 't_ts': '-0.021->-0.014 (p=0.023)', 't_vns': '-0.014->-0.012 (p=0.042)', 't_sms': '-0.306->-0.142 (p=4.8e-07)'}
+--- exit 0 em 3.8 min
+
+$$$ analyze_e11_extremes.py
+
+=== MDP-S (extremos relativos a referencia congelada; media sobre instancias; 'hit' = fracao >= 0.999)
+   metodo                       N  MaxSum   hit  MaxMin   hit |PF| med
+   MOEA/D-Uniform (default)    52   0.989  0.15   0.902  0.16      2.8
+   MOEA/D-Uniform (tuned)      52   0.991  0.10   0.904  0.16      3.0
+   Tabu (Colmenar irace)       52   0.998  0.50   0.935  0.34      3.0
+   VNS (Colmenar irace)        52   1.000  0.90   0.966  0.47      3.7
+   NSGA-II (tuned)             52   0.975  0.04   0.705  0.03      3.7
+   GRASP (tuned)               52   0.999  0.75   0.964  0.29      3.3
+   Tabu (tuned)                52   0.999  0.65   0.941  0.29      3.3
+   VNS (tuned)                 52   0.999  0.79   0.976  0.47      3.5
+
+=== MDP-L (extremos relativos a referencia congelada; media sobre instancias; 'hit' = fracao >= 0.999)
+   metodo                       N  MaxSum   hit  MaxMin   hit |PF| med
+   MOEA/D-Uniform (default)    22   0.995  0.32   0.932  0.05     33.3
+   MOEA/D-Uniform (tuned)      22   0.996  0.32   0.939  0.05     35.0
+   Tabu (Colmenar irace)       22   1.000  0.73   0.992  0.64     40.8
+   VNS (Colmenar irace)        22   1.000  0.82   0.986  0.41     37.3
+   NSGA-II (tuned)             22   0.989  0.32   0.779  0.00     25.7
+   GRASP (tuned)               22   0.997  0.41   0.840  0.00     16.7
+   Tabu (tuned)                22   1.001  0.86   0.994  0.68     40.8
+   VNS (tuned)                 22   1.001  0.86   0.993  0.64     40.5
+
+=== CDP-S (extremos relativos a referencia congelada; media sobre instancias; 'hit' = fracao >= 0.999)
+   metodo                       N  MaxSum   hit  MaxMin   hit |PF| med
+   MOEA/D-Uniform (default)    52   0.801  0.00   0.849  0.04     17.0
+   MOEA/D-Uniform (tuned)      52   0.832  0.02   0.850  0.04     16.7
+   Tabu (Colmenar irace)       52   0.599  0.00   0.855  0.04     16.8
+   VNS (Colmenar irace)        52   0.659  0.00   0.857  0.06     15.5
+   NSGA-II (tuned)             52   0.762  0.00   0.644  0.00     11.0
+   GRASP (tuned)               52   0.801  0.00   0.900  0.15      8.3
+   Tabu (tuned)                52   0.706  0.00   0.885  0.08     17.5
+   VNS (tuned)                 52   0.787  0.00   0.900  0.13     18.7
+
+=== CDP-L (extremos relativos a referencia congelada; media sobre instancias; 'hit' = fracao >= 0.999)
+   metodo                       N  MaxSum   hit  MaxMin   hit |PF| med
+   MOEA/D-Uniform (default)    20   0.901  0.00   0.696  0.00     20.2
+   MOEA/D-Uniform (tuned)      20   0.904  0.00   0.715  0.00     20.0
+   Tabu (Colmenar irace)       20   0.742  0.00   0.646  0.00     12.5
+   VNS (Colmenar irace)        20   0.788  0.00   0.433  0.00      8.2
+   NSGA-II (tuned)             20   0.776  0.00   0.485  0.00     11.3
+   GRASP (tuned)               20   0.879  0.00   0.558  0.00      5.3
+   Tabu (tuned)                20   0.798  0.00   0.721  0.00     12.0
+   VNS (tuned)                 20   0.767  0.00   0.626  0.00      8.7
+
+=== GDP-S (extremos relativos a referencia congelada; media sobre instancias; 'hit' = fracao >= 0.999)
+   metodo                       N  MaxSum   hit  MaxMin   hit |PF| med
+   MOEA/D-Uniform (default)   112   0.866  0.05   0.838  0.04     13.5
+   MOEA/D-Uniform (tuned)     112   0.862  0.02   0.842  0.04     12.2
+   Tabu (Colmenar irace)      112   0.544  0.00   0.885  0.12      8.0
+   VNS (Colmenar irace)       112   0.703  0.01   0.882  0.15     10.7
+   NSGA-II (tuned)            112   0.921  0.12   0.654  0.00     10.2
+   GRASP (tuned)              112   0.648  0.00   0.882  0.25      5.2
+   Tabu (tuned)               112   0.722  0.02   0.891  0.14     10.8
+   VNS (tuned)                112   0.714  0.01   0.884  0.15     11.0
+
+=== GDP-L (extremos relativos a referencia congelada; media sobre instancias; 'hit' = fracao >= 0.999)
+   metodo                       N  MaxSum   hit  MaxMin   hit |PF| med
+   MOEA/D-Uniform (default)    32   0.883  0.00   0.637  0.00     17.5
+   MOEA/D-Uniform (tuned)      32   0.877  0.00   0.668  0.00     18.7
+   Tabu (Colmenar irace)       32   0.626  0.00   0.551  0.00     11.0
+   VNS (Colmenar irace)        32   0.719  0.00   0.421  0.00      7.8
+   NSGA-II (tuned)             32   1.023  0.53   0.364  0.00      5.3
+   GRASP (tuned)               32   0.729  0.00   0.630  0.00      6.7
+   Tabu (tuned)                32   0.738  0.00   0.760  0.00      8.7
+   VNS (tuned)                 32   0.704  0.00   0.560  0.00      9.3
+--- exit 0 em 0.0 min
+
+$$$ analyze_e13.py
+CDP-S: N=12  hv_norm sem/com insercao 0.537/1.350 (melhor em 12/12);  max MaxSum/ref 0.68/5.51 (mediana);  tamanho mediano 17/28 (max 50);  pontos da referencia dominados 0.00/0.02
+CDP-L: N=12  hv_norm sem/com insercao 0.691/0.676 (melhor em 5/12);  max MaxSum/ref 0.85/8.17 (mediana);  tamanho mediano 134/250 (max 500);  pontos da referencia dominados 0.00/0.02
+GDP-S: N=12  hv_norm sem/com insercao 0.711/0.840 (melhor em 7/12);  max MaxSum/ref 0.75/0.83 (mediana);  tamanho mediano 18/19 (max 22);  pontos da referencia dominados 0.01/0.02
+GDP-L: N=12  hv_norm sem/com insercao 0.611/0.619 (melhor em 6/12);  max MaxSum/ref 0.73/0.75 (mediana);  tamanho mediano 137/136 (max 140);  pontos da referencia dominados 0.01/0.02
+--- exit 0 em 0.0 min
+
+$$$ analyze_e1_e2.py --problem CDP --part all --out results/analysis/e1_e2_e3_CDP.json
+=== E1 (CDP, N=60 instancias, 3 replicas): 17/17 variantes completas; metrica hv_norm
+referencia: media de {'random': 0.7107, 'hypervolume': 0.7075, 'thompson_hv': 0.6997, 'thompson_scalar': 0.6871, 'dyts_hv': 0.712, 'dyts_scalar': 0.7097, 'scalar': 0.6777}
+
+--- cada variante vs `random` (uniforme):
+   h_ucbhv_c005         dif media -0.0135   A12=0.48   p_holm=1.0000
+   h_ucbhv_c20          dif media +0.0058   A12=0.52   p_holm=1.0000
+   h_ucbhv_w20          dif media +0.0055   A12=0.51   p_holm=1.0000
+   h_tshv_w20           dif media -0.0057   A12=0.49   p_holm=1.0000
+   h_tssc_w20           dif media -0.0081   A12=0.46   p_holm=1.0000
+   h_dytshv_w20         dif media +0.0015   A12=0.51   p_holm=1.0000
+   h_dytssc_w20         dif media -0.0004   A12=0.52   p_holm=1.0000
+   h_ucbhv_w200         dif media +0.0019   A12=0.50   p_holm=1.0000
+   h_tshv_w200          dif media +0.0035   A12=0.51   p_holm=1.0000
+   h_tssc_w200          dif media -0.0378   A12=0.33   p_holm=0.0001 *
+   h_dytshv_w200        dif media -0.0167   A12=0.47   p_holm=0.5292
+   h_dytssc_w200        dif media -0.0017   A12=0.49   p_holm=1.0000
+   h_ucbsrel_c005       dif media -0.0365   A12=0.34   p_holm=0.0000 *
+   h_ucbsrel_c05        dif media -0.0392   A12=0.36   p_holm=0.0011 *
+   h_ucbsrel_c20        dif media -0.0259   A12=0.39   p_holm=0.0029 *
+   h_ucbins_c005        dif media -0.0013   A12=0.49   p_holm=1.0000
+   h_ucbins_c20         dif media +0.0041   A12=0.52   p_holm=1.0000
+
+--- familia h_ucbhv vs configuracao padrao (hypervolume):
+   h_ucbhv_c005         dif media -0.0103   A12=0.49   p_holm=0.8324
+   h_ucbhv_c20          dif media +0.0090   A12=0.52   p_holm=0.8324
+   h_ucbhv_w20          dif media +0.0087   A12=0.51   p_holm=0.8324
+   h_ucbhv_w200         dif media +0.0051   A12=0.51   p_holm=0.8324
+
+--- familia h_tshv vs configuracao padrao (thompson_hv):
+   h_tshv_w20           dif media +0.0053   A12=0.50   p_holm=0.5076
+   h_tshv_w200          dif media +0.0144   A12=0.53   p_holm=0.2859
+
+--- familia h_tssc vs configuracao padrao (thompson_scalar):
+   h_tssc_w20           dif media +0.0155   A12=0.56   p_holm=0.0987
+   h_tssc_w200          dif media -0.0142   A12=0.44   p_holm=0.1619
+
+--- familia h_dytshv vs configuracao padrao (dyts_hv):
+   h_dytshv_w20         dif media +0.0001   A12=0.51   p_holm=0.8598
+   h_dytshv_w200        dif media -0.0180   A12=0.46   p_holm=0.2270
+
+--- familia h_dytssc vs configuracao padrao (dyts_scalar):
+   h_dytssc_w20         dif media +0.0007   A12=0.50   p_holm=1.0000
+   h_dytssc_w200        dif media -0.0007   A12=0.48   p_holm=1.0000
+
+melhor variante de E1 em hv_norm medio: h_ucbhv_c20 (0.7165) vs random (0.7107)
+
+=== E1b (CDP): 7/7 variantes completas
+
+--- DYTS fiel / recompensa replace vs `random`:
+   fd_replace           dif media -0.0110   A12=0.45   p_holm=0.6415
+   fd_replace_c30       dif media -0.0113   A12=0.46   p_holm=0.9257
+   fd_replace_c300      dif media -0.0032   A12=0.50   p_holm=1.0000
+   fd_scalar            dif media -0.0307   A12=0.38   p_holm=0.0030 *
+   fd_hv                dif media -0.0061   A12=0.48   p_holm=1.0000
+   ts_replace           dif media -0.0027   A12=0.48   p_holm=1.0000
+   ucb_replace          dif media -0.0024   A12=0.49   p_holm=1.0000
+
+=== E3 selecao contextual (CDP): 7/7 variantes completas
+
+--- contextual vs `random` (uniforme):
+   c_ucbins_w3          dif media -0.0044   A12=0.50   p_holm=1.0000
+   c_ucbins_p3          dif media -0.0013   A12=0.50   p_holm=1.0000
+   c_ucbins_w3p3        dif media -0.0051   A12=0.52   p_holm=1.0000
+   c_tsins_w3p3         dif media -0.0009   A12=0.52   p_holm=1.0000
+   c_fdrep_w3p3         dif media -0.0017   A12=0.50   p_holm=1.0000
+   c_ucbsrel_w3p3       dif media -0.0120   A12=0.45   p_holm=0.9058
+   c_ucbhv_w3p3         dif media -0.0068   A12=0.48   p_holm=1.0000
+
+--- c_ucbins_w3 vs contraparte nao contextual (ucb_insert):
+   c_ucbins_w3          dif media -0.0021   A12=0.49   p_holm=0.7516
+
+--- c_ucbins_p3 vs contraparte nao contextual (ucb_insert):
+   c_ucbins_p3          dif media +0.0010   A12=0.49   p_holm=0.9765
+
+--- c_ucbins_w3p3 vs contraparte nao contextual (ucb_insert):
+   c_ucbins_w3p3        dif media -0.0028   A12=0.50   p_holm=0.6534
+
+--- c_tsins_w3p3 vs contraparte nao contextual (ts_insert):
+   c_tsins_w3p3         dif media -0.0040   A12=0.51   p_holm=0.3613
+
+--- c_fdrep_w3p3 vs contraparte nao contextual (fd_replace):
+   c_fdrep_w3p3         dif media +0.0092   A12=0.55   p_holm=0.0725
+
+--- c_ucbhv_w3p3 vs contraparte nao contextual (hypervolume):
+   c_ucbhv_w3p3         dif media -0.0037   A12=0.49   p_holm=0.6271
+
+=== E15 FRRMAB de Li et al. 2014 (CDP): 5/5 variantes completas
+
+--- FRRMAB vs `random` (uniforme):
+   frr_default          dif media +0.0063   A12=0.52   p_holm=0.9502
+   frr_w25              dif media -0.0102   A12=0.49   p_holm=0.9502
+   frr_c1               dif media -0.0112   A12=0.45   p_holm=0.5508
+   frr_c03              dif media -0.0045   A12=0.49   p_holm=0.9883
+   frr_w25_c03          dif media -0.0086   A12=0.47   p_holm=0.5508
+
+=== E17 inicializacao GRASP (CDP): 2/2 variantes completas
+
+--- alpha da inicializacao (1,0 = aleatoria; 0,0 = gulosa) vs padrao 0,3 (`random`):
+   init_a10             dif media -0.0024   A12=0.57   p_holm=0.5961
+   init_a00             dif media +0.0087   A12=0.54   p_holm=0.1983
+
+=== E16 pool envenenado (CDP): 8/8 variantes completas
+
+--- pool envenenado: uniforme vs uniforme do pool limpo:
+   px_random            dif media +0.0182   A12=0.57   p_holm=0.0836
+
+--- pool envenenado: cada seletor vs uniforme no MESMO pool envenenado (px_random):
+   px_ucbhv             dif media -0.0048   A12=0.51   p_holm=1.0000
+   px_dytshv            dif media -0.0124   A12=0.47   p_holm=0.5266
+   px_ucbscal           dif media -0.0382   A12=0.35   p_holm=0.0006 *
+   px_dytsscal          dif media -0.0072   A12=0.50   p_holm=1.0000
+   px_ucbins            dif media -0.0165   A12=0.48   p_holm=0.8324
+   px_fdrep             dif media -0.0134   A12=0.46   p_holm=0.3012
+   px_frr               dif media -0.0105   A12=0.49   p_holm=1.0000
+
+--- pool envenenado: seletor vs uniforme do pool LIMPO (random):
+   px_ucbhv             dif media +0.0135   A12=0.59   p_holm=0.9195
+   px_dytshv            dif media +0.0058   A12=0.53   p_holm=1.0000
+   px_ucbscal           dif media -0.0200   A12=0.40   p_holm=0.0462 *
+   px_dytsscal          dif media +0.0110   A12=0.56   p_holm=1.0000
+   px_ucbins            dif media +0.0017   A12=0.55   p_holm=1.0000
+   px_fdrep             dif media +0.0048   A12=0.53   p_holm=1.0000
+   px_frr               dif media +0.0077   A12=0.56   p_holm=1.0000
+
+--- px_ucbhv vs sua contraparte no pool limpo (hypervolume):
+   px_ucbhv             dif media +0.0166   A12=0.60   p_holm=0.0904
+
+--- px_dytshv vs sua contraparte no pool limpo (dyts_hv):
+   px_dytshv            dif media +0.0045   A12=0.54   p_holm=0.6481
+
+--- px_ucbscal vs sua contraparte no pool limpo (scalar):
+   px_ucbscal           dif media +0.0130   A12=0.53   p_holm=0.1664
+
+--- px_dytsscal vs sua contraparte no pool limpo (dyts_scalar):
+   px_dytsscal          dif media +0.0120   A12=0.54   p_holm=0.4181
+
+--- px_ucbins vs sua contraparte no pool limpo (ucb_insert):
+   px_ucbins            dif media +0.0040   A12=0.54   p_holm=0.6694
+
+--- px_fdrep vs sua contraparte no pool limpo (fd_replace):
+   px_fdrep             dif media +0.0158   A12=0.58   p_holm=0.0469 *
+
+--- px_frr vs sua contraparte no pool limpo (frr_default):
+   px_frr               dif media +0.0015   A12=0.54   p_holm=0.7404
+
+=== E2 orcamento x2 (CDP): medias {random: 0.7107, dyts_hv: 0.7120, hypervolume: 0.7075, b2_random: 0.7325, b2_dytshv: 0.7246, b2_ucbhv: 0.7299}
+
+--- mesmo orcamento x2: seletores vs uniforme (b2_random):
+   b2_dytshv            dif media -0.0080   A12=0.46   p_holm=0.1894
+   b2_ucbhv             dif media -0.0026   A12=0.46   p_holm=0.5219
+
+--- ganho de orcamento (x2 vs x1), uniforme:
+   b2_random            dif media +0.0218   A12=0.61   p_holm=0.0058 *
+
+=== E2 orcamento x4 (CDP): medias {random: 0.7107, dyts_hv: 0.7120, hypervolume: 0.7075, b4_random: 0.7465, b4_dytshv: 0.7445, b4_ucbhv: 0.7509}
+
+--- mesmo orcamento x4: seletores vs uniforme (b4_random):
+   b4_dytshv            dif media -0.0020   A12=0.48   p_holm=1.0000
+   b4_ucbhv             dif media +0.0044   A12=0.52   p_holm=1.0000
+
+--- ganho de orcamento (x4 vs x1), uniforme:
+   b4_random            dif media +0.0358   A12=0.62   p_holm=0.0000 *
+
+salvo: results/analysis/e1_e2_e3_CDP.json
+--- exit 0 em 5.7 min
+
+$$$ analyze_anchor_v2.py --problem CDP
+
+=== CDP n<=150: N=60 instancias, 3 replicas
+  random_ref       hv_norm 0.7170  tempo med    3.5s  
+      extremo MaxMin / melhor valor da literatura: GKD-b n150 0.929 (N=20), GKD-b n50 0.935 (N=20), SOM-a n50 0.736 (N=20)
+  random_anchor    hv_norm 0.7359  tempo med    5.6s  | vs random_ref: +0.0189 (39/60, p=0.0148) 
+      extremo MaxMin / melhor valor da literatura: GKD-b n150 0.984 (N=20), GKD-b n50 0.997 (N=20), SOM-a n50 1.000 (N=20)
+  random_sbts      hv_norm 0.7287  tempo med    5.4s  | vs random_ref: +0.0116 (40/60, p=0.141) | vs random_anchor: -0.0073 (27/60, p=0.422) 
+      extremo MaxMin / melhor valor da literatura: GKD-b n150 0.996 (N=20), GKD-b n50 1.000 (N=20), SOM-a n50 0.958 (N=20)
+  random_both      hv_norm 0.7369  tempo med    4.3s  | vs random_ref: +0.0199 (37/60, p=0.0221) | vs random_anchor: +0.0010 (27/60, p=0.877) 
+      extremo MaxMin / melhor valor da literatura: GKD-b n150 0.994 (N=20), GKD-b n50 1.000 (N=20), SOM-a n50 0.994 (N=20)
+  dyts_hv_both     hv_norm 0.7346  tempo med    5.2s  | vs random_ref: +0.0176 (36/60, p=0.0393) | vs random_anchor: -0.0013 (30/60, p=0.906) 
+      extremo MaxMin / melhor valor da literatura: GKD-b n150 0.994 (N=20), GKD-b n50 1.000 (N=20), SOM-a n50 0.978 (N=20)
+
+=== CDP n=500: N=40 instancias, 3 replicas
+  random           hv_norm 0.7191  tempo med  103.1s  
+      extremo MaxMin / melhor valor da literatura: GKD-c n500 0.865 (N=20), MDG-b n500 0.473 (N=20)
+  random_anchor6k  hv_norm 0.7923  tempo med  122.0s  | vs random: +0.0732 (37/40, p=3.07e-10) 
+      extremo MaxMin / melhor valor da literatura: GKD-c n500 0.972 (N=20), MDG-b n500 0.697 (N=20)
+  random_sbts      hv_norm 0.7528  tempo med  230.9s  | vs random: +0.0337 (27/40, p=0.000941) | vs random_anchor6k: -0.0395 (11/40, p=0.000181) 
+      extremo MaxMin / melhor valor da literatura: GKD-c n500 0.994 (N=20), MDG-b n500 0.895 (N=20)
+  random_both      hv_norm 0.7994  tempo med  165.3s  | vs random: +0.0802 (36/40, p=5.58e-10) | vs random_anchor6k: +0.0071 (20/40, p=0.368) 
+      extremo MaxMin / melhor valor da literatura: GKD-c n500 0.990 (N=20), MDG-b n500 0.851 (N=20)
+--- exit 0 em 0.3 min
+
+$$$ analyze_e1_e2.py --problem GDP --part all --out results/analysis/e1_e2_e3_GDP.json
+=== E1 (GDP, N=120 instancias, 3 replicas): 17/17 variantes completas; metrica hv_norm
+referencia: media de {'random': 0.7713, 'hypervolume': 0.7515, 'thompson_hv': 0.7525, 'thompson_scalar': 0.7133, 'dyts_hv': 0.7641, 'dyts_scalar': 0.7634, 'scalar': 0.6837}
+
+--- cada variante vs `random` (uniforme):
+   h_ucbhv_c005         dif media -0.0104   A12=0.50   p_holm=1.0000
+   h_ucbhv_c20          dif media -0.0061   A12=0.50   p_holm=1.0000
+   h_ucbhv_w20          dif media -0.0151   A12=0.49   p_holm=0.5097
+   h_tshv_w20           dif media -0.0135   A12=0.49   p_holm=0.6573
+   h_tssc_w20           dif media -0.0208   A12=0.44   p_holm=0.0083 *
+   h_dytshv_w20         dif media -0.0058   A12=0.49   p_holm=1.0000
+   h_dytssc_w20         dif media -0.0044   A12=0.49   p_holm=1.0000
+   h_ucbhv_w200         dif media +0.0016   A12=0.52   p_holm=1.0000
+   h_tshv_w200          dif media -0.0166   A12=0.48   p_holm=0.3174
+   h_tssc_w200          dif media -0.0692   A12=0.32   p_holm=0.0000 *
+   h_dytshv_w200        dif media -0.0049   A12=0.51   p_holm=1.0000
+   h_dytssc_w200        dif media -0.0066   A12=0.49   p_holm=1.0000
+   h_ucbsrel_c005       dif media -0.0835   A12=0.29   p_holm=0.0000 *
+   h_ucbsrel_c05        dif media -0.0829   A12=0.30   p_holm=0.0000 *
+   h_ucbsrel_c20        dif media -0.0856   A12=0.30   p_holm=0.0000 *
+   h_ucbins_c005        dif media -0.0021   A12=0.49   p_holm=1.0000
+   h_ucbins_c20         dif media -0.0120   A12=0.48   p_holm=0.3174
+
+--- familia h_ucbhv vs configuracao padrao (hypervolume):
+   h_ucbhv_c005         dif media +0.0094   A12=0.53   p_holm=0.2090
+   h_ucbhv_c20          dif media +0.0137   A12=0.52   p_holm=0.5849
+   h_ucbhv_w20          dif media +0.0047   A12=0.51   p_holm=0.6235
+   h_ucbhv_w200         dif media +0.0214   A12=0.54   p_holm=0.3172
+
+--- familia h_tshv vs configuracao padrao (thompson_hv):
+   h_tshv_w20           dif media +0.0053   A12=0.50   p_holm=1.0000
+   h_tshv_w200          dif media +0.0022   A12=0.49   p_holm=1.0000
+
+--- familia h_tssc vs configuracao padrao (thompson_scalar):
+   h_tssc_w20           dif media +0.0372   A12=0.60   p_holm=0.0000 *
+   h_tssc_w200          dif media -0.0112   A12=0.45   p_holm=0.0018 *
+
+--- familia h_dytshv vs configuracao padrao (dyts_hv):
+   h_dytshv_w20         dif media +0.0013   A12=0.51   p_holm=1.0000
+   h_dytshv_w200        dif media +0.0022   A12=0.52   p_holm=1.0000
+
+--- familia h_dytssc vs configuracao padrao (dyts_scalar):
+   h_dytssc_w20         dif media +0.0035   A12=0.50   p_holm=1.0000
+   h_dytssc_w200        dif media +0.0013   A12=0.50   p_holm=1.0000
+
+melhor variante de E1 em hv_norm medio: h_ucbhv_w200 (0.7729) vs random (0.7713)
+
+=== E1b (GDP): 7/7 variantes completas
+
+--- DYTS fiel / recompensa replace vs `random`:
+   fd_replace           dif media -0.0177   A12=0.48   p_holm=0.0177 *
+   fd_replace_c30       dif media -0.0174   A12=0.48   p_holm=0.0908
+   fd_replace_c300      dif media -0.0146   A12=0.46   p_holm=0.0139 *
+   fd_scalar            dif media -0.0685   A12=0.32   p_holm=0.0000 *
+   fd_hv                dif media -0.0106   A12=0.48   p_holm=0.1705
+   ts_replace           dif media -0.0238   A12=0.46   p_holm=0.0139 *
+   ucb_replace          dif media -0.0108   A12=0.48   p_holm=0.4724
+
+=== E3 selecao contextual (GDP): 7/7 variantes completas
+
+--- contextual vs `random` (uniforme):
+   c_ucbins_w3          dif media -0.0087   A12=0.49   p_holm=0.8701
+   c_ucbins_p3          dif media -0.0090   A12=0.48   p_holm=0.8701
+   c_ucbins_w3p3        dif media -0.0125   A12=0.49   p_holm=0.5489
+   c_tsins_w3p3         dif media -0.0137   A12=0.48   p_holm=0.3187
+   c_fdrep_w3p3         dif media -0.0145   A12=0.49   p_holm=0.5489
+   c_ucbsrel_w3p3       dif media -0.0148   A12=0.46   p_holm=0.2239
+   c_ucbhv_w3p3         dif media -0.0118   A12=0.50   p_holm=0.8701
+
+--- c_ucbins_w3 vs contraparte nao contextual (ucb_insert):
+   c_ucbins_w3          dif media -0.0016   A12=0.50   p_holm=0.8038
+
+--- c_ucbins_p3 vs contraparte nao contextual (ucb_insert):
+   c_ucbins_p3          dif media -0.0018   A12=0.49   p_holm=0.8834
+
+--- c_ucbins_w3p3 vs contraparte nao contextual (ucb_insert):
+   c_ucbins_w3p3        dif media -0.0053   A12=0.50   p_holm=0.7673
+
+--- c_tsins_w3p3 vs contraparte nao contextual (ts_insert):
+   c_tsins_w3p3         dif media +0.0007   A12=0.50   p_holm=0.5912
+
+--- c_fdrep_w3p3 vs contraparte nao contextual (fd_replace):
+   c_fdrep_w3p3         dif media +0.0033   A12=0.51   p_holm=0.8443
+
+--- c_ucbhv_w3p3 vs contraparte nao contextual (hypervolume):
+   c_ucbhv_w3p3         dif media +0.0080   A12=0.52   p_holm=0.3591
+
+=== E15 FRRMAB de Li et al. 2014 (GDP): 5/5 variantes completas
+
+--- FRRMAB vs `random` (uniforme):
+   frr_default          dif media -0.0081   A12=0.48   p_holm=0.4022
+   frr_w25              dif media -0.0071   A12=0.50   p_holm=0.7070
+   frr_c1               dif media -0.0167   A12=0.46   p_holm=0.0483 *
+   frr_c03              dif media -0.0115   A12=0.49   p_holm=0.4275
+   frr_w25_c03          dif media -0.0093   A12=0.49   p_holm=0.7070
+
+=== E17 inicializacao GRASP (GDP): 2/2 variantes completas
+
+--- alpha da inicializacao (1,0 = aleatoria; 0,0 = gulosa) vs padrao 0,3 (`random`):
+   init_a10             dif media -0.0510   A12=0.49   p_holm=0.0319 *
+   init_a00             dif media -0.0063   A12=0.50   p_holm=0.5132
+
+=== E16 pool envenenado (GDP): 8/8 variantes completas
+
+--- pool envenenado: uniforme vs uniforme do pool limpo:
+   px_random            dif media +0.0019   A12=0.52   p_holm=0.5430
+
+--- pool envenenado: cada seletor vs uniforme no MESMO pool envenenado (px_random):
+   px_ucbhv             dif media -0.0080   A12=0.49   p_holm=1.0000
+   px_dytshv            dif media -0.0012   A12=0.50   p_holm=1.0000
+   px_ucbscal           dif media -0.0708   A12=0.32   p_holm=0.0000 *
+   px_dytsscal          dif media -0.0053   A12=0.48   p_holm=0.3444
+   px_ucbins            dif media -0.0043   A12=0.49   p_holm=1.0000
+   px_fdrep             dif media -0.0236   A12=0.44   p_holm=0.0017 *
+   px_frr               dif media -0.0109   A12=0.47   p_holm=0.3444
+
+--- pool envenenado: seletor vs uniforme do pool LIMPO (random):
+   px_ucbhv             dif media -0.0061   A12=0.51   p_holm=0.6948
+   px_dytshv            dif media +0.0006   A12=0.52   p_holm=1.0000
+   px_ucbscal           dif media -0.0689   A12=0.33   p_holm=0.0000 *
+   px_dytsscal          dif media -0.0035   A12=0.50   p_holm=1.0000
+   px_ucbins            dif media -0.0024   A12=0.51   p_holm=1.0000
+   px_fdrep             dif media -0.0218   A12=0.46   p_holm=0.0637
+   px_frr               dif media -0.0091   A12=0.49   p_holm=0.0850
+
+--- px_ucbhv vs sua contraparte no pool limpo (hypervolume):
+   px_ucbhv             dif media +0.0137   A12=0.53   p_holm=0.4922
+
+--- px_dytshv vs sua contraparte no pool limpo (dyts_hv):
+   px_dytshv            dif media +0.0078   A12=0.53   p_holm=0.5142
+
+--- px_ucbscal vs sua contraparte no pool limpo (scalar):
+   px_ucbscal           dif media +0.0187   A12=0.56   p_holm=0.0003 *
+
+--- px_dytsscal vs sua contraparte no pool limpo (dyts_scalar):
+   px_dytsscal          dif media +0.0045   A12=0.51   p_holm=0.6108
+
+--- px_ucbins vs sua contraparte no pool limpo (ucb_insert):
+   px_ucbins            dif media +0.0047   A12=0.51   p_holm=0.7200
+
+--- px_fdrep vs sua contraparte no pool limpo (fd_replace):
+   px_fdrep             dif media -0.0040   A12=0.48   p_holm=0.3357
+
+--- px_frr vs sua contraparte no pool limpo (frr_default):
+   px_frr               dif media -0.0010   A12=0.51   p_holm=0.2136
+
+=== E2 orcamento x2 (GDP): medias {random: 0.7713, dyts_hv: 0.7641, hypervolume: 0.7515, b2_random: 0.7865, b2_dytshv: 0.7866, b2_ucbhv: 0.7898}
+
+--- mesmo orcamento x2: seletores vs uniforme (b2_random):
+   b2_dytshv            dif media +0.0001   A12=0.50   p_holm=0.7700
+   b2_ucbhv             dif media +0.0033   A12=0.52   p_holm=0.5521
+
+--- ganho de orcamento (x2 vs x1), uniforme:
+   b2_random            dif media +0.0152   A12=0.58   p_holm=0.0000 *
+
+=== E2 orcamento x4 (GDP): medias {random: 0.7713, dyts_hv: 0.7641, hypervolume: 0.7515, b4_random: 0.8160, b4_dytshv: 0.8193, b4_ucbhv: 0.8140}
+
+--- mesmo orcamento x4: seletores vs uniforme (b4_random):
+   b4_dytshv            dif media +0.0033   A12=0.51   p_holm=0.3527
+   b4_ucbhv             dif media -0.0020   A12=0.50   p_holm=0.5615
+
+--- ganho de orcamento (x4 vs x1), uniforme:
+   b4_random            dif media +0.0447   A12=0.64   p_holm=0.0000 *
+
+salvo: results/analysis/e1_e2_e3_GDP.json
+--- exit 0 em 3.4 min
+
+$$$ analyze_anchor_v2.py --problem GDP
+
+=== GDP n<=150: N=120 instancias, 3 replicas
+  random_ref       hv_norm 0.7563  tempo med    3.9s  
+      extremo MaxMin / valor publicado (60 s): 
+  random_anchor    hv_norm 0.7898  tempo med    4.8s  | vs random_ref: +0.0334 (76/120, p=0.000909) 
+      extremo MaxMin / valor publicado (60 s): 
+  random_sbts      hv_norm 0.7867  tempo med    4.2s  | vs random_ref: +0.0303 (70/120, p=0.0138) | vs random_anchor: -0.0031 (55/120, p=0.319) 
+      extremo MaxMin / valor publicado (60 s): 
+  random_both      hv_norm 0.7900  tempo med    4.0s  | vs random_ref: +0.0337 (77/120, p=0.000262) | vs random_anchor: +0.0003 (68/120, p=0.685) 
+      extremo MaxMin / valor publicado (60 s): 
+  dyts_hv_both     hv_norm 0.7912  tempo med    5.0s  | vs random_ref: +0.0348 (76/120, p=7.27e-05) | vs random_anchor: +0.0014 (60/120, p=0.675) 
+      extremo MaxMin / valor publicado (60 s): 
+
+=== GDP n=500: N=80 instancias, 3 replicas
+  random           hv_norm 0.6675  tempo med  116.9s  
+      extremo MaxMin / valor publicado (60 s): GKD-c n500 0.975 (N=40), MDG-b n500 0.592 (N=40)
+  random_anchor6k  hv_norm 0.7197  tempo med  137.9s  | vs random: +0.0522 (61/80, p=2.59e-07) 
+      extremo MaxMin / valor publicado (60 s): GKD-c n500 1.094 (N=40), MDG-b n500 0.917 (N=40)
+  random_both      hv_norm 0.7644  tempo med  131.0s  | vs random: +0.0970 (69/80, p=7.68e-12) | vs random_anchor6k: +0.0448 (59/80, p=7.15e-05) 
+      extremo MaxMin / valor publicado (60 s): GKD-c n500 1.140 (N=40), MDG-b n500 1.174 (N=40)
+--- exit 0 em 0.2 min
+
+$$$ analyze_aos_summary.py
+
+=== CDP (N=60 instancias, 3 replicas)
+   Other rewards, cost-aware scaling, exploration floor            8/ 8 variantes  dif [-0.024, +0.003]  melhor 0  pior 1  A12max 0.51
+   Faithful DYTS and the `replace` reward                          7/ 7 variantes  dif [-0.031, -0.002]  melhor 0  pior 1  A12max 0.50
+   Contextual selection (by weight and/or phase)                   7/ 7 variantes  dif [-0.012, -0.001]  melhor 0  pior 0  A12max 0.52
+   Hyper-parameter sweep (c, window)                              17/17 variantes  dif [-0.039, +0.006]  melhor 0  pior 4  A12max 0.52
+   FRRMAB (Li et al., 2014)                                        5/ 5 variantes  dif [-0.011, +0.006]  melhor 0  pior 0  A12max 0.52
+   More generations (×2, ×4), same budget for selector and unifor  4/ 4 variantes  dif [-0.008, +0.004]  melhor 0  pior 0  A12max 0.52
+
+=== GDP (N=120 instancias, 3 replicas)
+   Other rewards, cost-aware scaling, exploration floor            6/ 8 variantes  dif [-0.017, -0.007]  melhor 0  pior 0  A12max 0.49
+   Faithful DYTS and the `replace` reward                          7/ 7 variantes  dif [-0.068, -0.011]  melhor 0  pior 4  A12max 0.48
+   Contextual selection (by weight and/or phase)                   7/ 7 variantes  dif [-0.015, -0.009]  melhor 0  pior 0  A12max 0.50
+   Hyper-parameter sweep (c, window)                              17/17 variantes  dif [-0.086, +0.002]  melhor 0  pior 5  A12max 0.52
+   FRRMAB (Li et al., 2014)                                        5/ 5 variantes  dif [-0.017, -0.007]  melhor 0  pior 1  A12max 0.50
+   More generations (×2, ×4), same budget for selector and unifor  4/ 4 variantes  dif [-0.002, +0.003]  melhor 0  pior 0  A12max 0.52
+--- exit 0 em 4.6 min
+
+$$$ analyze_op_shares.py
+
+=== CDP (N=60, 3 replicas): fracao media de selecoes por operador
+   variante         random_sw best_swap random_sw grasp_gre biobj_bes maxmin_sw large_per subset_cr   (extras: restart, half, noop)
+   random               0.125     0.125     0.125     0.125     0.125     0.125     0.125     0.126
+   hypervolume          0.103     0.124     0.098     0.096     0.193     0.157     0.126     0.103
+   thompson_hv          0.106     0.124     0.102     0.101     0.170     0.163     0.127     0.107
+   dyts_hv              0.102     0.123     0.098     0.097     0.184     0.163     0.129     0.104
+   scalar               0.018     0.073     0.016     0.015     0.239     0.511     0.091     0.037
+   thompson_scalar      0.022     0.087     0.019     0.017     0.214     0.507     0.094     0.040
+   dyts_scalar          0.120     0.123     0.121     0.122     0.125     0.133     0.126     0.131
+   ucb_insert           0.102     0.125     0.097     0.095     0.182     0.158     0.136     0.104
+   ts_insert            0.105     0.127     0.101     0.099     0.165     0.161     0.134     0.107
+   dyts_insert          0.106     0.125     0.102     0.100     0.166     0.160     0.134     0.107
+   ucb_srel_cost        0.018     0.084     0.016     0.014     0.295     0.446     0.092     0.036
+   fd_replace           0.086     0.115     0.069     0.064     0.257     0.192     0.109     0.106
+   fd_scalar            0.016     0.086     0.013     0.011     0.210     0.538     0.098     0.028
+   fd_hv                0.089     0.120     0.073     0.070     0.238     0.197     0.129     0.085
+   ts_replace           0.099     0.119     0.096     0.094     0.190     0.168     0.119     0.117
+   frr_default          0.124     0.125     0.124     0.124     0.126     0.127     0.125     0.125
+   frr_c03              0.118     0.123     0.117     0.117     0.140     0.141     0.122     0.122
+   px_random            0.091     0.091     0.091     0.091     0.091     0.091     0.091     0.091   extras [0.091, 0.091, 0.091]
+   px_ucbhv             0.078     0.096     0.074     0.069     0.169     0.127     0.104     0.077   extras [0.068, 0.07, 0.068]
+   px_ucbins            0.075     0.100     0.071     0.069     0.155     0.131     0.115     0.077   extras [0.068, 0.071, 0.068]
+   px_frr               0.091     0.091     0.091     0.091     0.091     0.091     0.091     0.091   extras [0.091, 0.091, 0.091]
+
+=== GDP (N=120, 3 replicas): fracao media de selecoes por operador
+   variante         random_sw best_swap random_sw grasp_gre biobj_bes maxmin_sw large_per subset_cr   (extras: restart, half, noop)
+   random               0.125     0.125     0.125     0.125     0.125     0.125     0.125     0.125
+   hypervolume          0.117     0.121     0.104     0.096     0.171     0.153     0.113     0.124
+   thompson_hv          0.118     0.123     0.107     0.102     0.152     0.159     0.116     0.123
+   dyts_hv              0.116     0.123     0.103     0.097     0.166     0.162     0.112     0.121
+   scalar               0.035     0.069     0.031     0.026     0.154     0.381     0.051     0.252
+   thompson_scalar      0.043     0.084     0.038     0.033     0.164     0.358     0.060     0.221
+   dyts_scalar          0.120     0.123     0.120     0.120     0.123     0.131     0.122     0.140
+   ucb_insert           0.118     0.124     0.104     0.095     0.163     0.158     0.116     0.123
+   ts_insert            0.118     0.127     0.106     0.100     0.151     0.159     0.118     0.122
+   dyts_insert          0.118     0.125     0.108     0.100     0.152     0.157     0.119     0.121
+   fd_replace           0.106     0.113     0.075     0.061     0.209     0.180     0.091     0.164
+   fd_scalar            0.032     0.075     0.028     0.022     0.150     0.389     0.051     0.252
+   fd_hv                0.115     0.121     0.084     0.072     0.194     0.187     0.105     0.122
+   ts_replace           0.111     0.120     0.099     0.093     0.163     0.161     0.108     0.146
+   frr_default          0.125     0.125     0.124     0.124     0.126     0.126     0.125     0.126
+   frr_c03              0.121     0.123     0.118     0.116     0.134     0.139     0.120     0.130
+   px_random            0.091     0.091     0.091     0.091     0.091     0.091     0.091     0.091   extras [0.091, 0.091, 0.091]
+   px_ucbhv             0.091     0.095     0.077     0.071     0.143     0.126     0.087     0.097   extras [0.071, 0.071, 0.07]
+   px_ucbins            0.091     0.098     0.078     0.070     0.137     0.129     0.091     0.094   extras [0.071, 0.071, 0.07]
+   px_frr               0.091     0.091     0.091     0.091     0.091     0.091     0.091     0.091   extras [0.091, 0.091, 0.091]
+--- exit 0 em 0.0 min
+
+$$$ analyze_e8.py
+
+=== CDP (N=60, 3 replicas, hv_norm); media do pool uniforme 0.7107; rank medio entre 17 metodos
+   variante                       media      dif   A12   p_holm   rank t_med(s)
+   pool completo (uniforme)      0.7107                           5.43
+   only random_swap_1x1          0.6643  -0.0464  0.43   0.0086   7.87      1.3 *
+   only best_swap_1x1            0.4975  -0.2132  0.06   0.0000  14.80      1.4 *
+   only random_swap_2x2          0.6146  -0.0961  0.33   0.0001  10.00      1.4 *
+   only grasp_greedy             0.4248  -0.2859  0.03   0.0000  16.63      3.5 *
+   only biobj_best_swap          0.6286  -0.0821  0.26   0.0000  10.70      2.1 *
+   only maxmin_swap              0.5961  -0.1146  0.15   0.0000  11.63      2.5 *
+   only large_perturbation       0.5563  -0.1544  0.12   0.0000  13.25      2.1 *
+   only subset_crossover         0.5127  -0.1980  0.09   0.0000  14.72      1.5 *
+   pool without random_swap_1x1  0.7136  +0.0029  0.51   1.0000   4.98      2.1
+   pool without best_swap_1x1    0.7148  +0.0041  0.52   1.0000   4.87      2.2
+   pool without random_swap_2x2  0.6973  -0.0134  0.45   0.7543   6.25      2.1
+   pool without grasp_greedy     0.7024  -0.0083  0.50   1.0000   5.73      1.9
+   pool without biobj_best_swap  0.7076  -0.0031  0.49   1.0000   5.88      2.0
+   pool without maxmin_swap      0.6743  -0.0364  0.40   0.0010   7.83      2.0 *
+   pool without large_perturbation  0.7035  -0.0072  0.48   1.0000   5.82      2.0
+   pool without subset_crossover  0.6914  -0.0193  0.45   0.2252   6.60      2.1
+
+=== GDP (N=120, 3 replicas, hv_norm); media do pool uniforme 0.7713; rank medio entre 17 metodos
+   variante                       media      dif   A12   p_holm   rank t_med(s)
+   pool completo (uniforme)      0.7713                           5.04
+   only random_swap_1x1          0.7352  -0.0360  0.47   0.0025   7.15      2.0 *
+   only best_swap_1x1            0.4689  -0.3024  0.07   0.0000  14.34      2.2 *
+   only random_swap_2x2          0.6978  -0.0735  0.40   0.0000   8.91      2.3 *
+   only grasp_greedy             0.3644  -0.4069  0.04   0.0000  15.78      5.2 *
+   only biobj_best_swap          0.5892  -0.1821  0.17   0.0000  11.64      2.9 *
+   only maxmin_swap              0.4507  -0.3206  0.06   0.0000  13.40      3.2 *
+   only large_perturbation       0.6025  -0.1688  0.17   0.0000  11.68      3.1 *
+   only subset_crossover         0.3690  -0.4023  0.05   0.0000  15.04      1.7 *
+   pool without random_swap_1x1  0.7575  -0.0138  0.47   0.0642   6.27      3.0
+   pool without best_swap_1x1    0.7651  -0.0062  0.51   1.0000   5.24      3.1
+   pool without random_swap_2x2  0.7447  -0.0266  0.45   0.0025   6.84      3.0 *
+   pool without grasp_greedy     0.7674  -0.0039  0.50   1.0000   5.11      2.6
+   pool without biobj_best_swap  0.7573  -0.0140  0.49   0.5223   5.83      2.9
+   pool without maxmin_swap      0.7328  -0.0385  0.43   0.0000   7.36      3.0 *
+   pool without large_perturbation  0.7512  -0.0201  0.49   0.2734   6.20      2.9
+   pool without subset_crossover  0.7436  -0.0277  0.43   0.0001   7.18      3.0 *
+--- exit 0 em 1.5 min
+
+$$$ analyze_e14.py
+
+=== GDP-500-k02 (N=10 instancias; 3 replicas; repro 90/90)
+   operador             inviavel  insere  melhora  UCB-HV sel  GTS-HV sel
+   random_swap_1x1         0.343  0.0114   0.0201       0.073       0.078
+   best_swap_1x1           0.389  0.0189   0.0225       0.088       0.094
+   random_swap_2x2         0.439  0.0034   0.0069       0.064       0.068
+   grasp_greedy            0.000  0.0000   0.0003       0.059       0.064
+   biobj_best_swap         0.462  0.0708   0.1041       0.317       0.280
+   maxmin_swap             0.472  0.1079   0.1260       0.252       0.263
+   large_perturbation      0.598  0.0109   0.0108       0.077       0.080
+   subset_crossover        0.000  0.0044   0.0530       0.068       0.072
+   media das 8 taxas de insercao 0.0285; dispersao (dp entre operadores) 0.0373; max/media 3.55; inviavel medio 0.338
+   UCB-HV : dHV vs uniforme +0.0605; ganho esperado de insercao (relativo) +0.907; Spearman(ganho, dHV) rho=+0.62 p=0.054; mass nos 2 mais usados 0.57
+   GTS-HV : dHV vs uniforme +0.0412; ganho esperado de insercao (relativo) +0.859; Spearman(ganho, dHV) rho=+0.50 p=0.138; mass nos 2 mais usados 0.54
+
+=== GDP-500-k03 (N=10 instancias; 3 replicas; repro 90/90)
+   operador             inviavel  insere  melhora  UCB-HV sel  GTS-HV sel
+   random_swap_1x1         0.003  0.0069   0.0107       0.084       0.086
+   best_swap_1x1           0.003  0.0172   0.0182       0.109       0.111
+   random_swap_2x2         0.005  0.0019   0.0041       0.079       0.080
+   grasp_greedy            0.000  0.0000   0.0003       0.076       0.080
+   biobj_best_swap         0.004  0.0745   0.1066       0.286       0.262
+   maxmin_swap             0.003  0.0939   0.1099       0.186       0.197
+   large_perturbation      0.006  0.0128   0.0108       0.102       0.103
+   subset_crossover        0.000  0.0014   0.0394       0.078       0.080
+   media das 8 taxas de insercao 0.0261; dispersao (dp entre operadores) 0.0354; max/media 3.81; inviavel medio 0.003
+   UCB-HV : dHV vs uniforme +0.0227; ganho esperado de insercao (relativo) +0.676; Spearman(ganho, dHV) rho=-0.28 p=0.425; mass nos 2 mais usados 0.47
+   GTS-HV : dHV vs uniforme +0.0063; ganho esperado de insercao (relativo) +0.645; Spearman(ganho, dHV) rho=-0.24 p=0.511; mass nos 2 mais usados 0.46
+
+=== GDP-150-k02 (N=10 instancias; 3 replicas; repro 90/90)
+   operador             inviavel  insere  melhora  UCB-HV sel  GTS-HV sel
+   random_swap_1x1         0.453  0.0079   0.0134       0.096       0.098
+   best_swap_1x1           0.598  0.0173   0.0240       0.116       0.117
+   random_swap_2x2         0.573  0.0034   0.0059       0.080       0.082
+   grasp_greedy            0.000  0.0000   0.0005       0.074       0.077
+   biobj_best_swap         0.586  0.0361   0.0564       0.239       0.214
+   maxmin_swap             0.638  0.0731   0.0888       0.203       0.220
+   large_perturbation      0.757  0.0088   0.0111       0.093       0.094
+   subset_crossover        0.000  0.0071   0.0328       0.099       0.099
+   media das 8 taxas de insercao 0.0192; dispersao (dp entre operadores) 0.0231; max/media 3.78; inviavel medio 0.451
+   UCB-HV : dHV vs uniforme +0.0098; ganho esperado de insercao (relativo) +0.471; Spearman(ganho, dHV) rho=-0.02 p=0.960; mass nos 2 mais usados 0.44
+   GTS-HV : dHV vs uniforme -0.0168; ganho esperado de insercao (relativo) +0.491; Spearman(ganho, dHV) rho=+0.54 p=0.108; mass nos 2 mais usados 0.43
+
+=== GDP-150-k03 (N=10 instancias; 3 replicas; repro 90/90)
+   operador             inviavel  insere  melhora  UCB-HV sel  GTS-HV sel
+   random_swap_1x1         0.007  0.0038   0.0073       0.094       0.093
+   best_swap_1x1           0.006  0.0159   0.0185       0.120       0.121
+   random_swap_2x2         0.009  0.0012   0.0031       0.090       0.088
+   grasp_greedy            0.000  0.0002   0.0005       0.089       0.085
+   biobj_best_swap         0.006  0.0385   0.0608       0.229       0.223
+   maxmin_swap             0.007  0.0561   0.0764       0.167       0.186
+   large_perturbation      0.009  0.0124   0.0125       0.118       0.115
+   subset_crossover        0.000  0.0030   0.0224       0.093       0.089
+   media das 8 taxas de insercao 0.0164; dispersao (dp entre operadores) 0.0193; max/media 3.44; inviavel medio 0.006
+   UCB-HV : dHV vs uniforme -0.0183; ganho esperado de insercao (relativo) +0.368; Spearman(ganho, dHV) rho=+0.14 p=0.701; mass nos 2 mais usados 0.40
+   GTS-HV : dHV vs uniforme -0.0018; ganho esperado de insercao (relativo) +0.419; Spearman(ganho, dHV) rho=-0.09 p=0.803; mass nos 2 mais usados 0.41
+
+=== CDP-500 (N=10 instancias; 3 replicas; repro 90/90)
+   operador             inviavel  insere  melhora  UCB-HV sel  GTS-HV sel
+   random_swap_1x1         0.007  0.0074   0.0102       0.078       0.081
+   best_swap_1x1           0.010  0.0194   0.0169       0.101       0.104
+   random_swap_2x2         0.010  0.0020   0.0036       0.074       0.076
+   grasp_greedy            0.000  0.0000   0.0002       0.072       0.075
+   biobj_best_swap         0.007  0.0809   0.1168       0.303       0.276
+   maxmin_swap             0.006  0.0999   0.1174       0.205       0.217
+   large_perturbation      0.016  0.0122   0.0089       0.093       0.094
+   subset_crossover        0.000  0.0020   0.0482       0.075       0.077
+   media das 8 taxas de insercao 0.0280; dispersao (dp entre operadores) 0.0380; max/media 3.81; inviavel medio 0.007
+   UCB-HV : dHV vs uniforme +0.0104; ganho esperado de insercao (relativo) +0.789; Spearman(ganho, dHV) rho=+0.09 p=0.803; mass nos 2 mais usados 0.51
+   GTS-HV : dHV vs uniforme +0.0058; ganho esperado de insercao (relativo) +0.757; Spearman(ganho, dHV) rho=+0.01 p=0.987; mass nos 2 mais usados 0.50
+
+=== CDP-150 (N=10 instancias; 3 replicas; repro 90/90)
+   operador             inviavel  insere  melhora  UCB-HV sel  GTS-HV sel
+   random_swap_1x1         0.007  0.0033   0.0064       0.098       0.097
+   best_swap_1x1           0.006  0.0139   0.0190       0.126       0.124
+   random_swap_2x2         0.011  0.0011   0.0028       0.094       0.094
+   grasp_greedy            0.000  0.0001   0.0002       0.093       0.092
+   biobj_best_swap         0.008  0.0340   0.0569       0.211       0.206
+   maxmin_swap             0.007  0.0483   0.0683       0.162       0.172
+   large_perturbation      0.011  0.0103   0.0117       0.119       0.119
+   subset_crossover        0.000  0.0021   0.0207       0.098       0.097
+   media das 8 taxas de insercao 0.0141; dispersao (dp entre operadores) 0.0167; max/media 3.41; inviavel medio 0.006
+   UCB-HV : dHV vs uniforme -0.0138; ganho esperado de insercao (relativo) +0.320; Spearman(ganho, dHV) rho=+0.62 p=0.054; mass nos 2 mais usados 0.37
+   GTS-HV : dHV vs uniforme +0.0034; ganho esperado de insercao (relativo) +0.342; Spearman(ganho, dHV) rho=+0.64 p=0.048; mass nos 2 mais usados 0.38
+
+=== distancia da convergencia (n=500; N instancias; media de 3 replicas)
+   CDP      N= 40 HV uniforme 0.719; ganho 1/4 -> padrao 0.058 (1/2 -> padrao 0.025); vantagem GTS-HV +0.001, UCB-HV -0.004; Spearman(ganho, vantagem GTS-HV) -0.20 (p=0.221), UCB-HV -0.19 (p=0.236)
+   GDP-k02  N= 40 HV uniforme 0.644; ganho 1/4 -> padrao 0.139 (1/2 -> padrao 0.058); vantagem GTS-HV +0.054, UCB-HV +0.028; Spearman(ganho, vantagem GTS-HV) +0.06 (p=0.711), UCB-HV -0.22 (p=0.164)
+   GDP-k03  N= 40 HV uniforme 0.691; ganho 1/4 -> padrao 0.068 (1/2 -> padrao 0.031); vantagem GTS-HV +0.001, UCB-HV -0.015; Spearman(ganho, vantagem GTS-HV) -0.14 (p=0.374), UCB-HV -0.14 (p=0.404)
+   ALL      N=120 HV uniforme 0.685; ganho 1/4 -> padrao 0.089 (1/2 -> padrao 0.038); vantagem GTS-HV +0.019, UCB-HV +0.003; Spearman(ganho, vantagem GTS-HV) +0.14 (p=0.128), UCB-HV -0.03 (p=0.742)
+--- exit 0 em 0.1 min
+
+$$$ make_figures.py
+CDP mediana do ganho por n: {50: 0.049, 150: 0.078, 500: 0.249} | fracao > 0: {50: 0.65, 150: 0.8, 500: 1.0}
+GDP mediana do ganho por n: {50: 0.094, 150: 0.192, 500: 0.298} | fracao > 0: {50: 0.78, 150: 0.93, 500: 0.96}
+salvo: C:\Pesquisas\moead-aos-bdp\Claude outputs\figures\fig1_normalisation_gain_vs_n.pdf
+salvo: C:\Pesquisas\moead-aos-bdp\Claude outputs\figures\fig2_operator_selection_shares.pdf
+salvo: C:\Pesquisas\moead-aos-bdp\Claude outputs\figures\fig3_extreme_maxmin_vs_published.pdf
+salvo: C:\Pesquisas\moead-aos-bdp\Claude outputs\figures\fig4_cd_diagrams.pdf
+salvo: C:\Pesquisas\moead-aos-bdp\Claude outputs\figures\fig5_adaptive_selection_vs_size.pdf
+salvo: C:\Pesquisas\moead-aos-bdp\Claude outputs\figures\graphical_abstract.pdf
+--- exit 0 em 1.4 min
+
+$$$ make_manuscript_tables.py
+salvo: C:\Pesquisas\moead-aos-bdp\Claude outputs\manuscript_tables.md
+manuscrito montado: C:\Pesquisas\moead-aos-bdp\Claude outputs\manuscript_draft_v2.md
+suplemento montado
+--- exit 0 em 0.0 min
+
+$$$ make_docx.py
+salvo: C:\Pesquisas\moead-aos-bdp\Claude outputs\manuscript_draft_v2.docx  (tabelas: 16, figuras: 5, paragrafos: 247)
+--- exit 0 em 0.0 min
+
+$$$ make_docx.py Claude outputs/supplementary_material.md Claude outputs/supplementary_material.docx
+salvo: Claude outputs\supplementary_material.docx  (tabelas: 5, figuras: 0, paragrafos: 25)
+--- exit 0 em 0.0 min

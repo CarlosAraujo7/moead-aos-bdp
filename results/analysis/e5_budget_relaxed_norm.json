@@ -1,0 +1,180 @@
+{
+ "n<=150": {
+  "N": 120,
+  "methods": {
+   "random": {
+    "rank_orig": 3.4125,
+    "rank_relaxed": 3.475,
+    "p_holm": 1.0,
+    "hv_orig": 0.8075831607751738,
+    "hv_relaxed": 0.7512472081593898
+   },
+   "dyts_hv": {
+    "rank_orig": 3.433333333333333,
+    "rank_relaxed": 4.008333333333334,
+    "p_holm": 0.11395793683565765,
+    "hv_orig": 0.8016217542918759,
+    "hv_relaxed": 0.7394755007931262
+   },
+   "dyts_scalar": {
+    "rank_orig": 3.5083333333333333,
+    "rank_relaxed": 3.5833333333333335,
+    "p_holm": 1.0,
+    "hv_orig": 0.8019815459465325,
+    "hv_relaxed": 0.745518845653555
+   },
+   "thompson_hv": {
+    "rank_orig": 3.7625,
+    "rank_relaxed": 3.95,
+    "p_holm": 1.0,
+    "hv_orig": 0.7882814754306128,
+    "hv_relaxed": 0.7374076126708016
+   },
+   "hypervolume": {
+    "rank_orig": 3.779166666666667,
+    "rank_relaxed": 3.9166666666666665,
+    "p_holm": 1.0,
+    "hv_orig": 0.7873284198154598,
+    "hv_relaxed": 0.7359343828563695
+   },
+   "thompson_scalar": {
+    "rank_orig": 5.270833333333333,
+    "rank_relaxed": 5.4,
+    "p_holm": 1.0,
+    "hv_orig": 0.7438963442776887,
+    "hv_relaxed": 0.7028528808715463
+   },
+   "scalar": {
+    "rank_orig": 6.1625,
+    "rank_relaxed": 5.4,
+    "p_holm": 0.01003615836694148,
+    "hv_orig": 0.7078348956788311,
+    "hv_relaxed": 0.7013710772365938
+   },
+   "grasp_pr": {
+    "rank_orig": 8.933333333333334,
+    "rank_relaxed": 7.566666666666666,
+    "p_holm": 1.6480569899213802e-08,
+    "hv_orig": 0.40039183114277865,
+    "hv_relaxed": 0.5955215832472563
+   },
+   "nsga2": {
+    "rank_orig": 9.204166666666667,
+    "rank_relaxed": 10.291666666666666,
+    "p_holm": 3.5046382578482502e-09,
+    "hv_orig": 0.48372149872718545,
+    "hv_relaxed": 0.392254302467087
+   },
+   "grasp": {
+    "rank_orig": 9.316666666666666,
+    "rank_relaxed": 8.291666666666666,
+    "p_holm": 2.344768982122279e-06,
+    "hv_orig": 0.39265567925618944,
+    "hv_relaxed": 0.5787251045356177
+   },
+   "vns_pareto": {
+    "rank_orig": 10.55,
+    "rank_relaxed": 11.558333333333334,
+    "p_holm": 1.1550510316641874e-08,
+    "hv_orig": 0.3716973540278327,
+    "hv_relaxed": 0.3118847180758528
+   },
+   "vns_tchebycheff": {
+    "rank_orig": 10.666666666666666,
+    "rank_relaxed": 10.558333333333334,
+    "p_holm": 1.0,
+    "hv_orig": 0.3393408107194479,
+    "hv_relaxed": 0.3769133791485391
+   }
+  }
+ },
+ "n=500": {
+  "N": 20,
+  "methods": {
+   "dyts_hv": {
+    "rank_orig": 2.65,
+    "rank_relaxed": 4.55,
+    "p_holm": 0.06456117901919908,
+    "hv_orig": 0.7165216308256285,
+    "hv_relaxed": 0.6619259473461411
+   },
+   "dyts_scalar": {
+    "rank_orig": 2.9,
+    "rank_relaxed": 2.5,
+    "p_holm": 1.0,
+    "hv_orig": 0.7153310247989251,
+    "hv_relaxed": 0.7418207263736731
+   },
+   "random": {
+    "rank_orig": 3.45,
+    "rank_relaxed": 3.2,
+    "p_holm": 1.0,
+    "hv_orig": 0.70775123360468,
+    "hv_relaxed": 0.699765311693916
+   },
+   "thompson_hv": {
+    "rank_orig": 3.75,
+    "rank_relaxed": 4.35,
+    "p_holm": 1.0,
+    "hv_orig": 0.6949779346234132,
+    "hv_relaxed": 0.6608020870729625
+   },
+   "hypervolume": {
+    "rank_orig": 3.8,
+    "rank_relaxed": 3.9,
+    "p_holm": 1.0,
+    "hv_orig": 0.6965566819134452,
+    "hv_relaxed": 0.6822487302519362
+   },
+   "scalar": {
+    "rank_orig": 5.6,
+    "rank_relaxed": 4.75,
+    "p_holm": 1.0,
+    "hv_orig": 0.5854456698057143,
+    "hv_relaxed": 0.6553921962646141
+   },
+   "thompson_scalar": {
+    "rank_orig": 5.85,
+    "rank_relaxed": 4.85,
+    "p_holm": 1.0,
+    "hv_orig": 0.6064308740514679,
+    "hv_relaxed": 0.6558174563704291
+   },
+   "grasp_pr": {
+    "rank_orig": 8.6,
+    "rank_relaxed": 8.4,
+    "p_holm": 1.0,
+    "hv_orig": 0.17635807647168028,
+    "hv_relaxed": 0.2930939637528522
+   },
+   "grasp": {
+    "rank_orig": 9.15,
+    "rank_relaxed": 8.95,
+    "p_holm": 1.0,
+    "hv_orig": 0.16284912528386614,
+    "hv_relaxed": 0.2683068478321331
+   },
+   "nsga2": {
+    "rank_orig": 9.55,
+    "rank_relaxed": 9.75,
+    "p_holm": 1.0,
+    "hv_orig": 0.15550678025036518,
+    "hv_relaxed": 0.22157331912623895
+   },
+   "vns_tchebycheff": {
+    "rank_orig": 11.25,
+    "rank_relaxed": 11.2,
+    "p_holm": 1.0,
+    "hv_orig": 0.08092925163017325,
+    "hv_relaxed": 0.11865186227789062
+   },
+   "vns_pareto": {
+    "rank_orig": 11.45,
+    "rank_relaxed": 11.6,
+    "p_holm": 1.0,
+    "hv_orig": 0.07757201465643818,
+    "hv_relaxed": 0.09834377985796813
+   }
+  }
+ }
+}

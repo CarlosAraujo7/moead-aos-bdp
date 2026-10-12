@@ -1,0 +1,34 @@
+{
+ "problem": "MDP",
+ "min_n": 0,
+ "max_n": 1000,
+ "reps": 1,
+ "metric": "hv_norm",
+ "N": 143,
+ "friedman_chi2": 576.5579947399493,
+ "friedman_p": 1.442555721512005e-116,
+ "cd": 1.3934798821002699,
+ "avg_ranks": {
+  "hypervolume": 4.884615384615385,
+  "thompson_hv": 5.573426573426573,
+  "dyts_hv": 4.2622377622377625,
+  "scalar": 5.160839160839161,
+  "thompson_scalar": 5.423076923076923,
+  "dyts_scalar": 4.440559440559441,
+  "random": 4.674825174825175,
+  "nsga2": 10.402097902097902,
+  "grasp": 8.653846153846153,
+  "grasp_pr": 8.188811188811188,
+  "vns_pareto": 8.653846153846153,
+  "vns_tchebycheff": 7.681818181818182
+ },
+ "wilcoxon_holm_sig": 45,
+ "nemenyi_sig": 39,
+ "top_group": [
+  "dyts_hv",
+  "hypervolume",
+  "scalar",
+  "dyts_scalar",
+  "random"
+ ]
+}

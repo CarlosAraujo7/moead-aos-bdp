@@ -1,0 +1,33 @@
+{
+ "problem": "GDP",
+ "max_n": 150,
+ "reps": 5,
+ "metric": "hv_norm",
+ "N": 120,
+ "friedman_chi2": 920.8912555072505,
+ "friedman_p": 1.9985103989950032e-190,
+ "cd": 1.5211712154345631,
+ "avg_ranks": {
+  "hypervolume": 3.379166666666667,
+  "thompson_hv": 3.8916666666666666,
+  "dyts_hv": 3.591666666666667,
+  "scalar": 6.041666666666667,
+  "thompson_scalar": 5.4,
+  "dyts_scalar": 3.5,
+  "random": 3.5,
+  "nsga2": 9.304166666666667,
+  "grasp": 9.2375,
+  "grasp_pr": 8.895833333333334,
+  "vns_pareto": 10.566666666666666,
+  "vns_tchebycheff": 10.691666666666666
+ },
+ "wilcoxon_holm_sig": 51,
+ "nemenyi_sig": 46,
+ "top_group": [
+  "hypervolume",
+  "thompson_hv",
+  "dyts_hv",
+  "dyts_scalar",
+  "random"
+ ]
+}
