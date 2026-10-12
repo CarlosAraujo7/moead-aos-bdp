@@ -97,6 +97,10 @@ DEFAULT = {
     "vns": [dict(alpha=0.19, constructive="altins", local_search="pr", kmax_frac=0.2949, restart_after=7)],
     # MOEA/D-Uniform: n_weights/nbr None = regra de budget_for(n) (a configuracao padrao do projeto)
     "moead": [dict(n_weights=None, nbr=None, grasp_alpha=0.3)],
+    # Os dois metodos de Colmenar et al. 2018 que faltavam (E22), com a configuracao do irace deles (Tabela 6): SPEA2 pop 340, mutacao 0,14, cruzamento 0,15;
+    # Iterated Greedy alpha 0,95, CAltBwS, destruicao de 55,39% (o numero de geracoes/destruicoes vira o limite de tempo)
+    "spea2": [dict(pop_size=340, crossover_prob=0.15, mutation_prob=0.14)],
+    "ig": [dict(alpha=0.95, constructive="altbws", pct=55.39)],
 }
 
 
@@ -151,6 +155,15 @@ def run_method(method: str, params: dict, inst, seed: int, time_limit_s: float):
                                         grasp_alpha=params["grasp_alpha"], seed=seed, time_limit_s=time_limit_s,
                                         polish_frac=float(params.get("polish_frac", 0.0)))).run()
         it = 0
+    elif method == "spea2":
+        from spea2 import SPEA2, SPEA2Config
+        r = SPEA2(inst, SPEA2Config(pop_size=int(params["pop_size"]), crossover_prob=params["crossover_prob"], mutation_prob=params["mutation_prob"],
+                                    seed=seed, time_limit_s=time_limit_s)).run()
+        it = r.n_gen_executed
+    elif method == "ig":
+        from bo_trajectory import BOTrajConfig, BOTrajectory
+        r = BOTrajectory(inst, BOTrajConfig(method="ig", seed=seed, time_limit_s=time_limit_s, **params)).run()
+        it = r.n_iter_executed
     else:
         from bo_trajectory import BOTrajConfig, BOTrajectory
         base = dict(method=("tabu" if method == "ts" else "vns"), seed=seed, time_limit_s=time_limit_s)

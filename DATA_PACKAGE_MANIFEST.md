@@ -14,6 +14,7 @@ Plan for the public deposit (Zenodo or equivalent) that EJOR's "Option B" data p
 | `results/e4_equal_time`, `e5_budget_relaxed_norm`, `e6_scalability`, `e10_budget_regime` | equal-time baselines, relaxed GDP budget, large instances, budget regimes | 4,320; 5,040; 91; 2,277 | §6.7, 6.9–6.11 |
 | `results/e8_operator_ablation` | single-operator and leave-one-out ablations (3 replicates, CDP and GDP) | 8,640 | §6.5, Table 6 |
 | `results/e11_strong_baselines`, `e13_size_growth` | tuning, tuned baselines, tabu/VNS of Colmenar et al., size experiment | 14,092; 48 | §6.12–6.13 |
+| `results/e18_size`, `e20_hybrid`, `e21_xl` | size-aware operators and cardinality-bounded variant (E18), MOEA/D seeded by trajectory search (E20), full-scale MDP runs (E21) | about 25,000 | §6.14–6.16 |
 | `results/e14_mechanism` | per-operator counters (applications, infeasible children, insertions) | 540 | §6.11 |
 | `results/reference_fronts/frozen_2026-10-06/{CDP,GDP,MDP}.json` | **frozen** reference fronts used by every indicator | 3 | all (do not rebuild) |
 | `results/analysis/*.json`, `results/analysis/regen_log.txt` | outputs of the analysis scripts (tables and figures are generated from these) | ~70 | all |

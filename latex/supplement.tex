@@ -41,11 +41,9 @@ All variants run on the 60 CDP and 120 GDP instances with n $\leq$ 150 for three
 
 \textbf{Table S1. Every variant against uniform selection on the same instances (n $\leq$ 150, three replicates): difference in $\mathrm{HV}_{\mathrm{norm}}$, Vargha--Delaney $\hat{A}_{12}$ and Holm-adjusted Wilcoxon p within the family; an asterisk marks p < 0.05 (all such cases are losses)}
 
-\begin{table}[t]
-\centering
+\begin{center}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{}\label{tab:s1}
 \begin{tabularx}{\linewidth}{lXcc}
 \toprule
 Family & Variant & CDP (60 instances) & GDP (120 instances) \\
@@ -100,7 +98,7 @@ More generations & GTS-HV, $\times$2 generations & $-$0.0080, 0.46, 0.189 & +0.0
  & UCB1-HV, $\times$4 generations & +0.0044, 0.52, 1 & $-$0.0020, 0.50, 0.561 \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{center}
 
 \emph{Other rewards, cost-aware scaling and exploration floor.} Four designs, with UCB1, Thompson sampling and the Gaussian sampler (GTS) where applicable: (a) the \emph{insert} reward, 1 if the child enters the non-dominated archive and 0 otherwise, which does not saturate as the hypervolume gain does; (b) the \emph{relative scalar} reward, the Tchebycheff improvement divided by the parent's value, in [0, 1] (CDP and GDP for UCB1; the two variants with it were run on the CDP only); (c) each combined with \emph{cost-aware scaling}, the reward divided by the operator's relative running time; (d) an \emph{exploration floor} mixing the learned policy 50/50 with uniform selection. None beats uniform selection. On the CDP the only significant difference is a loss, for UCB1 with the relative scalar reward and cost-aware scaling ($-$0.024, $\hat{A}_{12}$ 0.40, $p_{\mathrm{Holm}}$ = 0.012). With the insert reward the selectors spread the selections moderately (CDP, mean share per operator 0.10--0.18 under UCB1, Thompson sampling and GTS; BiObjBestSwap and MaxMinSwap the most chosen), as with the hypervolume reward, because the reward is also zero for most children once the front is crowded. Cost-aware scaling did not make the search faster: with it, the median run time was 2.70 s against 2.65 s without it on the CDP and 7.45 s against 7.71 s on the GDP (the medians are dominated by the instances with n = 50), because of the overhead of the selector and of the archive check. Two independent runs of uniform selection on the CDP differ by +0.006 in $\mathrm{HV}_{\mathrm{norm}}$ ($\hat{A}_{12}$ 0.52, p = 0.23), which calibrates the noise floor.
 
@@ -120,11 +118,9 @@ Average ranks ($\mathrm{HV}_{\mathrm{norm}}$, mean of three replicates, 12 metho
 
 \textbf{Table S2. Average ranks, MDP}
 
-\begin{table}[t]
-\centering
+\begin{center}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
-\caption{}\label{tab:s2}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lccccccccccccccc}
 \toprule
@@ -143,15 +139,13 @@ real\_team & 4 & 4.25 & 4.25 & 2.25 & 5.75 & 4.00 & 4.25 & 3.25 & 9.50 & 9.00 & 
 \bottomrule
 \end{tabular}
 }
-\end{table}
+\end{center}
 
 \textbf{Table S3. Average ranks, CDP}
 
-\begin{table}[t]
-\centering
+\begin{center}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
-\caption{}\label{tab:s3}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lccccccccccccccc}
 \toprule
@@ -165,15 +159,13 @@ SOM-a n=50 & 20 & 4.15 & 5.00 & 3.80 & 5.20 & 4.40 & 4.85 & 4.20 & 11.10 & 7.15 
 \bottomrule
 \end{tabular}
 }
-\end{table}
+\end{center}
 
 \textbf{Table S4. Average ranks, GDP}
 
-\begin{table}[t]
-\centering
+\begin{center}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
-\caption{}\label{tab:s4}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{lccccccccccccccc}
 \toprule
@@ -187,7 +179,7 @@ SOM-a n=50 & 40 & 4.76 & 4.71 & 3.73 & 5.67 & 4.60 & 4.17 & 4.26 & 10.29 & 7.64 
 \bottomrule
 \end{tabular}
 }
-\end{table}
+\end{center}
 
 \section{Mechanism of the effect of a tight cost budget (E14)}
 
@@ -195,11 +187,9 @@ We re-ran 540 runs of the standard-budget experiment (CDP and GDP; n = 500 and n
 
 \textbf{Table S5. Per-operator counters under uniform selection (10 instances per group, three replicates; same seeds as the main experiment): share of children infeasible before repair, share of children that enter the non-dominated archive, and share of the selections of UCB-HV}
 
-\begin{table}[t]
-\centering
+\begin{center}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
-\caption{}\label{tab:s5}
 \begin{tabularx}{\linewidth}{lXXX}
 \toprule
 Operator & GDP n = 500, tight cost: infeasible / inserted / UCB-HV share & GDP n = 500, loose cost: infeasible / inserted / UCB-HV share & CDP n = 500: infeasible / inserted / UCB-HV share \\
@@ -215,7 +205,7 @@ SubsetCrossover & 0.000 / 0.0044 / 0.068 & 0.000 / 0.0014 / 0.078 & 0.000 / 0.00
 All (mean of the eight) & 0.338 / 0.0285 / -- & 0.003 / 0.0261 / -- & 0.007 / 0.0280 / -- \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{center}
 
 The share of children that need repair is 34\% on average on the tight-budget GDP at n = 500 (45\% at n = 150), against 0.3\% on the loose-budget GDP and 0.7\% on the CDP. On the tight GDP the six operators that ignore the cost produce between 34\% (RandomSwap1$\times$1) and 60\% (LargePerturbation) infeasible children; GraspGreedy and SubsetCrossover build feasible children by construction. Per application, BiObjBestSwap and MaxMinSwap insert 0.07--0.11 children into the archive in every group, against at most 0.02 for the other six operators, and the rates are about the same in the three groups; the standard deviation of the eight insertion rates is 0.037 on the tight GDP, 0.035 on the loose GDP and 0.038 on the CDP (maximum over mean 3.6, 3.8 and 3.8). The two HV-reward selectors move 0.57 (UCB-HV) and 0.54 (GTS-HV) of the selections to these two operators on the tight GDP, against 0.47 and 0.46 on the loose GDP and 0.51 and 0.50 on the CDP.
 

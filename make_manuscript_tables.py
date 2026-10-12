@@ -366,6 +366,63 @@ def main():
             T["TM"] = chr(10).join(lines)
         else:
             T["TM"] = "`[TODO: run run_e14.py and analyze_e14.py]`"
+        # ---- E18: operadores que mudam o tamanho do conjunto e variante com limite de cardinalidade
+        e18 = A / "e18.json"
+        if e18.exists():
+            d18 = json.load(open(e18))
+            lab18 = {"moead": "MOEA/D-Uniform (8 operators)", "moead_t": "MOEA/D-Uniform (tuned)", "moead_size": "MOEA/D-Uniform + size operators",
+                     "moead_size_t": "MOEA/D-Uniform + size operators (tuned)", "moead_size_ucbhv": "MOEA/D-UCB-HV + size operators",
+                     "moead_size_gtshv": "MOEA/D-GTS-HV + size operators", "ts": "Tabu (tuned)", "ts_add": "Tabu (tuned) + insertions",
+                     "vns": "VNS (tuned)", "vns_add": "VNS (tuned) + insertions", "nsga2": "NSGA-II (tuned)", "grasp": "GRASP (tuned)"}
+            cells18 = [("CDP-S", "CDP, n ≤ 150"), ("GDP-S", "GDP, n ≤ 150"), ("CDP-L", "CDP, n = 500"), ("GDP-L", "GDP, n = 500")]
+
+            def e18_table(exp, key, caption):
+                have = [(c, l) for c, l in cells18 if f"{exp}/{c}" in d18]
+                if not have:
+                    return "`[TODO: run run_e18.py and analyze_e18.py (" + exp + ")]`"
+                meths = [m for m in lab18 if any(m in d18[f"{exp}/{c}"]["methods"] for c, _ in have)]
+                ln = ["**Table @@" + key + "@@. " + caption + "**", "",
+                      "| Method | " + " | ".join(f"{l} (N={d18[f'{exp}/{c}']['N']})" for c, l in have) + " |", "|---|" + "---|" * len(have)]
+                for m in meths:
+                    row = [lab18[m]]
+                    for c, _ in have:
+                        x = d18[f"{exp}/{c}"]["methods"].get(m)
+                        if x is None:
+                            row.append("–")
+                        elif m == "moead":
+                            row.append(f"{x['mean']:.3f}")
+                        else:
+                            row.append(f"{x['mean']:.3f} ({x['diff_vs_moead']:+.3f}; {x['p_holm']:.2g})")
+                    ln.append("| " + " | ".join(row) + " |")
+                return chr(10).join(ln)
+
+            T["TE18F"] = e18_table("free", "t_free", "Size-aware operators in the original problem (free cardinality; E18): mean HV_norm against the reference front built from all runs of the experiment (so values are comparable within a column only); in brackets, difference to MOEA/D-Uniform with the eight operators and Holm-adjusted Wilcoxon p (paired over instances, three replicates, same wall-clock time for every method)")
+            T["TE18B"] = e18_table("bound2", "t_bound", "Cardinality-bounded variant, |S| ≤ ⌈2 k_ref⌉ (E18): mean HV_norm against the reference front of the experiment; in brackets, difference to MOEA/D-Uniform with the eight operators and Holm-adjusted Wilcoxon p")
+        else:
+            T["TE18F"] = T["TE18B"] = "`[TODO: run run_queue9.py and analyze_e18.py]`"
+        e20 = A / "e20_hybrid.json"
+        if e20.exists():
+            d20 = json.load(open(e20))
+            lab20 = {"m_ls": "MOEA/D + scalarised local search", "m_hyb": "MOEA/D seeded by Tabu (30% of T)", "m_hyb_ts50": "MOEA/D seeded by Tabu (50% of T)",
+                     "m_hyb_vns30": "MOEA/D seeded by VNS (30% of T)", "m_hyb_vns50": "MOEA/D seeded by VNS (50% of T)", "t_moead": "MOEA/D-Uniform (tuned)",
+                     "t_ts": "Tabu (tuned)", "t_vns": "VNS (tuned)", "t_grasp": "GRASP (tuned)"}
+            cells20 = [(c, l) for c, l in (("MDP-S", "MDP, 100 ≤ n ≤ 150"), ("MDP-L", "MDP, n = 500"), ("CDP-S", "CDP, n ≤ 150"), ("GDP-S", "GDP, n ≤ 150")) if c in d20]
+            if cells20:
+                ln = ["**Table @@t_hybrid@@. MOEA/D seeded by a trajectory search (E20): HV_norm against the frozen reference (mean over test instances and three replicates; in brackets the paired difference to the default MOEA/D-Uniform and Holm-adjusted Wilcoxon p). Same wall-clock limit for every method; the seeding phase counts in the limit**", "",
+                      "| Method | " + " | ".join(f"{l} (N={d20[c]['N']})" for c, l in cells20) + " |", "|---|" + "---|" * len(cells20),
+                      "| MOEA/D-Uniform (default) | " + " | ".join(f"{d20[c]['uniform_mean']:.3f}" for c, _ in cells20) + " |"]
+                for m, lbl in lab20.items():
+                    cs = []
+                    for c, _ in cells20:
+                        x = d20[c]["methods"].get(m)
+                        cs.append("–" if x is None else f"{x['mean']:.3f} ({x['diff_uniform']:+.3f}; {x.get('p_holm_vs_uniform', float('nan')):.2g})")
+                    if any(v != "–" for v in cs):
+                        ln.append(f"| {lbl} | " + " | ".join(cs) + " |")
+                T["TE20"] = chr(10).join(ln)
+            else:
+                T["TE20"] = "`[TODO: run run_e20.py and analyze_e20.py]`"
+        else:
+            T["TE20"] = "`[TODO: run run_e20.py and analyze_e20.py]`"
         parts = []
         for pr in ("MDP", "CDP", "GDP"):
             f = A / f"by_family_{pr}_hv_norm.md"

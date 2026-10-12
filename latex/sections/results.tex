@@ -33,9 +33,9 @@ GRASP-MO & 8.22 & 9.27 & 8.53 \\
 VNS-Tcheb. & 11.48 & 10.79 & 7.39 \\
 NSGA-II & 10.52 & 9.39 & 10.59 \\
 VNS-Pareto & 11.00 & 10.67 & 9.16 \\
-$^{*}$Friedman $\chi$$^{2}$ (p)$^{*}$ & 829.6 (8.4e-171) & 1593.3 (0.0e+00) & 642.9 (9.1e-131) \\
-$^{*}$Nemenyi CD ($\alpha$=0.05)$^{*}$ & 1.67 & 1.18 & 1.39 \\
-$^{*}$Significant pairs, Wilcoxon--Holm / Nemenyi (of 66)$^{*}$ & 55 / 44 & 53 / 51 & 51 / 42 \\
+\emph{Friedman $\chi$$^{2}$ (p)} & 829.6 (8.4e-171) & 1593.3 (0.0e+00) & 642.9 (9.1e-131) \\
+\emph{Nemenyi CD ($\alpha$=0.05)} & 1.67 & 1.18 & 1.39 \\
+\emph{Significant pairs, Wilcoxon--Holm / Nemenyi (of 66)} & 55 / 44 & 53 / 51 & 51 / 42 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -330,19 +330,17 @@ Instance & MOEA/D-Uniform & MOEA/D-UCB-HV & MOEA/D-GTS-HV & NSGA-II & GRASP-PR &
 MDG-b\_21\_n2000\_m200 & 0.697 & 0.880 & 0.858 & 0.052 & 0.274 & 0.008 \\
 MDG-b\_31\_n2000\_m200 & 0.720 & 0.898 & 0.868 & 0.060 & 0.156 & 0.005 \\
 MDG-b\_40\_n2000\_m200 & 0.688 & 0.787 & 0.803 & 0.061 & 0.103 & 0.011 \\
-$^{*}$median time per run (s), all five instances$^{*}$ & 848 & 981 & 945 & 54 & 1438 & 30 \\
-$^{*}$average front size, all five instances$^{*}$ & 45.7 & 56.7 & 53.7 & 6.1 & 6.7 & 3.0 \\
+\emph{median time per run (s), all five instances} & 848 & 981 & 945 & 54 & 1438 & 30 \\
+\emph{average front size, all five instances} & 45.7 & 56.7 & 53.7 & 6.1 & 6.7 & 3.0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \emph{MDG-c, n = 3000 (two instances): the front is a single point with MaxMin = 0 for every method in every run but one GRASP-PR replicate, so $\mathrm{HV}_{\mathrm{norm}}$ is not informative; best MaxSum found (mean of three replicates, in millions; mean over the two instances):}
 
-\begin{table}[t]
-\centering
+\begin{center}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\caption{}\label{tab:12}
 \begin{tabular}{lcccccc}
 \toprule
  & MOEA/D-Uniform & MOEA/D-UCB-HV & MOEA/D-GTS-HV & NSGA-II & GRASP-PR & VNS-Tcheb. \\
@@ -350,7 +348,7 @@ $^{*}$average front size, all five instances$^{*}$ & 45.7 & 56.7 & 53.7 & 6.1 & 
 MaxSum ($\times$10$^{6}$) & 43.19 & 43.21 & 43.22 & 42.91 & 42.73 & 42.65 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{center}
 
 On MDG-b with n = 2,000 the baselines are far behind (Table 11), as at smaller sizes: NSGA-II reaches $\mathrm{HV}_{\mathrm{norm}}$ 0.05--0.06, GRASP-PR 0.10--0.27 and VNS-Tchebycheff at most 0.01, against 0.69--0.90 for MOEA/D. \textbf{The comparison among MOEA/D variants differs from Sections 6.3--6.5.} On all three instances the two HV-reward selectors beat uniform selection (0.88, 0.90 and 0.79 for UCB1 and 0.86, 0.87 and 0.80 for the Gaussian sampler, against 0.70, 0.72 and 0.69), and each is above the uniform replicate of the same index in eight of the nine (instance, replicate) cells. The gain comes from the MaxMin end of the front (mean best MaxMin 18.4 for UCB1 against 14.8 for uniform selection over the nine runs, with MaxSum unchanged within 0.2\%). The selectors behave unlike the near-uniform HV selectors of Section 6.3: they concentrate on BiObjBestSwap (0.32--0.39 of the selections) and MaxMinSwap (0.35--0.40) and give SubsetCrossover 0.07--0.15, which is what one would expect if the HV reward does not saturate because the search is far from converged --- 600 generations over 2,000 elements. Section 6.11 tests the explanation that adaptive selection helps when the search is far from convergence. Run times are about 850 s for uniform selection and 950--980 s for the two adaptive variants, 54 s for NSGA-II, 1,440 s for GRASP-PR and 30 s for VNS-Tchebycheff, on a shared laptop.
 
@@ -412,7 +410,7 @@ The baselines of Sections 6.2 and 6.7 run with fixed budgets and without tuning,
 \toprule
 Method & CDP n $\leq$ 150 & CDP n = 500 & GDP n $\leq$ 150 & GDP n = 500 & MDP n $\leq$ 150 & MDP n = 500 \\
 \midrule
-$^{*}$MOEA/D-Uniform, default setting (reference)$^{*}$ & 0.705 (N=52) & 0.721 (N=20) & 0.766 (N=111) & 0.684 (N=32) & 0.831 (N=52) & 0.885 (N=22) \\
+\emph{MOEA/D-Uniform, default setting (reference)} & 0.705 (N=52) & 0.721 (N=20) & 0.766 (N=111) & 0.684 (N=32) & 0.831 (N=52) & 0.885 (N=22) \\
 MOEA/D-Uniform, tuned & 0.736 (+0.031)$^{*}$ & 0.749 (+0.029)$^{*}$ & 0.752 ($-$0.014) & 0.707 (+0.024) & 0.840 (+0.010) & 0.900 (+0.015) \\
 NSGA-II, default & 0.454 ($-$0.251)$^{*}$ & 0.285 ($-$0.435)$^{*}$ & 0.547 ($-$0.219)$^{*}$ & 0.222 ($-$0.462)$^{*}$ & 0.464 ($-$0.367)$^{*}$ & 0.471 ($-$0.414)$^{*}$ \\
 NSGA-II, tuned & 0.509 ($-$0.196)$^{*}$ & 0.367 ($-$0.353)$^{*}$ & 0.640 ($-$0.125)$^{*}$ & 0.401 ($-$0.283)$^{*}$ & 0.531 ($-$0.299)$^{*}$ & 0.726 ($-$0.159)$^{*}$ \\
@@ -424,7 +422,7 @@ Tabu search (Colmenar et al.), their irace setting & 0.508 ($-$0.197)$^{*}$ & 0.
 Tabu search, tuned & 0.591 ($-$0.114)$^{*}$ & 0.603 ($-$0.117)$^{*}$ & 0.659 ($-$0.107)$^{*}$ & 0.600 ($-$0.084)$^{*}$ & 0.941 (+0.111)$^{*}$ & 0.988 (+0.104)$^{*}$ \\
 VNS (Colmenar et al.), their irace setting & 0.577 ($-$0.128)$^{*}$ & 0.295 ($-$0.425)$^{*}$ & 0.646 ($-$0.120)$^{*}$ & 0.273 ($-$0.410)$^{*}$ & 0.977 (+0.146)$^{*}$ & 0.985 (+0.100)$^{*}$ \\
 VNS, tuned & 0.697 ($-$0.008) & 0.454 ($-$0.267)$^{*}$ & 0.656 ($-$0.110)$^{*}$ & 0.378 ($-$0.306)$^{*}$ & 0.977 (+0.147)$^{*}$ & 0.996 (+0.111)$^{*}$ \\
-$^{*}$At five times the time --- MOEA/D-Uniform, default at time T (reference, same instances)$^{*}$ & 0.684 (N=52) & 0.686 (N=10) & 0.774 (N=111) & 0.685 (N=16) & 0.833 (N=52) & 0.889 (N=11) \\
+\emph{At five times the time --- MOEA/D-Uniform, default at time T (reference, same instances)} & 0.684 (N=52) & 0.686 (N=10) & 0.774 (N=111) & 0.685 (N=16) & 0.833 (N=52) & 0.889 (N=11) \\
 MOEA/D-Uniform, tuned, 5T & 0.767 (+0.083)$^{*}$ & 0.746 (+0.060) & 0.818 (+0.044)$^{*}$ & 0.728 (+0.043) & 0.827 ($-$0.006) & 0.937 (+0.048)$^{*}$ \\
 NSGA-II, tuned, 5T & 0.525 ($-$0.159)$^{*}$ & 0.438 ($-$0.248)$^{*}$ & 0.710 ($-$0.064) & 0.417 ($-$0.268)$^{*}$ & 0.557 ($-$0.276)$^{*}$ & 0.811 ($-$0.078)$^{*}$ \\
 SMS-EMOA, tuned, 5T & 0.560 ($-$0.125)$^{*}$ & 0.414 ($-$0.271)$^{*}$ & 0.701 ($-$0.073) & 0.392 ($-$0.293)$^{*}$ & 0.545 ($-$0.288)$^{*}$ & 0.803 ($-$0.086)$^{*}$ \\
@@ -444,7 +442,7 @@ VNS, tuned, 5T & 0.777 (+0.092)$^{*}$ & 0.472 ($-$0.214)$^{*}$ & 0.727 ($-$0.047
 \toprule
 Method & CDP n $\leq$ 150 & CDP n = 500 & GDP n $\leq$ 150 & GDP n = 500 & MDP n $\leq$ 150 & MDP n = 500 \\
 \midrule
-$^{*}$MOEA/D-Uniform, tuned (reference), time T$^{*}$ & 0.736 (N=52) & 0.749 (N=20) & 0.752 (N=111) & 0.707 (N=32) & 0.840 (N=52) & 0.900 (N=22) \\
+\emph{MOEA/D-Uniform, tuned (reference), time T} & 0.736 (N=52) & 0.749 (N=20) & 0.752 (N=111) & 0.707 (N=32) & 0.840 (N=52) & 0.900 (N=22) \\
 NSGA-II, tuned & 0.509 ($-$0.228)$^{*}$ & 0.367 ($-$0.382)$^{*}$ & 0.640 ($-$0.112)$^{*}$ & 0.401 ($-$0.306)$^{*}$ & 0.531 ($-$0.309)$^{*}$ & 0.726 ($-$0.173)$^{*}$ \\
 SMS-EMOA, tuned & 0.547 ($-$0.189)$^{*}$ & 0.379 ($-$0.370)$^{*}$ & 0.640 ($-$0.112)$^{*}$ & 0.388 ($-$0.319)$^{*}$ & 0.468 ($-$0.373)$^{*}$ & 0.670 ($-$0.230)$^{*}$ \\
 GRASP, tuned & 0.692 ($-$0.044)$^{*}$ & 0.441 ($-$0.309)$^{*}$ & 0.519 ($-$0.233)$^{*}$ & 0.410 ($-$0.297)$^{*}$ & 0.951 (+0.111)$^{*}$ & 0.662 ($-$0.238)$^{*}$ \\
@@ -452,7 +450,7 @@ Tabu search, tuned & 0.591 ($-$0.146)$^{*}$ & 0.603 ($-$0.146)$^{*}$ & 0.659 ($-
 VNS, tuned & 0.697 ($-$0.040)$^{*}$ & 0.454 ($-$0.296)$^{*}$ & 0.656 ($-$0.096)$^{*}$ & 0.378 ($-$0.329)$^{*}$ & 0.977 (+0.137)$^{*}$ & 0.996 (+0.096)$^{*}$ \\
 Tabu search (Colmenar et al.), their irace setting & 0.508 ($-$0.229)$^{*}$ & 0.458 ($-$0.291)$^{*}$ & 0.432 ($-$0.320)$^{*}$ & 0.315 ($-$0.392)$^{*}$ & 0.924 (+0.084)$^{*}$ & 0.971 (+0.072)$^{*}$ \\
 VNS (Colmenar et al.), their irace setting & 0.577 ($-$0.159)$^{*}$ & 0.295 ($-$0.454)$^{*}$ & 0.646 ($-$0.106)$^{*}$ & 0.273 ($-$0.434)$^{*}$ & 0.977 (+0.137)$^{*}$ & 0.985 (+0.085)$^{*}$ \\
-$^{*}$MOEA/D-Uniform, tuned (reference), time 5T$^{*}$ & 0.767 (N=52) & 0.746 (N=10) & 0.818 (N=111) & 0.728 (N=16) & 0.827 (N=52) & 0.937 (N=11) \\
+\emph{MOEA/D-Uniform, tuned (reference), time 5T} & 0.767 (N=52) & 0.746 (N=10) & 0.818 (N=111) & 0.728 (N=16) & 0.827 (N=52) & 0.937 (N=11) \\
 NSGA-II, tuned, 5T & 0.525 ($-$0.242)$^{*}$ & 0.438 ($-$0.308)$^{*}$ & 0.710 ($-$0.108)$^{*}$ & 0.417 ($-$0.311)$^{*}$ & 0.557 ($-$0.270)$^{*}$ & 0.811 ($-$0.126)$^{*}$ \\
 SMS-EMOA, tuned, 5T & 0.560 ($-$0.207)$^{*}$ & 0.414 ($-$0.332)$^{*}$ & 0.701 ($-$0.117)$^{*}$ & 0.392 ($-$0.336)$^{*}$ & 0.545 ($-$0.282)$^{*}$ & 0.803 ($-$0.134)$^{*}$ \\
 GRASP, tuned, 5T & 0.773 (+0.006) & 0.579 ($-$0.166)$^{*}$ & 0.556 ($-$0.263)$^{*}$ & 0.527 ($-$0.201)$^{*}$ & 0.970 (+0.143)$^{*}$ & 0.738 ($-$0.199)$^{*}$ \\

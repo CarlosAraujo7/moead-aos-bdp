@@ -24,7 +24,8 @@ from analyze_phase2 import a12, holm  # noqa: E402
 
 OUT = ROOT / "results" / "e20_hybrid"
 NEW = {"m_ls": "MOEA/D + local search", "m_hyb": "MOEA/D seeded by Tabu (30% of T)", "m_hyb_ls": "MOEA/D seeded by Tabu + local search",
-       "m_hyb_ts50": "MOEA/D seeded by Tabu (50% of T)", "m_hyb_vns30": "MOEA/D seeded by VNS (30% of T)", "m_hyb_vns50": "MOEA/D seeded by VNS (50% of T)"}
+       "m_hyb_ts50": "MOEA/D seeded by Tabu (50% of T)", "m_hyb_vns10": "MOEA/D seeded by VNS (10% of T)", "m_hyb_vns30": "MOEA/D seeded by VNS (30% of T)", "m_hyb_vns50": "MOEA/D seeded by VNS (50% of T)",
+       "d_spea2": "SPEA2 (Colmenar irace)", "d_ig": "Iterated Greedy (Colmenar irace)"}
 OLD = {"uniform": "MOEA/D-Uniform (default)", "t_moead": "MOEA/D-Uniform (tuned)", "def_ts": "Tabu (Colmenar irace)", "def_vns": "VNS (Colmenar irace)",
        "t_ts": "Tabu (tuned)", "t_vns": "VNS (tuned)", "t_grasp": "GRASP (tuned)", "t_nsga2": "NSGA-II (tuned)", "t_sms": "SMS-EMOA (tuned)"}
 
@@ -33,7 +34,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cells", default="MDP-S,MDP-L")
     ap.add_argument("--metric", choices=["hv_norm", "igd_plus"], default="hv_norm")
+    ap.add_argument("--dir", default="e20_hybrid", help="pasta de runs novos em results/ (e20_hybrid ou e22_colmenar_rest)")
     a = ap.parse_args()
+    global OUT
+    OUT = ROOT / "results" / a.dir
     hb = a.metric == "hv_norm"
     allc = C.cells()
     res = {}
@@ -57,7 +61,8 @@ def main():
                 v.append(x if hb else -x)
             return float(np.mean(v))
 
-        modes = list(NEW) + [m for m in OLD if m != "uniform"]
+        present = [m for m in NEW if any((OUT / cell / "runs").glob(f"*_{m}_rep*.json"))]
+        modes = present + [m for m in OLD if m != "uniform"]
         rows, used = [], []
         for n in names:
             vals = [val(n, m) for m in ["uniform"] + modes]
@@ -93,7 +98,7 @@ def main():
             print(f"   {lab:40s} {i['mean']:.3f}  vs uniform {i['diff_uniform']:+.3f} (A12 {i['a12_vs_uniform']:.2f}, melhor em {i['better_than_uniform']:3d}/{len(used)}, p_Holm {ph})"
                   f"   vs {OLD[best_old].split(' (')[0]} {i['diff_best_baseline']:+.3f} (p {i['p_vs_best_baseline']:.3f})")
     suffix = "" if a.metric == "hv_norm" else f"_{a.metric}"
-    (ROOT / "results" / "analysis" / f"e20_hybrid{suffix}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+    (ROOT / "results" / "analysis" / f"{a.dir if a.dir != 'e20_hybrid' else 'e20_hybrid'}{suffix}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
 
 
 if __name__ == "__main__":

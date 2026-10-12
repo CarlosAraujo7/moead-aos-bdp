@@ -59,3 +59,12 @@ Cada linha: a objeção, o que o manuscrito faz a respeito (seção, tabela/figu
 | Objeção | Resposta | Risco residual |
 |---|---|---|
 | "Texto longo e denso." | Detalhes de §6.4 e por família movidos ao suplemento; tabelas-resumo geradas; revisão do inglês pendente com os coautores. | Médio: ~17 mil palavras no corpo antes da movimentação; reavaliar após os resultados finais. |
+
+## H. Tamanho do conjunto, limite de cardinalidade e híbrido (rodada de 12 out 2026)
+
+| Objeção | Resposta | Risco residual |
+|---|---|---|
+| "O problema bi-objetivo CDP/GDP é mal posto (MaxSum cresce com o tamanho); suas frentes são uma fatia arbitrária." | §3 e §6.13–6.14: no regime original o tamanho deriva do reparo (arquivo do MOEA/D com 2–3× o tamanho mínimo no CDP); com operadores de tamanho o MOEA/D alcança hv_norm muito maior que Tabu/VNS ajustados com inserções; **com limite de cardinalidade (ρ=2, ρ=1,5)** a frente é finita e os métodos são comparados nesse problema. | Médio: o limite é uma escolha (ρ relativo à solução gulosa por eficiência); a sensibilidade a ρ está só nas células n≤150. |
+| "Seus operadores de tamanho dão vantagem injusta ao MOEA/D." | Tabu/VNS ajustados também recebem movimentos de inserção dominante; no problema com limite o VNS com inserções empata no CDP. Comparação a tempo igual, inicialização contada. | Médio: os movimentos de inserção do Tabu/VNS são mais simples que o `BiObjGrow` por subproblema. |
+| "Um híbrido simples (MOEA/D + VNS) resolveria o MDP." | E20: semear com VNS recupera ~3/4 da distância no MDP e **piora** CDP/GDP; busca local escalarizada no pool piora. Não há híbrido universal nas frações testadas. | Baixo–médio (outras formas de hibridização não testadas). |
+| "Escala: só 3 instâncias de n=2000." | E10 parte E + E21: as 20 MDG-b n=2000 e uma amostra de MDG-c n=3000, com baselines ajustados (em n=500, sem reajuste) a tempo igual. | Médio: parâmetros dos baselines não reajustados para n≥2000; MDG-c degenerado (MaxMin = 0). |

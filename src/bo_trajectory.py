@@ -40,7 +40,7 @@ from vns import _update_archive
 
 @dataclass
 class BOTrajConfig:
-    method: Literal["tabu", "vns"] = "tabu"
+    method: Literal["tabu", "vns", "ig"] = "tabu"
     alpha: float = 0.94                                   # RCL: 1 = guloso, 0 = aleatorio (convencao de Colmenar et al.)
     constructive: Literal["altbws", "altins", "rnd"] = "altins"
     local_search: Literal["pr", "alt", "dom"] = "pr"
@@ -58,6 +58,8 @@ class BOTrajConfig:
     # tamanho da solucao cresce sem limite no CDP (MaxSum e monotono no tamanho) e o MaxSum chega a ~6x o da referencia (sonda de 7 out);
     # o estudo principal e o E11 comparam todos os metodos no regime de tamanho dirigido pela capacidade (ver manuscrito, Limitations).
     add_moves: bool = False
+    # Iterated Greedy (Colmenar et al. 2018, Alg. 8): percentual de elementos destruidos em cada iteracao (irace deles: 55,39)
+    pct: float = 55.39
     time_limit_s: float | None = None
     seed: int | None = None
 
@@ -124,7 +126,7 @@ class BOTrajectory:
         return capS, costS
 
     # ------------------------------------------------------------------ construtivo
-    def _construct(self) -> np.ndarray:
+    def _construct(self, start=None) -> np.ndarray:
         cfg, rng, D, n = self.cfg, self.rng, self.D, self.n
         inS = np.zeros(n, dtype=bool)
         S: list[int] = []
@@ -139,6 +141,19 @@ class BOTrajectory:
         else:
             obj = int(rng.integers(2))
         capS = costS = 0.0
+        if start is not None:      # reconstrucao a partir de uma solucao parcial (Iterated Greedy)
+            for j in start:
+                j = int(j)
+                if S:
+                    curmin = min(curmin, float(minrow[j]))
+                S.append(j)
+                inS[j] = True
+                contrib += D[j]
+                minrow = np.minimum(minrow, D[j])
+                if not self.fixed:
+                    capS += float(self.cap[j])
+                    if self.cost is not None:
+                        costS += float(self.cost[j])
 
         def done() -> bool:
             if self.fixed:
@@ -362,6 +377,19 @@ class BOTrajectory:
         S = self._construct()
         f = inst.evaluate(S)
         self._record(S, f)
+        if cfg.method == "ig":
+            # Iterated Greedy literal (Alg. 8 de Colmenar et al.): a solucao inicial S NAO e atualizada; a cada iteracao destroi pct% dos
+            # elementos de S ao acaso e reconstroi; todas as solucoes percorridas alimentam o arquivo.
+            outer = 0
+            while outer < cfg.max_iter and not self._timeout():
+                outer += 1
+                self.it += 1
+                kdel = max(1, int(round(cfg.pct / 100.0 * len(S))))
+                keep = np.delete(S, rng.choice(len(S), size=min(kdel, len(S) - 1), replace=False))
+                S2 = self._construct(start=keep)
+                self._record(S2, inst.evaluate(S2))
+            pts = np.array(self.arch_f, dtype=float).reshape(-1, 2)
+            return BOTrajResult(pareto_front=pts, n_iter_executed=outer, config=cfg)
         noimp = 0
         k = 1
         cycles = 0

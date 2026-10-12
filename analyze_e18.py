@@ -29,7 +29,8 @@ from analyze_phase2 import a12, holm  # noqa: E402
 OUT = ROOT / "results" / "e18_size"
 LAB = {"moead": "MOEA/D-Uniform", "moead_size": "MOEA/D-Uniform + size operators", "moead_t": "MOEA/D-Uniform (tuned)",
        "moead_size_t": "MOEA/D-Uniform + size operators (tuned)", "ts": "Tabu (tuned)", "ts_add": "Tabu (tuned) + insertions",
-       "vns": "VNS (tuned)", "vns_add": "VNS (tuned) + insertions", "nsga2": "NSGA-II (tuned)", "grasp": "GRASP (tuned)"}
+       "vns": "VNS (tuned)", "vns_add": "VNS (tuned) + insertions", "nsga2": "NSGA-II (tuned)", "grasp": "GRASP (tuned)",
+       "moead_size_ucbhv": "MOEA/D-UCB-HV + size operators", "moead_size_gtshv": "MOEA/D-GTS-HV + size operators"}
 MARGIN = RS.MARGIN
 
 
@@ -67,15 +68,22 @@ def main():
             if not runs:
                 continue
             refs = build_refs(runs)
-            modes = sorted({m for (_, m, _) in runs}, key=lambda m: list(LAB).index(m) if m in LAB else 99)
+            cnt = {}
+            for (_, m_, _) in runs:
+                cnt[m_] = cnt.get(m_, 0) + 1
+            full = max(cnt.values())
+            modes = sorted([m for m in cnt if cnt[m] == full], key=lambda m: list(LAB).index(m) if m in LAB else 99)   # so metodos completos na celula
+            if len(modes) < len(cnt):
+                print(f"[{exp} {cell}] metodos incompletos ignorados: {sorted(set(cnt) - set(modes))}")
             insts = sorted({i for (i, _, _) in runs})
-            val, msum, sz = {}, {}, {}
+            val, msum, sz, szi = {}, {}, {}, {}
             for (inst, m, rep), j in runs.items():
                 fr = np.asarray(j["pareto_front"], float).reshape(-1, 2)
                 val.setdefault((inst, m), []).append(RS.indicators(fr, refs[inst])[a.metric])
                 msum.setdefault((inst, m), []).append(float(fr[:, 0].max()))
                 if j.get("archive_sizes"):
                     sz.setdefault(m, []).extend(j["archive_sizes"])
+                    szi.setdefault((inst, m), []).extend(j["archive_sizes"])
             # instancias completas (todos os metodos e todas as replicas esperadas) e com referencia nao degenerada
             keep = []
             for inst in insts:
@@ -90,6 +98,9 @@ def main():
             if not hb:
                 M = -M
             ranks = np.array([rankdata(-row) for row in M])
+            import e11_common as C
+            rows_ = {r["name"]: r for r in C.cells()[cell]["test"]}
+            kref = {i: len(C.load_instance(C.cells()[cell]["problem"], rows_[i])._efficiency_greedy_fill()) for i in keep}
             ms_ratio = np.array([[np.mean(msum[(i, m)]) / max(np.mean(msum[(i, "moead")]), 1e-12) for m in modes] for i in keep])
             k0 = modes.index("moead")
             ps, info = [], {}
@@ -99,7 +110,8 @@ def main():
                 ps.append(p)
                 info[m] = dict(mean=float(M[:, j].mean()), rank=float(ranks[:, j].mean()), diff_vs_moead=float(d.mean()), a12=a12(M[:, j], M[:, k0]),
                                better=int((d > 0).sum()), p_raw=float(p), maxsum_ratio_median=float(np.median(ms_ratio[:, j])),
-                               size_median=(float(np.median(sz[m])) if m in sz else None), size_max=(int(max(sz[m])) if m in sz else None))
+                               size_median=(float(np.median(sz[m])) if m in sz else None), size_max=(int(max(sz[m])) if m in sz else None),
+                               size_over_kref=(float(np.median([np.median(szi[(i, m)]) / kref[i] for i in keep if (i, m) in szi])) if m in sz else None))
             idx = [j for j, m in enumerate(modes) if m != "moead"]
             for j, pa in zip(idx, holm([ps[j] for j in idx])):
                 info[modes[j]]["p_holm"] = float(pa)

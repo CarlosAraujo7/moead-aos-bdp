@@ -1,49 +1,42 @@
-# Pendências — atualizado em 10 out 2026
+# Pendências — atualizado em 12 out 2026
 
-**Situação em uma frase:** o manuscrito (`Claude outputs/manuscript_draft_v2.docx` e `.md`) e o suplemento (`supplementary_material.docx`) estão estruturados para o EJOR e com texto genérico nas partes de autoria; em 10 out achei e corrigi um artefato de ponto flutuante que afetava as recompensas de "sucesso" (seletores Thompson/DYTS e recompensa `insert`) — a reexecução das variantes afetadas está rodando (ver `ANDAMENTO.md`) e, quando terminar, preciso rodar `regen_all.py` e conferir todos os números de prosa. O que resta depende de **você** (artigos que faltam, DOI, declarações, decisões) ou de **sua autorização** (limpeza e commit).
+**Situação em uma frase:** o manuscrito está migrado para LaTeX no template do EJOR (`latex/main.pdf`, gerado por `python make_latex.py --build`), o git tem 6 commits locais (sem push) e três frentes novas de melhoria estão rodando (tamanho do conjunto, MDP híbrido, escala completa); o que resta depende de **você** (decisões e artigos) ou das **fases longas de experimentos** (~15 h de máquina, ver §4).
 
 ---
 
-## 1. Artigos que ainda faltam
+## 1. Decisões e autorizações que preciso de você
 
-Os 11 artigos pedidos em 8 out chegaram e foram lidos (Colmenar et al. 2018 na versão publicada, Mladenović et al. 2022 COR, Geng et al. 2023, Fialho et al. 2010, Li et al. 2014, Duarte et al. 2015, Knowles et al. 2006, Parreño et al. 2021, irace, Sun & Li 2020, Gomez et al.). Os metadados de todas as referências foram conferidos no Crossref. Ainda não tenho:
+1. **Push para https://github.com/CarlosAraujo7/moead-aos-bdp.git** — os commits estão prontos localmente (`git log --oneline`). Posso fazer o push? Antes: as **notas internas em português** (`CLAUDE.md`, `ANDAMENTO.md`, `PLANO_PUBLICACAO.md`, `PENDENCIAS_*`, `REFERENCIAS_A_CONSEGUIR.md`) estão num commit separado (`414cf4b`); se não quiser publicá-las, eu as retiro do histórico antes do push.
+2. **CRediT**: copiei os papéis do template (artigo de corte a laser) para os cinco autores; confirme ou ajuste para este trabalho (`latex/main_template.tex`, seção "CRediT").
+3. **Declaração de IA generativa** (obrigatória no EJOR): o texto diz que o Claude foi usado para escrever e depurar código, rodar e organizar experimentos e redigir texto/tabelas, e que os autores revisaram e assumem a responsabilidade. Confirme ou edite.
+4. **Título** (hoje "Objective scaling, operator pools and adaptive selection in MOEA/D for bi-objective dispersion problems"): com os resultados novos (tamanho do conjunto, híbrido) talvez valha rever com orientador/coautores.
+5. **Plano B de periódico/evento**: ainda não escolhido. Lembrete: o EJOR não considera versões estendidas de artigos de conferência; enviar estes resultados ao CEC antes impediria o EJOR.
 
-| # | Título | Por que importa | Prioridade |
-|---|---|---|---|
-| 1 | **GRASP and tabu search for the generalized dispersion problem** — Martínez-Gavara, Corberán & Martí (2021), *Expert Systems with Applications* 173:114703 | É o artigo **original do GDP**; o texto descreve o GDP a partir do artigo de Lozano-Osorio et al. (2022) e do pacote Zenodo. | Média |
-| 2 | **Multi-objective Optimization in Diversity Problems** (cap. 14 de *Discrete Diversity and Dispersion Maximization*, Springer, 2023) — Colmenar, Herrán & Martín-Santamaría | Pode revelar trabalhos multiobjetivo de diversidade que não achei (§2). Exige acesso institucional. | Média |
-| 3 | **Diversity and Equity Models** — Sandoya et al. (2018), *Handbook of Heuristics* | Só citado indiretamente; opcional. | Baixa |
+## 2. Artigos que preciso que você consiga (títulos exatos em `REFERENCIAS_NOVAS_A_CONSEGUIR.md`)
 
-## 2. Decisões que são suas
+O Claude in Chrome não estava conectado, então **não consultei Scopus/WoS** (exigem sua sessão); usei OpenAlex/Crossref (sem texto completo). Faltam:
+- *GRASP and tabu search for the generalized dispersion problem* (Martínez-Gavara, Corberán & Martí, ESWA 173:114703, 2021) — original do GDP;
+- *Multi-objective Optimization* (cap. 14 de *Discrete Diversity and Dispersion Maximization*, Colmenar, Herrán & Martín-Santamaría, Springer 2023);
+- (opcional) *Diversity and Equity Models* / *Diversity Optimization Models* (Sandoya et al.).
+Há também ~15 trabalhos novos de 2023–2026 listados no arquivo (CDP, MDP com capacidade e orçamento, AOS em MOEA/D); os de prioridade alta são Wang et al. (2024, IEEE TETCI) e Radanović et al. (2025, ESWA). **Repetir as 4 consultas do arquivo no Scopus/WoS perto da submissão** (o manuscrito e a carta têm `[TODO]` para isso).
 
-1. **CEC 2027 como plano B:** o guia do EJOR **não considera versões estendidas de artigos de conferência**; enviar estes resultados ao CEC bloquearia o EJOR. Preprint não conta como publicação prévia.
-2. **Declaração de uso de IA generativa (obrigatória):** rascunho no manuscrito (Claude usado para código, experimentos e redação; autores revisaram e assumem a responsabilidade). **Confirmar ou editar.**
-3. **Seções genéricas que você disse que vai editar:** CRediT, conflito de interesses, financiamento, agradecimentos (já estão preenchidas com texto padrão, marcadas `[generic text]` no manuscrito), carta ao editor (`submission_materials_draft.md`).
-4. **Formulação do CDP/GDP:** o MaxSum cresce com o tamanho do conjunto (§3, §6.13). Uma variante com limite de cardinalidade seria **outro problema**: deixar como trabalho futuro (padrão atual) ou fazer agora?
-5. **Suplemento:** movi para `supplementary_material.docx` os detalhes de §6.4 (S1), os ranks por família (S2) e o mecanismo do orçamento apertado (S3). Se preferir tudo no corpo, é só reverter (o gerador aceita).
-6. **Título:** hoje "Objective scaling, operator pools and adaptive selection in MOEA/D for bi-objective dispersion problems"; validar com orientador/coautores.
+## 3. O que é seu ao final
 
-## 3. Checklist de submissão ao EJOR
+- Repositório com DOI: criar o depósito no Zenodo (código + `results/`, conforme `DATA_PACKAGE_MANIFEST.md`, ~84 MB, ~100 mil arquivos) e colocar o DOI no `\todo` da seção "Data and Code Availability" e na carta.
+- Revisão de inglês e leitura crítica por orientador/coautores; **cortes para ~30 páginas** (você disse que faz); conferir visualmente o PDF (tabelas largas estão reduzidas com `\resizebox`).
+- Declaração de conflito de interesses (arquivo Word do sistema do EJOR) e carta ao editor (`Claude outputs/submission_materials_draft.md`).
 
-- [x] Resumo ≤ 250 palavras (conferir de novo após a atualização final), sem citações.
-- [x] 1–5 palavras-chave, a primeira da lista oficial.
-- [x] Highlights (`EJOR_highlights.docx`, 5 itens ≤ 85 caracteres).
-- [x] Resumo gráfico: `Claude outputs/figures/graphical_abstract.pdf|png` (4 painéis; conferir a legibilidade no tamanho final).
-- [x] Fonte Word: `manuscript_draft_v2.docx` (gerado por `make_docx.py`; **revisar visualmente no Word**: tabelas largas, equações em texto simples, numeração).
-- [ ] **DOI do repositório** (Zenodo) e frase de disponibilidade de dados; `[TODO]` em §5, Apêndice B e na declaração de dados. Manifesto pronto: `DATA_PACKAGE_MANIFEST.md`.
-- [ ] Repetir a busca bibliográfica no Scopus/Web of Science perto da submissão (a minha foi só pela web, 5 out) — `[TODO]` no §2 e na carta.
-- [ ] Declaração de conflitos de interesse (arquivo Word gerado pelo sistema) e CRediT preenchidos pelos autores.
-- [ ] Revisão de inglês e leitura crítica por orientador/coautor.
+## 4. Experimentos em andamento (a máquina precisa ficar ligada)
 
-## 4. Pendências técnicas (dependem de sua autorização)
+| Fila | O que | Estado em 12 out ~03h |
+|---|---|---|
+| `run_queue9.py` (aba do terminal) | **E18**: operadores de tamanho e variante com limite de cardinalidade (ρ=2; ρ=1,5 só n≤150), células n≤150 e n=500, 3 réplicas, tempo igual | n≤150 livre e ρ=2 concluídos; n=500 em execução (~10 h) |
+| `run_queue10.py` (processo destacado, espera a fila 9) | **E20** limpo (MOEA/D semeado por VNS 10/30/50%; MDP-S/L, CDP-S, GDP-S), **E10 parte E** (restante das MDG-b n=2000), **E21** (escala completa: MDG-b n=2000 e amostra de MDG-c n=3000; baselines ajustados e híbrido a tempo igual) | aguardando |
 
-- **Commit:** nenhum commit foi feito (instrução de 1 out). Há dezenas de arquivos novos/modificados; indispensável antes de submeter.
-- **Limpeza:** movi (sem apagar) os arquivos de depuração para `_obsolete/` e os JSONs obsoletos para `results/analysis/_stale/`; `.gitignore` atualizado (`a pedidos/`, `_obsolete/`, `_to_delete/`). Nada foi apagado.
-- **Pacote de dados com DOI:** ver `DATA_PACKAGE_MANIFEST.md` (cerca de 84 MB, ~100 mil arquivos).
-- **Congelamento:** a referência está congelada desde 6 out (`results/reference_fronts/frozen_2026-10-06/`); não reconstruir.
-- **Código opt-in sem uso no artigo** (`polish_frac` em `moead_aos.py`): posso remover para o pacote público.
-- **Catálogo histórico bruto** (`results/capacitated`): contém o artefato de ponto flutuante nas duas variantes Thompson; não foi refeito (só entra no §6.1 e no §6.6 como "melhor dos 12 métodos"); está declarado no texto.
+Se a máquina reiniciar: `python run_queue9.py 8` e depois `python run_queue10.py 8` retomam do ponto (idempotentes). Não importe `run_queue*.py`: executam ao importar.
 
-## 5. Estado dos pontos fracos prováveis
+## 5. Resultados novos já conhecidos (ainda não no texto)
 
-Ver `REVIEWER_RISKS.md` (tabela completa: objeção, resposta no manuscrito, risco residual).
+- **Tamanho do conjunto**: no regime atual o arquivo do MOEA/D já tem 2–3× o tamanho da solução gulosa mínima no CDP (deriva do reparo). Com os operadores de tamanho (`biobj_grow`, `bottleneck_shrink`) o MOEA/D domina Tabu/VNS (mesmo com inserções) no problema livre (hv_norm 0,853 vs 0,287 no CDP n≤150) e, **no problema com limite de cardinalidade**, a vantagem some no CDP (VNS com inserções empata: ranks 3,3 vs 3,8) e permanece no GDP (+0,20).
+- **MDP híbrido**: semear o MOEA/D com VNS (50% de T) sobe 0,831 → 0,939 no MDP (VNS ajustado: 0,977), mas **piora** CDP (−0,05) e GDP (−0,075): não há híbrido universal (rodadas sob carga; refeitas limpas na fila 10).
+- Detalhes: `ANDAMENTO.md` e `CLAUDE.md` §2u.

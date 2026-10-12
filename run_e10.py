@@ -104,6 +104,8 @@ def main():
         add("MDP", [mdgb[i] for i in MDGB_IDX], [""], 900)
     if "D" in parts:
         add("MDP", [mdgb[i] for i in E6_IDX], ["x4_"], 3600)
+    if "E" in parts:   # E (12 out): as 10 instancias MDG-b n=2000 restantes (as da parte C cobrem so metade do conjunto), orcamento padrao
+        add("MDP", [mdgb[i] for i in range(len(mdgb)) if i not in MDGB_IDX], [""], 900)
     for p in ("CDP", "GDP", "MDP"):
         (OUT / p / "runs").mkdir(parents=True, exist_ok=True)
     tasks.sort(key=lambda t: -t[0])

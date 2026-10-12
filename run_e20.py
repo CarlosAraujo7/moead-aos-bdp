@@ -31,7 +31,7 @@ import run_e11 as R11  # noqa: E402
 OUT = ROOT / "results" / "e20_hybrid"
 MODES = {"m_ls": dict(extra=("tcheb_ls",), seed=0.0, traj="ts"), "m_hyb": dict(extra=(), seed=0.3, traj="ts"),
          "m_hyb_ls": dict(extra=("tcheb_ls",), seed=0.3, traj="ts"),
-         "m_hyb_vns30": dict(extra=(), seed=0.3, traj="vns"), "m_hyb_vns50": dict(extra=(), seed=0.5, traj="vns"),
+         "m_hyb_vns10": dict(extra=(), seed=0.1, traj="vns"), "m_hyb_vns30": dict(extra=(), seed=0.3, traj="vns"), "m_hyb_vns50": dict(extra=(), seed=0.5, traj="vns"),
          "m_hyb_ts50": dict(extra=(), seed=0.5, traj="ts")}
 
 

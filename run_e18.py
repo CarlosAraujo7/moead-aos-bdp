@@ -36,9 +36,9 @@ import e11_common as C  # noqa: E402
 OUT = ROOT / "results" / "e18_size"
 RHO = {"free": None, "bound2": 2.0, "bound15": 1.5}
 METHODS = {
-    "free": ["moead", "moead_size", "moead_t", "moead_size_t", "ts", "ts_add", "vns", "vns_add"],
-    "bound2": ["moead", "moead_size", "moead_t", "moead_size_t", "ts", "ts_add", "vns", "vns_add", "nsga2", "grasp"],
-    "bound15": ["moead", "moead_size", "moead_t", "moead_size_t", "ts", "ts_add", "vns", "vns_add", "nsga2", "grasp"],
+    "free": ["moead", "moead_size", "moead_t", "moead_size_t", "ts", "ts_add", "vns", "vns_add", "moead_size_ucbhv", "moead_size_gtshv"],
+    "bound2": ["moead", "moead_size", "moead_t", "moead_size_t", "ts", "ts_add", "vns", "vns_add", "nsga2", "grasp", "moead_size_ucbhv", "moead_size_gtshv"],
+    "bound15": ["moead", "moead_size", "moead_t", "moead_size_t", "ts", "ts_add", "vns", "vns_add", "nsga2", "grasp", "moead_size_ucbhv", "moead_size_gtshv"],
 }
 SIZE_OPS = ("biobj_grow", "bottleneck_shrink")
 
@@ -57,8 +57,9 @@ def _run(method: str, cell: str, inst, seed: int, T: float):
         from moead_aos import MOEAD_AOS, MOEADConfig
         p = tuned(cell, "moead") if method.endswith("_t") else C.DEFAULT["moead"][0]
         b = budget_for(inst.n)
+        sel, rew = ("ucb", "hypervolume") if method.endswith("ucbhv") else (("dyts", "hypervolume") if method.endswith("gtshv") else ("random", "scalar"))
         r = MOEAD_AOS(inst, MOEADConfig(n_weights=int(p.get("n_weights") or b["T"]), neighborhood_size=int(p.get("nbr") or b["nbr"]), max_gen=10**7,
-                                        operator_selection="random", reward_mode="scalar", normalize_objectives=True, grasp_alpha=p["grasp_alpha"],
+                                        operator_selection=sel, reward_mode=rew, normalize_objectives=True, grasp_alpha=p["grasp_alpha"],
                                         seed=seed, time_limit_s=T, extra_operators=(SIZE_OPS if "size" in method else ()))).run()
         fr, sizes = np.asarray(r.pareto_front, float).reshape(-1, 2), r.archive_sizes
     elif method in ("ts", "ts_add", "vns", "vns_add"):
