@@ -1,0 +1,158 @@
+# Andamento das rodadas (atualizado a cada marco; ver CLAUDE.md §2n-§2o para os resultados)
+
+**Última atualização: 3 out 2026, 14:00 (ancoragem rodando no Terminal do usuário; manuscrito v2 montado).**
+
+## Estado
+
+| Fatia | Regime | Estado |
+|---|---|---|
+| CDP n<=150, 5 réplicas | normalizado | ✅ concluído e analisado |
+| GDP n<=150, 5 réplicas | normalizado | ✅ concluído e analisado |
+| CDP n=500, 3 réplicas (40 inst.) | normalizado | ✅ concluído e analisado |
+| GDP n=500, 3 réplicas (80 inst.) | normalizado | ✅ concluído 12:16 e analisado |
+| MDP n<=1000 (143 inst.), 3 réplicas | normalizado | ✅ concluído 16:19 (5.148 arquivos) e analisado |
+
+| Fase 2 — AOS com recompensas novas, pools enxutos, ancoragem (CDP n<=150, `run_phase2.py`) | normalizado | rodadas 1–4 ✅ (ver abaixo); ancoragem em GDP n<=150 e CDP n=500: 🔄 iniciou ~16:20 (interrompida pelo desligamento; retomar com os comandos abaixo) |
+
+Resultados em `results/capacitated_norm/{CDP,GDP}/runs` e `results_norm/runs` (MDP). Cada run é um JSON independente
+com checkpoint por hash de configuração: **nada se perde se a máquina desligar; só o run em andamento naquele instante.**
+
+## Se o notebook for desligado/reiniciado
+
+1. Antes de relançar, confira se há `run_full.py` rodando (hibernar/suspender NÃO mata os processos; reiniciar mata).
+   PowerShell: `Get-CimInstance Win32_Process | ? { $_.CommandLine -match 'run_full\.py' }`
+2. Se não houver, dê duplo clique em `retomar_fase1.bat` (ou `retomar_fase1.bat 8` para escolher os workers). É idempotente.
+3. Para ver o progresso: `ls results\capacitated_norm\GDP\runs | find /c "_n500_"` (meta GDP n=500: 2.880 arquivos) e
+   `ls results_norm\runs | find /c ".json"` (MDP; meta final 143 x 12 x 3 = 5.148).
+
+## Análises prontas (rodam em segundos/minutos)
+
+- `python src/reference_sets.py build` (refaz a referência fixa; rode antes de analisar dados novos)
+- `python analyze_replicated.py --problem CDP|GDP --min-n 0 --max-n 500 --reps 3 [--metric hv_norm|igd_plus|eps_plus]`
+- `python analyze_n500_pilot.py`, `python anchor_cdp.py`, `python anchor_gdp.py` (âncoras com a literatura)
+
+## Resultados da Fase 2 (resumo; detalhes em CLAUDE.md §2p)
+
+- **Nenhum AOS supera o pool uniforme `random`** (recompensas absoluta, relativa, de inserção no arquivo, ciente de custo e com piso de exploração): ✅ resolvido, enquadramento "pool-centric".
+- Pools enxutos: qualidade igual; economia de tempo pequena (só tirar `grasp_greedy` poupa ~15–18%).
+- **Ancoragem de MaxMin (`src/anchor.py`)**: ✅ a ponta chega a ~1,0 do BKS (SOM-a 10/10, GKD-b n50 7–8/10) e o hv_norm sobe +0,012 a +0,019 (p=0,018 no `random`), custo ~2 s por run. É a melhoria de método do artigo.
+
+## Para retomar o que está programado (se o notebook cair)
+
+```
+# MDP (réplicas 2 e 3) — já coberto por retomar_fase1.bat
+# Fase 2 — ancoragem (idempotente; escrita atômica)
+python run_phase2.py --problem GDP --max-n 150 --reps 3 --workers 8 --variants random_anchor,dyts_hv_anchor,random_ref
+python run_phase2.py --problem CDP --min-n 500 --max-n 500 --reps 3 --workers 8 --variants random_anchor6k
+python src/reference_sets.py build && python analyze_anchor_runs.py
+```
+
+## Estado em 3 out 2026, 14:00 (após reinício às 13:53)
+
+- **Fase 1 COMPLETA** (verificada por contagem): CDP n≤150 3.600 + n=500 1.440; GDP n≤150 7.200 + n=500 2.880; MDP n≤1000 5.148 (`results_norm/runs`). 0 arquivos corrompidos.
+- **Ancoragem (Fase 2, rodada 4)**: GDP n≤150 estava em ~49% (≈177/360 por variante) quando o notebook reiniciou; **retomada às 13:58** em cadeia: (1) GDP n≤150 `random_anchor, dyts_hv_anchor, random_ref`; (2) CDP n=500 `random_anchor6k`; (3) GDP n=500 `random_anchor6k`. 6 workers (outro trabalho do Carlos, `rodar_dm4t_literal.py`, usa ~6 núcleos).
+- Estimativa: (1) ~30 min; (2) ~2 h; (3) ~4 h.
+
+## Atualização 3 out 2026, ~14:50
+
+- A cadeia de ancoragem lançada como tarefa em segundo plano foi **encerrada pelo limite de tempo do ambiente**; foi relançada no **painel de Terminal** do usuário (aba `c1`): GDP n≤150 ✅ concluído (1.080/1.080); **CDP n=500 (random_anchor6k) em execução**; depois GDP n=500. Para retomar após queda: `retomar_ancoragem.bat`.
+- **Manuscrito v2** montado: `Claude outputs/manuscript_draft_v2.md` (tabelas geradas por `make_manuscript_tables.py`).
+- **Ancoragem em GDP n≤150 (N=120, 3 réplicas)**: hv_norm 0,7702 → 0,8027 (p=0,003) no `random`; 0,7786 → 0,7935 (p=0,043) no `dyts_hv`.
+
+## Atualização 3 out 2026, 20:40
+
+- **Ancoragem n=500 concluída** (CDP 120/120; GDP 240/240): CDP hv_norm +0,0589 (p=2·10⁻⁷), GDP +0,0195 (p=0,065); MaxMin do extremo: GKD-c CDP 0,993 do BKS, GDP 1,094 do publicado; MDG-b CDP 0,817, GDP 0,917. Manuscrito atualizado.
+- **Pendências e direção**: ver `PENDENCIAS_E_DIRECAO.md`. Nada está rodando agora.
+
+## Atualização 3 out 2026, ~22:00
+
+- **Enquadramento confirmado pelo Carlos (seguir o recomendado)**: "pool de operadores + normalização + ancoragem", com o resultado negativo sobre seleção adaptativa como achado central. O rascunho v2 já está escrito assim.
+- **Lançado no Terminal (aba `c2`)**: E1 (varredura de hiperparâmetros dos bandits; 17 variantes) e depois E2 (orçamento maior ×2 e ×4; 6 variantes), CDP n<=150, 3 réplicas, 6 workers. Resultados em `results/phase2_aos/CDP/runs`. Análise: a escrever (`analyze_e1_e2.py`). Se cair: repetir os dois comandos `run_phase2.py` (idempotente) — as variantes estão em `run_phase2.py` (prefixos `h_` e `b2_`/`b4_`).
+- **Referências a conseguir** (15 + complementares, com links verificados): `REFERENCIAS_A_CONSEGUIR.md`.
+
+## Atualização 3 out 2026, ~23:30 — conferência das referências
+
+- **Os 15 PDFs foram lidos** e o manuscrito/documentos corrigidos (detalhes no `CLAUDE.md` §2r e `REFERENCIAS_A_CONSEGUIR.md` §0). O que mudou: (1) referência da literatura do CDP agora é o melhor valor publicado (Symmetry + Lu + Gurobi + Mladenović/MNSA no MDG-b): a âncora leva o extremo MaxMin a 0,97–1,00 do melhor valor em 4 de 5 famílias, mas só a **0,70 no MDG-b n=500** (antes dizíamos 0,82); (2) o seletor `dyts_*` não era o DYTS do artigo → renomeado GTS; DYTS fiel implementado (`fd_*`).
+- **Fila E1b** (aba `c3`, `python wait_and_run_e1b.py 6`): espera E1/E2 (aba `c2`) acabarem e roda DYTS fiel + recompensa `replace` em CDP e GDP n≤150, 3 réplicas. Se cair: relançar o mesmo comando (idempotente).
+- Novos arquivos: `anchors_lit.py`, `analyze_anchor_lit.py`, `anchors/cdp_literature_lu2023.csv`, `anchors/cdp_mdgb_rosati2024_table5.csv`, `wait_and_run_e1b.py`.
+- **Próximos passos**: analisar E1/E2/E1b (`analyze_e1_e2.py`); ler o COR (VNS) e pedir o GDP original; testar âncora mais forte no MDG-b (E7; agora a lacuna é de 30%); usar GKD-d n=2000 do GDP (40 instâncias com valores publicados) na amostra de escalabilidade (E6).
+
+## Atualização 4 out 2026, madrugada — E1 concluído, âncora SBTS-like, filas
+
+- **E1 concluído**: nenhuma das 17 variantes de hiperparâmetros supera a seleção uniforme (maior +0,005, p_holm=1); 5 são significativamente piores. O resultado negativo é robusto à afinação (detalhes `CLAUDE.md` §2r).
+- **Âncora nova (E7)**: `src/sbts_anchor.py` (busca tabu baseada em soluções, estilo SBTS). No CDP n=500 chega a ~0,99 (GKD-c) e ~0,78–0,82 (MDG-b) do melhor valor publicado (a âncora antiga: 0,972/0,697); no GDP de orçamento apertado melhora muito. No SOM-a o tabu antigo é melhor, por isso o modo `both`.
+- **Filas no Terminal** (todas idempotentes; se a máquina reiniciar, relançar cada comando): `c2` = E2 (orçamento maior; `run_phase2.py ... --variants b2_*,b4_*`, em andamento, 75/1080 às ~00h); `c3` = `python wait_and_run_e1b.py 6` (DYTS fiel; começa quando E2 acabar); `c5` = `python wait_and_run_e7.py 6` (primeiro E3 = seleção contextual em CDP e GDP n≤150, depois E7 = âncora SBTS/both; começa depois do E1b). Previsão: E2 ~3–4 h, E1b ~1–2 h, E3 ~2 h, E7 ~5–8 h. Análise do E3: `python analyze_e1_e2.py --problem CDP --part e3`.
+- Depois das filas: `python src/reference_sets.py build`; `python analyze_e1_e2.py --problem CDP|GDP`; `python analyze_anchor_v2.py --problem CDP|GDP`; atualizar manuscrito (§6.4 e §6.6 + resumo) e `CLAUDE.md`.
+
+## Atualização 5 out 2026, ~19h — retomada após reinício e fila única
+
+- **O que aconteceu**: o notebook foi reiniciado/desligado em 3 out ~22h; todas as abas do Terminal (`c2`, `c3`, `c5`) morreram. Estado em disco: E1 completo; E2 com ~57/60 instâncias da réplica 0 (b2_* e b4_*); E1b, E3, E7 e E4 ainda não começaram (nenhum arquivo). Nenhum JSON corrompido (escrita atômica).
+- **Nova fila única e idempotente**: `python run_queue.py 8` (aba `c7`, 8 workers), ordem: **E1b** (DYTS fiel + recompensa `replace`; CDP e GDP n≤150) → **E3** (contextual; CDP e GDP) → **E4** (baselines a tempo igual; CDP+GDP, 3 réplicas) → **E7** (âncora SBTS/both n≤150 CDP/GDP) → **E2** (orçamento maior ×2/×4, CDP) → **E7** n=500 (CDP `random_both,random_sbts`; GDP `random_both`). Se cair: relançar o mesmo comando (pula o que existe). Substitui `wait_and_run_e1b.py` e `wait_and_run_e7.py` (não usar mais).
+- **E4 implementado** (`run_e4.py`, `analyze_e4.py`): para cada (instância, réplica), no mesmo processo, roda o MOEA/D-Uniform normalizado e mede o tempo T; depois NSGA-II, VNS-Pareto (sem parada antecipada) e VNS-Tchebycheff normalizado com limite de tempo de parede T (novo `time_limit_s` em `NSGA2Config`/`BVNSConfig`, padrão None: regressão bit a bit OK). Amostra: GDP n≤150 (20 inst.), GDP n=500 (20), CDP n≤150 (20), CDP n=500 (10); 3 réplicas. GRASP-MO/PR ficam de fora (no orçamento padrão já gastam tempo ≥ MOEA/D). Resultados em `results/e4_equal_time/<P>/runs` (a referência fixa agora inclui esse diretório).
+- Depois das filas: `python src/reference_sets.py build`; `python analyze_e1_e2.py --problem CDP|GDP` (partes e1b, e3, e2); `python analyze_e4.py`; `python analyze_anchor_v2.py --problem CDP|GDP`; atualizar manuscrito §6.4, §6.6, §6.7 e o resumo.
+- Também feito: `analyze_by_family.py` (E9; `results/analysis/by_family_*_hv_norm.{json,md}`), parágrafo "By family" no §6.2 e Apêndice C (colar as tabelas .md).
+
+## Atualização 6 out 2026, ~00h — E1b, E3, E7 (n≤150) e E4 (parcial) concluídos
+
+- Resultados em `CLAUDE.md` §2s e já escritos no manuscrito (§6.4: DYTS fiel e seleção contextual). A fila 1 (`run_queue.py`) foi interrompida em E2 (checkpoint preservado) para relançar o E4 com GRASP a tempo igual sob a mesma carga.
+- **Fila 2 em execução** (aba `c8`; `python run_queue2.py 8`; idempotente): E4 completo (GRASP-MO/PR a tempo igual) → E2 (orçamento maior, CDP; retoma da réplica 1) → E7 n=500 (CDP `random_both,random_sbts`; GDP `random_both`). Se cair: relançar o mesmo comando.
+- Pendente depois da fila: `reference_sets.py build`; `analyze_e1_e2.py --part e2`; `analyze_e4.py`; `analyze_anchor_v2.py` (CDP e GDP n=500); atualizar §6.6/§6.7/resumo/§4.5 e regerar todas as tabelas e figuras com a referência congelada.
+
+## Atualização 6 out 2026, ~noite — filas concluídas, referência congelada, manuscrito alinhado
+
+- **Concluídos**: E1, E1b, E2, E3, E4 (n≤150 todas as instâncias), E7 (n≤150 e n=500, CDP e GDP). Referência fixa **congelada** (`results/reference_fronts/frozen_2026-10-06/`); `regen_all.py` refez todas as análises e figuras; números do manuscrito conferidos e atualizados.
+- **Em execução**: E5 (aba `c11`; `python run_e5.py --workers 8 --reps 3`, 4680 tarefas, ~3 h; idempotente). Quando terminar: `python analyze_e5.py` e atualizar o §6.9.
+- **Manuscrito**: `Claude outputs/manuscript_draft_v2.md` (regerado por `make_manuscript_tables.py`). Marcadores restantes: DOI do repositório, amostra de escalabilidade (E6), busca sistemática repetida (Scopus/WoS), leitura do Colmenar et al. 2018, E5 no §6.9, 2 `[CITE?]`.
+- **Decisões do Carlos**: E6 (incluir amostra de escalabilidade? ~8 h de máquina), enquadramento para o EJOR (ver `PENDENCIAS_E_DIRECAO.md`), commit/limpeza/DOI do repositório.
+
+## Atualização 7 out 2026 — todos os experimentos de blindagem concluídos; máquina livre
+
+- **Concluídos** (todos analisados e escritos no manuscrito `Claude outputs/manuscript_draft_v2.md`): E1 (CDP e GDP), E1b (CDP e GDP), E2 (CDP e GDP), E3 (CDP e GDP), E4 (tempo igual; n≤150 todas as instâncias), E5 (orçamento GDP relaxado, normalizado, 3 réplicas), E7 (âncora SBTS-like; n≤150 e n=500, CDP e GDP), E9 (por família). Referência fixa congelada em 6 out; análises regeneradas por `regen_all.py`.
+- **Nenhuma fila em execução.** Não há processos de experimento ativos.
+- **Pendências que dependem de você**: (1) E6, amostra de escalabilidade MDG-b n=2000 / MDG-c n=3000 (~8 h de máquina; só lanço com seu aval); (2) obter o artigo Colmenar, Martí & Duarte 2018 e os demais em `REFERENCIAS_A_CONSEGUIR.md` §0b; (3) enquadramento/venue (EJOR exige "major new research finding or novel approach"; o MDP bi-objetivo já existe — ver `PENDENCIAS_E_DIRECAO.md`); (4) git: nenhum commit foi feito (instrução sua); limpeza do repositório, `.gitignore`, pacote de dados com DOI, script de regressão (itens G1–G5); (5) revisão do texto por coautor/orientador; (6) confirmar limites do EJOR (resumo atual ~330 palavras; guia de autores deu HTTP 403).
+- **Pendências minhas se você autorizar**: E6; ler Colmenar 2018 quando houver o PDF e ajustar o texto; busca sistemática repetida em Scopus/WoS (sem acesso); script de regressão e limpeza do repositório (G2/G5); figura de ranks vs tamanho.
+
+## Atualização 7 out 2026 (tarde) — E6 concluído
+
+- E6 (escalabilidade) terminou: 90 runs. **Resultado novo e importante**: em MDG-b n=2000 as seleções adaptativas com recompensa HV (UCB-HV, GTS-HV) batem a uniforme nas 3 instâncias (0,79–0,90 vs 0,69–0,72), ao contrário de n≤1000; MDG-c n=3000 é degenerado (frente de 1 ponto, MaxMin=0). Manuscrito atualizado (§6.10 novo, resumo, discussão, conclusão qualificados). Detalhes em `CLAUDE.md` §2s.
+- Sugestão de follow-up para testar a explicação (orçamento curto relativo a n): MDG-b n=2000 com 4× gerações e/ou CDP/GDP n=500 com ¼ do orçamento. Só lanço com seu aval.
+
+## Atualização 7 out 2026 (noite) — E10, E4/E5 ampliados concluídos; manuscrito reestruturado
+
+- **Achado central novo**: a seleção adaptativa com recompensa HV GANHA em MDG-b n=2000 (10/10 instâncias, +0,13 a +0,15 de HV_norm) e em GDP n=500 com orçamento de custo apertado (cresce com a escassez de orçamento: GTS-HV +0,054 a +0,067), e não ganha em CDP (qualquer n, qualquer orçamento), GDP custo folgado, nem em n≤200. O manuscrito foi reescrito em torno disso (título neutro, §6.11, Fig. 5, Tabela 8).
+- **Duas correções metodológicas**: (1) referência do HV (ver CLAUDE.md §2s); (2) amostras de n=500 de E4/E5/E10-B só pegavam as instâncias mais apertadas — corrigido com E10-B2 e ampliações.
+- **Nenhum processo em execução** (regenerando análises na aba `c17`, ~20 min). `README_REPLICATION.md`, `regression_check.py` (66/66 idênticos) e `requirements.txt` atualizados.
+- **Próximos passos sugeridos**: (a) leitura crítica completa do manuscrito (checagem de números e fluxo; tamanho ~14 mil palavras — avaliar cortes); (b) Colmenar et al. 2018 (você precisa do PDF) e busca em Scopus/WoS; (c) decidir E8 e se vale testar a hipótese mecanística do custo apertado; (d) limpeza do repositório/commit/DOI (G1–G4) com seu aval; (e) revisão por coautor/orientador.
+
+
+- **7 out (leitura crítica + Colmenar 2018)**: leitura crítica do manuscrito concluída (correções no template; ver CLAUDE.md §2s). Colmenar et al. 2018 lido na versão submetida (preprint em uv.es): TS é o melhor método deles, todos ajustados com irace, só instâncias GKD; nossos baselines não são ajustados e têm orçamento ~500x menor (NSGA-II) -> limitação declarada no texto; experimento E11 (TS bi-objetivo + baselines com mais orçamento/ajuste) aguarda decisão do Carlos.
+
+- **7 out (noite)**: E11 (baselines ajustados + Tabu/VNS de Colmenar): células pequenas concluídas e analisadas; células grandes: ajuste concluído (treino: MOEA/D ajustado CDP-L 0,82, GDP-L 0,72, MDP-L 0,94 vs melhores baselines 0,59/0,59/1,01), testes em execução na aba `c21` (`run_e11.py --cells CDP-L,GDP-L,MDP-L`; ~7–8 h). Depois: `python run_e13.py` (quantifica a dimensão 'tamanho'), `python analyze_e11.py`, `python analyze_e13.py`, `python make_manuscript_tables.py`, reescrever §6.12/resumo/conclusões (RQ1 vira: MOEA/D à frente no GDP e a tempo igual no CDP; atrás de Tabu/VNS/GRASP ajustados no MDP).
+
+- **8 out (madrugada)**: E11 e E13 concluídos e incorporados ao manuscrito (Tabelas 9–10, §6.12–6.13, resumo, contribuições, discussão, limitações, conclusões). Resumo: MOEA/D à frente no GDP e, a tempo igual, no CDP (a 5T GRASP/VNS/Tabu ajustados alcançam no CDP); ATRÁS de Tabu/VNS/GRASP ajustados no MDP; o tamanho do conjunto é dimensão escondida no CDP/GDP. Pendências: rodar `python regression_check.py` e `python regen_all.py` ao final (confere tudo e regenera as figuras/tabelas); corte de tamanho do manuscrito (~18 mil palavras; resumo ~300 palavras) quando os limites do EJOR forem confirmados; ler a versão publicada de Colmenar et al.; DOI do repositório.
+
+- **8 out (manhã)**: guia de autores do EJOR lido (ver CLAUDE.md §2s): resumo cortado para 247 palavras, palavras-chave da lista oficial, 5 highlights, seção de declaração de IA (rascunho), `make_docx.py` gera `Claude outputs/manuscript_draft_v2.docx`. Atenção: o EJOR não considera versões estendidas de artigos de conferência — o CEC 2027 como plano B conflita com a submissão ao EJOR.
+
+- **8 out (tarde)**: `PENDENCIAS_PARA_O_CARLOS.md` criado (trabalhos a conseguir com título exato, decisões, checklist EJOR, pendências técnicas, pontos fracos). Manuscrito passou a citar Duarte et al. 2015 e irace (entradas copiadas da lista de Colmenar; não lidos).
+
+- **8 out (fim da sessao, limite de uso atingido)** — FEITO: 11 artigos de `a pedidos/novos pedidos/` lidos e conferidos; referencias do manuscrito reescritas (lista alfabetica sem marcadores, metadados conferidos no Crossref; autores de Geng et al. corrigidos; irace/Duarte/Parreno/Knowles incluidos); Mladenovic et al. (COR) Tabelas 10-13 parseadas em `anchors/cdp_literature_mladenovic2022.csv` (nunca superam o melhor publicado ja usado); AOS/Li 2014 (uniforme era o PIOR em UF) reescrito no §2; **ERRO CORRIGIDO**: a configuracao 'irace setting' de Colmenar (Tabela 6) estava errada (TS: altbws+LSAlt, T=64% e kmax=29,49% em PORCENTAGEM) -> `tenure_frac`/`kmax_frac` em `bo_trajectory.py`, `e11_common.DEFAULT` corrigido, candidato 0 reavaliado: os melhores ajustados NAO mudaram em nenhuma celula (testes t_/l_ e E13 continuam validos); arquivos antigos movidos para `results/e11_strong_baselines/_stale_default_fix/`. EM ANDAMENTO (aba terminal c25, `python run_e11.py --workers 8`): recalculo de `d_ts`/`d_vns` (~1,5 h); quando terminar rode `python analyze_e11.py`, `python analyze_e11.py --metric igd_plus`, `python make_manuscript_tables.py` e atualize os numeros das linhas 'irace setting' do §6.12 (texto atual ainda traz os valores antigos: 'Tabu 0,28-0,60 / VNS ...'). FALTA: (1) conferir no corpo as referencias aparentemente nao citadas (Auer, Demsar, Duarte 2015, Feo&Resende, Gomez 2022, Hansen&Mladenovic, Holm, Ishibuchi, Knowles, Thompson, Vargha&Delaney, Zitzler) — citar ou remover; (2) E8 (ablacao de operadores com replicas, CDP/GDP) e E14 (teste mecanistico do orcamento apertado; contadores opt-in `MOEADConfig.track_ops` ja implementados em `moead_aos.py`, ainda NAO testados nem rodados) — so rodar com a maquina livre; (3) polimento do manuscrito (leitura completa, ingles, estilo de citacao Elsevier autor-ano, material suplementar), grafico abstrato, preenchimentos genericos de autoria/CRediT/agradecimentos, limpeza do repositorio (mover, nao apagar) e `.gitignore`, manifesto do pacote de dados; (4) `regen_all.py` + `regression_check.py` finais e reconstruir o .docx. Sem commits.
+
+## 10 out 2026 (manhã) — retomada: E11 'irace setting' atualizado, novos experimentos E8/E14/E15/E16/E17 na fila, manuscrito reestruturado
+
+- **Feito**: recálculo d_ts/d_vns concluído; `analyze_e11.py` (hv_norm e IGD+) rodado; §6.12 atualizado (Tabu/VNS com a configuração do irace: CDP/GDP 0,27–0,65, abaixo do MOEA/D padrão; MDP +0,09 a +0,15). `analyze_e11_extremes.py` novo (cobertura dos extremos MaxSum/MaxMin; MDP: MOEA/D ajustado 0,991/0,904 do extremo da referência vs 0,999/0,94–0,98 dos métodos de trajetória) e parágrafo do §6.12 sobre MDP reescrito com esses números (a afirmação 'falta busca global dos extremos' agora é hipótese declarada, não fato).
+- **Manuscrito**: citações em estilo autor–ano Elsevier (a/b para Mladenović 2022 e Martí 2021); 9 referências sem citação agora citadas no texto; tabelas numeradas automaticamente pela ordem das legendas (`Table @@chave@@` no template; `make_manuscript_tables.py`); figuras renumeradas pela ordem de aparição; Algoritmo 1 e parâmetros dos operadores no §4; §6.6 (âncora) condensado + tabela gerada `t_anchor`; §6.4 condensado + tabela `t_aos_sum` (`analyze_aos_summary.py`) e detalhes movidos para `supplement_template.md` (S1) → `supplementary_material.md/.docx` (S2 = ranks por família; antigo Apêndice C); resumo gráfico `figures/graphical_abstract.pdf|png` (`make_figures.py ga`); seções genéricas de CRediT, conflito de interesses, financiamento, disponibilidade de dados, IA e agradecimentos; `make_docx.py` agora trata blocos ``` e numeração manual. CORREÇÃO de erro de prosa: GDP, varredura de hiperparâmetros: são **7** (não 8) variantes significativamente piores.
+- **Código novo (todos opt-in; regressão 66/66 idêntica após cada mudança)**: `mab.FRRMABSelector` + `MOEADConfig.frr_*` + `reward_mode='frr'` (FRRMAB de Li et al. 2014); `operators.EXTRA_OPERATORS` (random_restart, half_replace, no_op) + `MOEADConfig.extra_operators` (pool envenenado); `track_ops` testado (resultado idêntico com e sem contadores).
+- **Em execução** (terminal): aba `c27` = `python run_queue5.py 8` (E14 mecanismo do orçamento apertado [540 runs, `results/e14_mechanism`] e depois E8 ablação de operadores com réplicas [8640 runs, `results/e8_operator_ablation`]); aba `c30` = `python run_queue6.py 8` (espera E8 chegar a 8640 arquivos e roda E15 FRRMAB, E16 pool envenenado, E17 inicialização GRASP via `run_phase2.py`, n≤150, 3 réplicas, em `results/phase2_aos`). Tudo idempotente. Análises: `analyze_e14.py`, `analyze_e8.py`, `analyze_e1_e2.py --problem CDP|GDP --part e15|e16|e17` (e `analyze_aos_summary.py` depois do E15).
+- **Quando terminarem**: rodar as análises acima; preencher no manuscrito: §6.5 (E8; substitui a ablação de 1 réplica), §6.11 (E14 mecanismo; hoje 'hipótese não testada'), §6.4 + S1 (FRRMAB: `[TODO-E15]`), novo parágrafo do E16 (pool envenenado) e E17; depois `python regen_all.py`, `python regression_check.py`, `python make_docx.py` (principal e suplemento). Sem commits.
+- Movidos (não apagados) para `_obsolete/` em 10 out: `_import_test_*`, `_repl_bg_test_*`, `_slow_tasks_*`, `wait_and_run_e1b/e7.py`, `retomar_*.bat`; `results/analysis/e1b_*.json` e `e1_CDP_prelim.json` movidos para `results/analysis/_stale/`. `.gitignore` atualizado (`a pedidos/`, `_obsolete/`, `_to_delete/`).
+- **10 out (meio-dia) — mais itens na fila**: `src/smsemoa.py` (SMS-EMOA estado estacionário, contribuição de HV; ranking 2D verificado contra o do NSGA-II em 200 sorteios) integrado ao protocolo E11 como 6º método (`e11_common.METHODS` += `sms`; `run_e11.py` roda `d_sms`, `t_sms`, `l_sms`; `analyze_e11.py` inclui SMS-EMOA nas tabelas quando há runs). Aba `c31` = `python run_queue7.py 8` (espera E15–E17 acabarem e roda `run_e11_tune.py --methods sms` e `run_e11.py`; ~25 h-núcleo ≈ 4–5 h). Depois: `python analyze_e11.py` (+ `--metric igd_plus`), atualizar Tabelas 11–12 (colunas do SMS-EMOA em `make_manuscript_tables.py`) e §6.12; adicionar SMS-EMOA a `analyze_e11_extremes.py` se fizer sentido. **E14 concluído**: hipótese do mecanismo parcialmente refutada (ver §6.11 e Suplemento S3): orçamento apertado → 34% (n=500) de filhos inviáveis antes do reparo (0,3–0,7% nos outros grupos), mas a dispersão das taxas de inserção entre operadores NÃO é maior; o que difere é a distância da convergência (ganho do uniforme de ¼ do orçamento ao padrão: 0,139 no GDP apertado vs 0,068 folgado e 0,058 CDP); correlação entre instâncias fraca.
+
+## 10 out 2026 (noite) — ⚠️ ARTEFATO DE PONTO FLUTUANTE ENCONTRADO; correção + reexecução em curso (fila 8)
+
+- **O que foi achado**: o mesmo conjunto de elementos avaliado em outra ordem (típico de um filho do `SubsetCrossover` igual a um membro do arquivo/vizinho) dá objetivos que diferem ~1e-15 relativo. Isso contava como "sucesso" em (a) seletores de sucesso binário (`ThompsonSelector`, `DYTSBetaSelector`: `reward > 0`) com recompensas HV e escalar, e (b) na recompensa `insert` (estrita `>=`, enquanto o arquivo trata como duplicata dentro de 1e-9), e (c) no `_improved` da etapa de substituição (recompensas `replace`/`frr`). Efeito medido: **`thompson_hv`/`thompson_scalar` do catálogo principal escolhiam SubsetCrossover 0,20–0,24 das vezes (uniforme: 0,125; GDP, uma instância: 370 "sucessos" espúrios e share 0,39)**; com `insert`, os seletores preferiam SubsetCrossover (40–60%) por duplicatas espúrias — **a explicação que estava no §6.4 ("o operador que mais insere") estava ERRADA** (a taxa real de inserção do SubsetCrossover é a mais baixa, 0,002–0,005 por aplicação; E14). UCB/GTS com recompensas contínuas não são afetados (ruído ~1e-13 em magnitude): regressão bit a bit 49/66 idênticos, só as 17 variantes afetadas diferem (as demais seguem idênticas).
+- **Correção** (`src/moead_aos.py`, `_REL_TOL = 1e-9`): `insert` bloqueia se algum membro do arquivo domina/duplica a menos de tolerância relativa; seletores binários (`thompson`, `dyts_beta`) só recebem sucesso se o ganho de HV/escalar > 1e-9 × escala; `_improved`/`_fir` exigem melhora > 1e-9 relativo. Fingerprint dos modos `thompson_hv/thompson_scalar` ganhou `binary_reward_rel_tol` (invalida só esses runs). Diagnóstico após a correção: share de crossover no Thompson-HV (GDP) cai de 0,39 para 0,10; recompensa `insert` passa a coincidir com a inserção real.
+- **Reexecução** (aba `c32`, `python run_queue8.py 8`, ~100 h-núcleo ≈ 13–17 h): move (não apaga) runs antigos para `_artifact_20261010/` (phase2_aos, ablation_normalized, e5: Thompson) e `_stale/` (capacitated_norm/results_norm via hash); roda `run_phase2.py` (32 variantes afetadas, CDP/GDP n≤150, 3 réplicas), `run_ablation_norm.py`, `run_e5.py`, e `run_full.py --modes thompson_hv,thompson_scalar` (CDP/GDP n≤150 ×5 réplicas, n=500 ×3, MDP ×3). **Quando terminar**: `python regression_check.py` (deve voltar a 66/66), `python regen_all.py`, e REVISAR todo número de prosa que cite Tabelas 1–4/6/8, Apêndice/Supl. S2, §6.1 (ganhos da normalização por variante), §6.3, §6.4/S1 (famílias insert, DYTS fiel, hiperparâmetros Thompson, contextual, FRRMAB, pool envenenado), §6.9 (E5), CD/top group, resumo e conclusões. O catálogo histórico bruto (`results/capacitated`) NÃO será refeito: tem o mesmo artefato nas duas variantes Thompson (declarar; o §6.1 deve usar só as variantes não afetadas ou refazer).
+- **E8/E15/E16/E17/SMS-EMOA concluídos antes da descoberta** (resultados em `results/analysis/e8_operator_ablation.json`, `e1_e2_e3_*.json`, `e11_strong_baselines*.json`): E8 (3 réplicas): cada operador sozinho é pior que o pool (p_Holm<0,01 nos 16); leave-one-out: MaxMinSwap indispensável (CDP −0,036, p=0,001; GDP −0,039), no GDP também SubsetCrossover (−0,028) e RandomSwap2×2 (−0,027); os outros cinco, dispensáveis um a um. Pool envenenado (+3 operadores nocivos): uniforme não perde (CDP +0,018, GDP +0,002) e nenhum seletor melhora (UCB-Scal e UCB-insert piores) — **os resultados de `px_ucbins` e dos seletores binários nesse experimento precisam do reteste (estão na fila 8)**. FRRMAB (Li 2014): nenhuma das 5 configurações difere do uniforme (CDP +0,011 a −0,010; GDP −0,007 a −0,015), com C=5 vira praticamente round-robin; refeito na fila 8 por segurança. Inicialização: α=1 (aleatória) perde 0,051 no GDP (p=0,03), sem efeito no CDP. SMS-EMOA ajustado fica 0,11–0,37 abaixo do MOEA/D ajustado em todas as 6 células (T e 5T; p_Holm ≤ 0,018) e no nível do NSGA-II ajustado.
+- **11 out ~02h — ACIDENTE na fila 8 e correção**: a sessão anterior terminou com a aba da fila fechada (processos mortos); ao relançar `run_queue8.py`, o passo de quarentena moveu de volta para `_artifact_20261010/` os runs NOVOS (corrigidos) já concluídos (5760 CDP + 2107 GDP), sobrescrevendo os runs antigos de mesmo nome na pasta de quarentena (os antigos do CDP — que continham o artefato — foram perdidos; os antigos do GDP sem equivalente novo ainda estão lá, 7649 arquivos). Os novos foram devolvidos a `runs/` (filtro por mtime ≥ 10 out 20:52) e `run_queue8.py` agora só quarentena arquivos com mtime anterior ao corte (idempotente de verdade). Nada de resultado novo foi perdido. Fila relançada na aba `c34` (CDP phase2 já completo; GDP phase2 em curso, depois ablation_norm, E5 e `run_full` Thompson).
+- **11 out (manhã) — A REVISAR depois que a fila 8 terminar (MDP Thompson)**: rodar `python regen_all.py` e conferir toda a prosa que cita números das Tabelas 1–4, 6/7 (robustez a indicadores), 9–12, S2 (ranks por família: §6.2 "By family" cita 6,25/7,64/2,5–5,5/3,9–6,3/3,30 vs 4,40/5,3–6,5/6,12 vs 4,50), Fig. 3 (legenda ainda diz "the insert reward shifts mass to SubsetCrossover": FALSO após a correção; regenerar `make_figures.py fig2` e reescrever a legenda), §6.3 ("Why": frações de seleção do Thompson), §6.1 (n=500 piloto: `analyze_n500_pilot.py`), resumo (palavras ≤250), e a lista de CRediT etc. Já corrigidos com os dados novos de CDP/GDP: §6.2 (ranks CDP/GDP), Tabela 3 prosa, §6.8 (τ 0,73–1,00), §6.9 (E5), §6.4/S1/§6.5 (phase2 + pool envenenado), §6.1 (CDP 0,17–0,19; 48–55 de 60).
+- **11 out (manhã) — fila 8 CONCLUÍDA**: regressão 70/70; `regen_all.py` ok; prosa dos §6.1, 6.2, 6.3, 6.4, 6.5, 6.8, 6.9 e tabelas S1/S2/S3/Tabelas 5–8 atualizada com os dados corrigidos (ver CLAUDE.md §2t para o resumo do efeito). Falta (minha parte): leitura final do .docx e conferência de §6.7, 6.10–6.13 (inalterados); texto genérico de declarações já inserido. Falta (dos autores): DOI, declarações, revisão de inglês, decisão CEC×EJOR, repetir busca Scopus/WoS.
