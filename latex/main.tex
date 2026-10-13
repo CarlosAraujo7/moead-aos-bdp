@@ -96,15 +96,15 @@
             country={Brazil}}
 
 \begin{highlights}
-\item Bi-objective dispersion benchmarked on 443 MDP, CDP and GDP instances
+\item Operators that choose the set size multiply MOEA/D hypervolume on CDP and GDP
 \item Scaling objectives inside the Tchebycheff function is the key MOEA/D design choice
 \item Adaptive operator selection pays off only on large or tightly constrained cases
-\item MOEA/D leads tuned baselines on constrained problems, not on the plain MDP
+\item MOEA/D leads tuned baselines on constrained problems; VNS seeding fixes the MDP
 \item A short MaxMin anchoring step brings the front's extreme near published values
 \end{highlights}
 
 \begin{abstract}
-Dispersion problems ask for a subset of elements that is as spread out as possible. We study the bi-objective (MaxSum + MaxMin) maximum diversity problem (MDP) and two constrained variants, the capacitated (CDP) and generalised (GDP) dispersion problems, comparing a MOEA/D with a pool of eight operators against NSGA-II, SMS-EMOA, GRASP, variable neighbourhood search (VNS) and tabu search on 443 instances. Scaling the objectives inside the Tchebycheff function is decisive (+0.11 to +0.61 normalised hypervolume). Against baselines with fixed budgets MOEA/D is significantly ahead; when every method is tuned with the same protocol and given the same wall-clock time, it stays ahead on the GDP and, at equal time, on the CDP, but is clearly behind a tabu search, a VNS and a tuned GRASP on the MDP. No adaptive operator selection beats uniform selection from the same pool on instances of up to about 200 elements or on the CDP, whatever the selector (UCB1, Thompson sampling, the published DYTS, FRRMAB), reward, budget or context; with the hypervolume reward the selectors win on 2,000-element instances and on GDP instances with a tight cost budget. A short MaxMin intensification brings the MaxMin end of the front within about 1\% of the best published CDP values on four of five instance families and improves the hypervolume. In the CDP and GDP the MaxSum objective grows with the size of the set, so all methods work in the size regime induced by the capacity constraint, which we quantify.
+Dispersion problems ask for a subset of elements that is as spread out as possible. We study the bi-objective (MaxSum + MaxMin) maximum diversity problem (MDP) and the capacitated (CDP) and generalised (GDP) dispersion problems, comparing a MOEA/D with a pool of eight operators against NSGA-II, SMS-EMOA, GRASP, variable neighbourhood search (VNS) and tabu search on 443 instances. Scaling the objectives inside the Tchebycheff function is decisive (+0.11 to +0.61 normalised hypervolume). With every method tuned alike and given the same wall-clock time, MOEA/D stays ahead on the GDP and, at equal time, on the CDP, but is clearly behind a tabu search, a VNS and a tuned GRASP on the MDP; seeding it with the VNS closes that gap at no cost elsewhere. No adaptive operator selection beats uniform selection from the same pool on instances of up to about 200 elements or on the CDP, whatever the selector (UCB1, Thompson sampling, the published DYTS, FRRMAB), reward, budget or context; hypervolume-reward selectors win on 2,000-element instances, on GDP instances with a tight cost budget and, when the pool holds operators of very different value, at 500 elements. A short MaxMin intensification brings the MaxMin end of the front within about 1\% of the best published CDP values on four of five families. In the CDP and GDP the size of the set is a hidden dimension: operators that choose it multiply the hypervolume, and a cardinality bound makes the front finite.
 \end{abstract}
 
 \begin{keyword}

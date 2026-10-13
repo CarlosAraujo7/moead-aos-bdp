@@ -115,12 +115,13 @@ def main():
         group(f"{prob} n=500{tag}", fm, insts, RS.load(prob), a.metric, out)
     mats = [r for r in csv.DictReader(open(ROOT / "instances/catalog.csv")) if r["family"] == "MDG-b" and int(r["n"]) == 2000]
     d = E10 / "MDP" / "runs"
-    idx10 = [0, 2, 4, 6, 8, 10, 12, 15, 17, 19]
+    idx10 = list(range(len(mats)))     # 12 out: as 20 instancias (parte C = 10 + parte E = 10); antes so 10
+    E21 = ROOT / "results" / "e21_xl" / "runs"
     refs = {}
     for i in idx10:
         n = mats[i]["name"]
         paths = [E6 / f"{n}_{m}_rep{k:02d}.json" for m in ("random", "hypervolume", "dyts_hv", "nsga2", "grasp_pr", "vns_tchebycheff") for k in range(REPS)]
-        paths += list(d.glob(f"{n}_*_rep*.json"))
+        paths += list(d.glob(f"{n}_*_rep*.json")) + list(E21.glob(f"{n}_*_rep*.json"))     # + baselines do E21 (quando existirem)
         refs[n] = build_ref_local(paths)
     fm1 = {"x1": {md: (lambda n, k, md=md: d / f"{n}_{md}_rep{k:02d}.json") for md in MODES}}
     group("MDP MDG-b n=2000 (x1)", fm1, [mats[i]["name"] for i in idx10], refs, a.metric, out)

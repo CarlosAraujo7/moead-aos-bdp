@@ -4,10 +4,10 @@
 
 ## Highlights (EJOR: 3 to 5 bullets, each at most 85 characters including spaces; separate editable file with "highlights" in the name; lengths checked)
 
-1. Bi-objective dispersion benchmarked on 443 MDP, CDP and GDP instances (69)
+1. Operators that choose the set size multiply MOEA/D hypervolume on CDP and GDP (77)
 2. Scaling objectives inside the Tchebycheff function is the key MOEA/D design choice (82)
 3. Adaptive operator selection pays off only on large or tightly constrained cases (79)
-4. MOEA/D leads tuned baselines on constrained problems, not on the plain MDP (74)
+4. MOEA/D leads tuned baselines on constrained problems; VNS seeding fixes the MDP (74)
 5. A short MaxMin anchoring step brings the front's extreme near published values (78)
 
 The same text is in `Claude outputs/EJOR_highlights.docx`.
