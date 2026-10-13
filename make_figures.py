@@ -327,7 +327,7 @@ def size_figure():
                 if x is not None:
                     xs.append(i + (j - (len(meths) - 1) / 2) * w); ys.append(x["mean"])
             ax.bar(xs, ys, width=w * 0.95, color=col, hatch=hatch, edgecolor="white", linewidth=0.4, label=lab if exp == "free" else None)
-        ax.set_xticks(range(len(cells))); ax.set_xticklabels([l for _, l in cells], fontsize=7)
+        ax.set_xticks(range(len(cells))); ax.set_xticklabels([l.replace(", ", chr(10)) for _, l in cells], fontsize=7)
         ax.set_title(ttl, loc="left", fontsize=9, fontweight="bold"); ax.grid(axis="x", visible=False); ax.set_ylim(0, 1.0)
     axes[0].set_ylabel("HV$_{norm}$ against the reference front" + chr(10) + "of each experiment (mean over instances)")
     fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", ncol=3, frameon=False, fontsize=7, bbox_to_anchor=(0.5, -0.12))
