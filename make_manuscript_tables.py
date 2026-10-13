@@ -404,7 +404,7 @@ def main():
         if e20.exists():
             d20 = json.load(open(e20))
             lab20 = {"m_ls": "MOEA/D + scalarised local search", "m_hyb": "MOEA/D seeded by Tabu (30% of T)", "m_hyb_ts50": "MOEA/D seeded by Tabu (50% of T)",
-                     "m_hyb_vns30": "MOEA/D seeded by VNS (30% of T)", "m_hyb_vns50": "MOEA/D seeded by VNS (50% of T)", "t_moead": "MOEA/D-Uniform (tuned)",
+                     "m_hyb_vns10": "MOEA/D seeded by VNS (10% of T)", "m_hyb_vns30": "MOEA/D seeded by VNS (30% of T)", "m_hyb_vns50": "MOEA/D seeded by VNS (50% of T)", "t_moead": "MOEA/D-Uniform (tuned)",
                      "t_ts": "Tabu (tuned)", "t_vns": "VNS (tuned)", "t_grasp": "GRASP (tuned)"}
             cells20 = [(c, l) for c, l in (("MDP-S", "MDP, 100 ≤ n ≤ 150"), ("MDP-L", "MDP, n = 500"), ("CDP-S", "CDP, n ≤ 150"), ("GDP-S", "GDP, n ≤ 150")) if c in d20]
             if cells20:
@@ -423,6 +423,22 @@ def main():
                 T["TE20"] = "`[TODO: run run_e20.py and analyze_e20.py]`"
         else:
             T["TE20"] = "`[TODO: run run_e20.py and analyze_e20.py]`"
+        e22 = A / "e22_colmenar_rest.json"
+        if e22.exists():
+            d22 = json.load(open(e22))
+            cells22 = [(c, l) for c, l in (("CDP-S", "CDP, n ≤ 150"), ("GDP-S", "GDP, n ≤ 150"), ("MDP-S", "MDP, 100 ≤ n ≤ 150"), ("CDP-L", "CDP, n = 500"), ("GDP-L", "GDP, n = 500"), ("MDP-L", "MDP, n = 500")) if c in d22]
+            ln = ["**Table @@t_colmenar@@. The two methods of Colmenar et al. (2018) not in the main comparison, with their irace settings (population 340, mutation 0.14, crossover 0.15 for SPEA2; α = 0.95, 55.39% destruction for the Iterated Greedy) and the wall-clock limit of the default MOEA/D-Uniform (HV_norm against the frozen reference; in brackets the paired difference to the default MOEA/D-Uniform and Holm-adjusted Wilcoxon p, MDP rows against the same default)**", "",
+                  "| Method | " + " | ".join(f"{l} (N={d22[c]['N']})" for c, l in cells22) + " |", "|---|" + "---|" * len(cells22),
+                  "| MOEA/D-Uniform (default) | " + " | ".join(f"{d22[c]['uniform_mean']:.3f}" for c, _ in cells22) + " |"]
+            for m, lbl in (("d_spea2", "SPEA2 (Colmenar et al. setting)"), ("d_ig", "Iterated Greedy (Colmenar et al. setting)"), ("t_moead", "MOEA/D-Uniform (tuned)"), ("t_vns", "VNS (tuned)")):
+                cs = []
+                for c, _ in cells22:
+                    x = d22[c]["methods"].get(m)
+                    cs.append("–" if x is None else f"{x['mean']:.3f} ({x['diff_uniform']:+.3f}; {x.get('p_holm_vs_uniform', float('nan')):.2g})")
+                ln.append(f"| {lbl} | " + " | ".join(cs) + " |")
+            T["TE22"] = chr(10).join(ln)
+        else:
+            T["TE22"] = "`[TODO: run run_e22.py and analyze_e20.py --dir e22_colmenar_rest]`"
         parts = []
         for pr in ("MDP", "CDP", "GDP"):
             f = A / f"by_family_{pr}_hv_norm.md"

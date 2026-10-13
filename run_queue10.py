@@ -22,6 +22,26 @@ def waiting_for_queue9() -> bool:
     return False
 
 
+def foreign_load() -> bool:
+    """Ha outro job pesado na maquina (p.ex. outro projeto com `run_full.py --catalog ...`)? Os experimentos com limite de TEMPO (E20, E22) so sao
+    comparaveis com o E11 se rodarem com a carga do E11 (8 workers); esperamos ate 8 h e seguimos com aviso."""
+    import psutil
+    for p in psutil.process_iter(["cmdline"]):
+        c = " ".join(p.info["cmdline"] or [])
+        if "python" in c.lower() and ("--catalog" in c or "test_E7" in c):
+            return True
+    return False
+
+
+def wait_no_foreign(max_h: float = 8.0):
+    t0 = time.time()
+    while foreign_load() and time.time() - t0 < max_h * 3600:
+        print("job externo detectado; aguardando 10 min", flush=True)
+        time.sleep(600)
+    if foreign_load():
+        print("AVISO: job externo ainda ativo apos a espera; seguindo (tempos podem estar afetados)", flush=True)
+
+
 def run(cmd):
     print(">>", " ".join(cmd), flush=True)
     r = subprocess.run(cmd, cwd=str(ROOT))
@@ -39,10 +59,13 @@ if __name__ == "__main__":
     run(["python", "run_e18.py", "--exp", "free", "--cells", "CDP-S", "GDP-S", "--workers", w])
     run(["python", "run_e18.py", "--exp", "bound2", "--cells", "CDP-S", "GDP-S", "--workers", w])
     V = "m_hyb_vns10,m_hyb_vns30,m_hyb_vns50"
+    wait_no_foreign()
     run(["python", "run_e20.py", "--cells", "MDP-S", "--modes", "m_ls,m_hyb," + V, "--workers", w, "--reps", "3"])
     run(["python", "run_e20.py", "--cells", "CDP-S", "GDP-S", "--modes", V, "--workers", w, "--reps", "3"])
     run(["python", "run_e20.py", "--cells", "MDP-L", "--modes", V, "--workers", w, "--reps", "3"])
+    wait_no_foreign()
     run(["python", "run_e22.py", "--workers", w])
     run(["python", "run_e10.py", "--parts", "E", "--workers", w])
+    run(["python", "probe_e18_shares.py", "--workers", w])
     run(["python", "run_e21.py", "--workers", w])
     print("FIM FILA 10", flush=True)
