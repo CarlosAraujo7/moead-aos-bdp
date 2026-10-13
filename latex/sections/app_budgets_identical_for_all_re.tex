@@ -5,6 +5,7 @@
 \begin{center}
 \small
 \setlength{\tabcolsep}{4pt}
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{%
 \begin{tabular}{lccccc}
 \toprule
 n $\leq$ & MOEA/D: N (weights) & generations & neighbourhood T & NSGA-II: pop $\times$ gen & GRASP/VNS iterations \\
@@ -19,4 +20,5 @@ n $\leq$ & MOEA/D: N (weights) & generations & neighbourhood T & NSGA-II: pop $\
 > 1000 & 100 & 600 & 20 & 120 $\times$ 250 & 500 \\
 \bottomrule
 \end{tabular}
+}
 \end{center}

@@ -412,8 +412,8 @@ def table_tex(cells: list[list[str]], caption: str, label: str, raw: Raw, forms)
         if i == 0:
             body.append(r"\midrule")
     body += [r"\bottomrule", env_e]
-    if not longcols and (nc >= 9 or total > 140):
-        out += [r"\resizebox{\linewidth}{!}{%"] + body + ["}"]
+    if not longcols and total > 70:       # encolhe so se a tabela natural for mais larga que a linha (nunca amplia)
+        out += [r"\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{%"] + body + ["}"]
     else:
         out += body
     out.append(r"\end{table}" if caption else r"\end{center}")
