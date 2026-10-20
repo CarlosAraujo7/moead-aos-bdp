@@ -48,3 +48,4 @@ _to_delete/
 .claude/
 run_e20_pilot.bat
 latex/*.spl
+entregas/

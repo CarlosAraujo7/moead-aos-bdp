@@ -632,7 +632,11 @@ def main():
 
     ai_txt = raw.restore(inline(sec_text("Declaration of generative AI"), raw, forms))
     hl = highlights()
-    main_tex = build_main(title, abstract_tex, kws, hl, body_files, ai_txt)
+    quote = " ".join(l.lstrip(">").strip() for l in pre if l.startswith(">"))     # caixa de pendencias do rascunho -> caixa vermelha no PDF
+    status_tex = ""
+    if quote:
+        status_tex = (r"\begin{center}\fcolorbox{red}{red!6}{\parbox{0.95\linewidth}{\small\textcolor{red}{" + raw.restore(inline(quote, raw, forms)) + r"}}}\end{center}")
+    main_tex = build_main(title, abstract_tex, kws, hl, body_files, ai_txt, status_tex)
     (LATEX / "main.tex").write_text(main_tex, encoding="utf-8", newline="\n")
 
     # --- suplemento
@@ -646,13 +650,13 @@ def main():
         build()
 
 
-def build_main(title, abstract, kws, hl, body_files, ai_txt) -> str:
+def build_main(title, abstract, kws, hl, body_files, ai_txt, status_tex="") -> str:
     tpl = (TPL / "main_template.tex").read_text(encoding="utf-8")
     inputs = "\n".join(f"\\input{{sections/{f}}}" for f in body_files)
     hl_tex = "\n".join(r"\item " + h.replace("&", r"\&") for h in hl)
     kw_tex = " \\sep\n".join(k for k in kws)
     out = (tpl.replace("%%TITLE%%", title).replace("%%HIGHLIGHTS%%", hl_tex).replace("%%ABSTRACT%%", abstract)
-           .replace("%%KEYWORDS%%", kw_tex).replace("%%SECTIONS%%", inputs).replace("%%AIDECL%%", ai_txt))
+           .replace("%%KEYWORDS%%", kw_tex).replace("%%SECTIONS%%", inputs).replace("%%AIDECL%%", ai_txt).replace("%%STATUS%%", status_tex))
     return out
 
 

@@ -1,4 +1,7 @@
-# Pendências — atualizado em 12 out 2026
+# Pendências — atualizado em 19 out 2026
+
+> **Atualização de 19 out.** Executado desde 12 out: E18 completo (livre, ρ=2 e ρ=1,5), E20 limpo (MDP-S/L, CDP-S, GDP-S), E22 (SPEA2 e Iterated Greedy), E10 parte E (as 20 MDG-b n=2000 no AOS), sonda de seleção nas células L; manuscrito atualizado (§4.8, §6.14, §6.15, resumo de 242 palavras, discussão, limitações, conclusões, destaques). **Não executado (você decidiu esperar):** E21 (escala completa MDP; 59 de 168 arquivos, sem análise) e E20 em CDP-L/GDP-L (`run_queue11.py`). Para retomar: `run_queue10.bat` (continua o E21) e depois `run_queue11.bat`, com a máquina livre (8 workers; os limites de tempo só são comparáveis com a carga do E11). Pacote do artigo com as pendências em vermelho: `entregas/artigo_EJOR_rascunho_2026-10-19.zip` (gerado por `python make_delivery_zip.py`).
+
 
 **Situação em uma frase:** o manuscrito está migrado para LaTeX no template do EJOR (`latex/main.pdf`, gerado por `python make_latex.py --build`), o git tem 6 commits locais (sem push) e três frentes novas de melhoria estão rodando (tamanho do conjunto, MDP híbrido, escala completa); o que resta depende de **você** (decisões e artigos) ou das **fases longas de experimentos** (~15 h de máquina, ver §4).
 
