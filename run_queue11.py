@@ -25,5 +25,7 @@ if __name__ == "__main__":
     while busy():
         time.sleep(180)
     print("maquina livre; iniciando fila 11", flush=True)
+    from run_queue10 import my_workers
+    w = str(my_workers(int(w)))
     r = subprocess.run(["python", "run_e20.py", "--cells", "CDP-L", "GDP-L", "--modes", "m_hyb_vns30,m_hyb_vns50", "--workers", w, "--reps", "3"], cwd=str(ROOT))
     print("FIM FILA 11" if r.returncode == 0 else f"ERRO {r.returncode}", flush=True)

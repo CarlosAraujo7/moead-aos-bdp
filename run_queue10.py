@@ -42,6 +42,19 @@ def wait_no_foreign(max_h: float = 8.0):
         print("AVISO: job externo ainda ativo apos a espera; seguindo (tempos podem estar afetados)", flush=True)
 
 
+def my_workers(total: int = 8) -> int:
+    """Mantem 8 processos ativos no total (a carga do E11) quando outro projeto ja usa workers (p.ex. `p16_tamanho_pool.py --workers N`)."""
+    import re
+    import psutil
+    used = 0
+    for p in psutil.process_iter(["cmdline"]):
+        c = " ".join(p.info["cmdline"] or [])
+        if "p16_tamanho_pool" in c:
+            m = re.search(r"--workers\s+(\d+)", c)
+            used = max(used, int(m.group(1)) if m else 4)
+    return max(2, total - used)
+
+
 def run(cmd):
     print(">>", " ".join(cmd), flush=True)
     r = subprocess.run(cmd, cwd=str(ROOT))
@@ -66,6 +79,7 @@ if __name__ == "__main__":
     wait_no_foreign()
     run(["python", "run_e22.py", "--workers", w])
     run(["python", "run_e10.py", "--parts", "E", "--workers", w])
-    run(["python", "probe_e18_shares.py", "--workers", w])
-    run(["python", "run_e21.py", "--workers", w])
+    if not (ROOT / "results" / "e18_size" / "shares_L.json").exists():     # a sonda nao e idempotente por arquivo: so roda se ainda nao existe
+        run(["python", "probe_e18_shares.py", "--workers", w])
+    run(["python", "run_e21.py", "--workers", str(my_workers(int(w)))])
     print("FIM FILA 10", flush=True)
